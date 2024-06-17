@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'hy.microservices.core.review'
-version = '0.0.1-SNAPSHOT'
+version = '1.0.0-SNAPSHOT'
 
 java {
 	toolchain {
@@ -24,6 +24,9 @@ repositories {
 }
 
 dependencies {
+	implementation project(':api')
+	implementation project(':util')
+
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	compileOnly 'org.projectlombok:lombok'

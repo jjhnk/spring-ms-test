@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'hy.microservices.composite.product'
-version = '0.0.1-SNAPSHOT'
+version = '1.0.0-SNAPSHOT'
 
 java {
 	toolchain {
@@ -24,8 +24,13 @@ repositories {
 }
 
 dependencies {
+	implementation project(':api')
+	implementation project(':util')
+
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation 'org.springdoc:springdoc-openapi-starter-common:2.0.2'
+	implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.0.2'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'

@@ -1,0 +1,20 @@
+server:
+  port: 7002
+  error:
+    include-message: always
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile:
+      - docker
+
+server:
+  port: 8080
+
+logging:
+  level:
+    root: INFO
+    hy: DEBUG
