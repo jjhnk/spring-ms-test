@@ -42,13 +42,17 @@ public class AppConfig {
 
   @Bean
   OpenAPI getOpenApi() {
-    return new OpenAPI()
-        .info(new Info().title(apiTitle).description(apiDescription).version(apiVersion)
-            .contact(new Contact().name(apiContactName).url(apiContactUrl).email(apiContactEmail))
-            .termsOfService(apiTermsOfService)
-            .license(new License().name(apiLicense).url(apiLicenseUrl)))
-        .externalDocs(
-            new ExternalDocumentation().description(apiExternalDocDesc).url(apiExternalDocUrl));
+    return new OpenAPI().info(new Info().title(apiTitle)
+      .description(apiDescription)
+      .version(apiVersion)
+      .contact(new Contact().name(apiContactName)
+        .url(apiContactUrl)
+        .email(apiContactEmail))
+      .termsOfService(apiTermsOfService)
+      .license(new License().name(apiLicense)
+        .url(apiLicenseUrl)))
+      .externalDocs(new ExternalDocumentation().description(apiExternalDocDesc)
+        .url(apiExternalDocUrl));
   }
 
 }

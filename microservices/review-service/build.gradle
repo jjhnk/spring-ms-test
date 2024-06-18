@@ -19,6 +19,10 @@ configurations {
 	}
 }
 
+ext {
+	mapstructVersion = '1.5.5.Final'
+}
+
 repositories {
 	mavenCentral()
 }
@@ -27,13 +31,28 @@ dependencies {
 	implementation project(':api')
 	implementation project(':util')
 
+	implementation 'com.mysql:mysql-connector-j:8.4.0'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation "org.mapstruct:mapstruct:${mapstructVersion}"
+
 	compileOnly 'org.projectlombok:lombok'
+	compileOnly "org.mapstruct:mapstruct-processor:${mapstructVersion}"
 	annotationProcessor 'org.projectlombok:lombok'
+	annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'io.projectreactor:reactor-test'
+	testCompileOnly 'org.projectlombok:lombok'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	testAnnotationProcessor 'org.projectlombok:lombok'
+	testAnnotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+
+	implementation platform('org.testcontainers:testcontainers-bom:1.19.8')
+	testImplementation 'org.testcontainers:testcontainers'
+	testImplementation 'org.testcontainers:junit-jupiter'
+	testImplementation 'org.testcontainers:mysql'
 }
 
 tasks.named('test') {

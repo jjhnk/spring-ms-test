@@ -1,11 +1,13 @@
 package hy.microservices.core.recommendation.services;
 
-import java.util.ArrayList;
 import java.util.List;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.RestController;
 import hy.api.core.recommendation.Recommendation;
 import hy.api.core.recommendation.RecommendationService;
 import hy.api.exceptions.InvalidInputException;
+import hy.microservices.core.recommendation.persistence.RecommendationEntity;
+import hy.microservices.core.recommendation.persistence.RecommendationRepository;
 import hy.util.http.ServiceUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,9 +15,26 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class RecommendationServiceImpl implements RecommendationService {
   private final ServiceUtil serviceUtil;
+  private final RecommendationRepository repository;
+  private final RecommendationMapper mapper;
 
-  public RecommendationServiceImpl(ServiceUtil serviceUtil) {
+  public RecommendationServiceImpl(ServiceUtil serviceUtil, RecommendationMapper mapper,
+    RecommendationRepository repository) {
     this.serviceUtil = serviceUtil;
+    this.repository = repository;
+    this.mapper = mapper;
+  }
+
+  @Override
+  public Recommendation createRecommendation(Recommendation body) {
+    try {
+      RecommendationEntity entity = repository.save(mapper.apiToEntity(body));
+
+      log.debug("RecommendationServiceImpl::createRecommendation - entity: {}", entity);
+      return mapper.entityToApi(entity);
+    } catch (DuplicateKeyException dke) {
+      throw new InvalidInputException("Duplicate key, ProductId: " + body.getProductId() + ", RecommendationId: " + body.getRecommendationId());
+    }
   }
 
   @Override
@@ -24,19 +43,17 @@ public class RecommendationServiceImpl implements RecommendationService {
       throw new InvalidInputException("Invalid productId: " + productId);
     }
 
-    if (productId == 213) {
-      log.debug("No recommendations found for productId: {}", productId);
-      return new ArrayList<>();
-    }
+    List<RecommendationEntity> entityList = repository.findByProductId(productId);
+    List<Recommendation> apiList = mapper.entityListToApiList(entityList);
+    apiList.forEach(e -> e.setServiceAddress(serviceUtil.getServiceAddress()));
 
-    List<Recommendation> list = new ArrayList<>();
-    list.add(new Recommendation(productId, 1, "Author 1", 1, "Content 1", serviceUtil.getServiceAddress()));
-    list.add(new Recommendation(productId, 2, "Author 2", 2, "Content 2", serviceUtil.getServiceAddress()));
-    list.add(new Recommendation(productId, 3, "Author 3", 3, "Content 3", serviceUtil.getServiceAddress()));
-
-    log.debug("/recommendation response size: {}", list.size());
-
-    return list;
+    log.info("RecommendationServiceImpl::getRecommendations: responsesize: {}", apiList.size());
+    return apiList;
   }
 
+  @Override
+  public void deleteRecommendations(int productId) {
+    log.info("RecommendationServiceImpl::deleteRecommendations: recommendations deleted for productId: {}", productId);
+    repository.deleteAll(repository.findByProductId(productId));
+  }
 }

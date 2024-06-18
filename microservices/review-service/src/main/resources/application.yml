@@ -3,6 +3,28 @@ server:
   error:
     include-message: always
 
+spring:
+  datasource:
+    url: jdbc:mysql://localhost/review-db
+    username: user
+    password: pwd
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.MySQLDialect
+    show-sql: true
+
+
+spring.datasource.hikari.initializationFailTimeout: 60000
+
+logging:
+  level:
+    root: INFO
+    hy: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
 ---
 
 spring:
@@ -10,11 +32,10 @@ spring:
     activate:
       on-profile:
       - docker
+  datasource:
+    url: jdbc:mysql://mysql/review-db
+  jpa:
+    show-sql: false
 
 server:
   port: 8080
-
-logging:
-  level:
-    root: INFO
-    hy: DEBUG

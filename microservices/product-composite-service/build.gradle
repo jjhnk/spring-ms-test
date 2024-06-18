@@ -19,6 +19,11 @@ configurations {
 	}
 }
 
+ext {
+	springdocVersion = '2.0.2'
+	mapstructVersion = '1.5.5.Final'
+}
+
 repositories {
 	mavenCentral()
 }
@@ -29,13 +34,19 @@ dependencies {
 
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
-	implementation 'org.springdoc:springdoc-openapi-starter-common:2.0.2'
-	implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.0.2'
+	implementation "org.springdoc:springdoc-openapi-starter-common:${springdocVersion}"
+	implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:${springdocVersion}"
+	implementation "org.mapstruct:mapstruct:${mapstructVersion}"
+
 	compileOnly 'org.projectlombok:lombok'
+	compileOnly "org.mapstruct:mapstruct-processor:${mapstructVersion}"
 	annotationProcessor 'org.projectlombok:lombok'
+	annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'io.projectreactor:reactor-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	testAnnotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
 }
 
 tasks.named('test') {

@@ -3,8 +3,19 @@ server:
   error:
     include-message: always
 
----
+spring.data.mongodb:
+  host: localhost
+  port: 27017
+  database: product-db
+  auto-index-creation: true
 
+logging:
+  level:
+    root: INFO
+    hy: DEBUG
+    org.springframework.data.mongodb.core.MongoTemplate: DEBUG
+
+---
 spring:
   config:
     activate:
@@ -14,7 +25,5 @@ spring:
 server:
   port: 8080
 
-logging:
-  level:
-    root: INFO
-    hy: DEBUG
+spring.data.mongodb:
+  host: mongodb
