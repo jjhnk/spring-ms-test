@@ -1,12 +1,14 @@
 package hy.api.core.review;
 
-import java.util.List;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @RequestMapping("/review")
 public interface ReviewService {
@@ -18,7 +20,7 @@ public interface ReviewService {
    * @return the created review
    */
   @PostMapping(consumes = "application/json", produces = "application/json")
-  Review createReview(@RequestBody Review body);
+  Mono<Review> createReview(@RequestBody Review body);
 
   /**
    * Gets all reviews for a product.
@@ -27,7 +29,7 @@ public interface ReviewService {
    * @return a list of reviews for the product
    */
   @GetMapping(produces = "application/json")
-  List<Review> getReviews(@RequestParam(value = "productId", required = true) int productId);
+  Flux<Review> getReviews(@RequestParam(value = "productId", required = true) int productId);
 
   /**
    * Deletes a review for a product.
@@ -35,5 +37,5 @@ public interface ReviewService {
    * @param productId the ID of the product
    */
   @DeleteMapping
-  void deleteReviews(@RequestParam(value = "productId", required = true) int productId);
+  Mono<Void> deleteReviews(@RequestParam(value = "productId", required = true) int productId);
 }

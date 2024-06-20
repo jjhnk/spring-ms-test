@@ -1,12 +1,13 @@
 package hy.api.core.recommendation;
 
-import java.util.List;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 /**
  * The RecommendationService interface defines the REST API for managing recommendations.
@@ -23,7 +24,7 @@ public interface RecommendationService {
    * @return the created recommendation
    */
   @PostMapping(consumes = "application/json", produces = "application/json")
-  Recommendation createRecommendation(@RequestBody Recommendation body);
+  Mono<Recommendation> createRecommendation(@RequestBody Recommendation body);
 
   /**
    * Creates a new recommendation.
@@ -32,7 +33,7 @@ public interface RecommendationService {
    * @return the created recommendation
    */
   @GetMapping(produces = "application/json")
-  List<Recommendation> getRecommendations(@RequestParam(value = "productId", required = true) int productId);
+  Flux<Recommendation> getRecommendations(@RequestParam(value = "productId", required = true) int productId);
 
   /**
    * Deletes a recommendation by product ID.
@@ -40,5 +41,5 @@ public interface RecommendationService {
    * @param productId the ID of the product to delete recommendations for
    */
   @DeleteMapping
-  void deleteRecommendations(@RequestParam(value = "productId", required = true) int productId);
+  Mono<Void> deleteRecommendations(@RequestParam(value = "productId", required = true) int productId);
 }

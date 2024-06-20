@@ -1,8 +1,13 @@
 package hy.microservices.composite.product.services;
 
+import static java.util.logging.Level.FINE;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.springframework.web.bind.annotation.RestController;
+
 import hy.api.composite.product.ProductAggregate;
 import hy.api.composite.product.ProductCompositeService;
 import hy.api.composite.product.RecommendationSummary;
@@ -14,6 +19,8 @@ import hy.api.core.review.Review;
 import hy.util.http.ServiceUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Mono;
+import reactor.util.function.Tuple3;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,19 +28,24 @@ import lombok.extern.slf4j.Slf4j;
 public class ProductCompositeServiceImpl implements ProductCompositeService {
   private final ServiceUtil serviceUtil;
   private final ProductCompositeIntegration integration;
+  private static final String CLASS_NAME = ProductCompositeServiceImpl.class.getSimpleName();
 
   @Override
-  public void createProduct(ProductAggregate body) {
+  public Mono<Void> createProduct(ProductAggregate body) {
+
     try {
+      log.info("{}::createProduct() createCompositeProduct: {}", getClass().getSimpleName(), body);
+      List<Mono<?>> monoList = new ArrayList<>();
+
       Product product = new Product(body.getProductId(), body.getName(), body.getWeight(), null);
-      integration.createProduct(product);
+      monoList.add(integration.createProduct(product));
 
       if (body.getRecommendations() != null) {
         body.getRecommendations()
           .forEach(r -> {
             Recommendation recommendation = new Recommendation(body.getProductId(), r.getRecommendationId(),
               r.getAuthor(), r.getRate(), r.getContent(), null);
-            integration.createRecommendation(recommendation);
+            monoList.add(integration.createRecommendation(recommendation));
           });
       }
 
@@ -42,9 +54,14 @@ public class ProductCompositeServiceImpl implements ProductCompositeService {
           .forEach(r -> {
             Review review =
               new Review(body.getProductId(), r.getReviewId(), r.getAuthor(), r.getSubject(), r.getContent(), null);
-            integration.createReview(review);
+            monoList.add(integration.createReview(review));
           });
       }
+
+      return Mono.zip(r -> "", monoList.toArray(new Mono[0]))
+      .doOnError(ex -> log.warn("{}::createProduct() failed: {}", CLASS_NAME, ex.toString()))
+      .then();
+
     } catch (RuntimeException re) {
       log.warn("Failed to create aggregate", re);
       throw new RuntimeException(re);
@@ -52,18 +69,39 @@ public class ProductCompositeServiceImpl implements ProductCompositeService {
   }
 
   @Override
-  public ProductAggregate getProduct(int productId) {
-    Product product = integration.getProduct(productId);
-    List<Recommendation> recommendations = integration.getRecommendations(productId);
-    List<Review> reviews = integration.getReviews(productId);
-    return createProductAggregate(product, recommendations, reviews, serviceUtil.getServiceAddress());
+  public Mono<ProductAggregate> getProduct(int productId) {
+    log.info("ProductCompositeServiceImpl::getProduct - productId: {}", productId);
+
+    return Mono
+      .zip(integration.getProduct(productId),
+        integration.getRecommendations(productId).collectList(),
+        integration.getReviews(productId).collectList())
+      .map(this::createProductAggregate)
+      .doOnError(ex -> log.warn("getCompositeProduct failed: {}", ex.toString()))
+      .log(log.getName(), FINE);
   }
 
   @Override
-  public void deleteProduct(int productId) {
-    integration.deleteProduct(productId);
-    integration.deleteRecommendations(productId);
-    integration.deleteReviews(productId);
+  public Mono<Void> deleteProduct(int productId) {
+    try {
+      log.info("{}::deleteProduct() productId: {}", CLASS_NAME, productId);
+      return Mono
+        .zip(
+          r -> "",
+          integration.deleteProduct(productId),
+          integration.deleteRecommendations(productId),
+          integration.deleteReviews(productId))
+        .doOnError(ex -> log.warn("{}::deleteProduct() failed: {}", CLASS_NAME, ex.toString()))
+        .log(log.getName(), FINE)
+        .then();
+    } catch (RuntimeException re) {
+      log.warn("{}::deleteProduct() failed: {}", CLASS_NAME, re);
+      throw new RuntimeException(re);
+    }
+  }
+
+  private ProductAggregate createProductAggregate(Tuple3<Product, List<Recommendation>, List<Review>> values) {
+    return createProductAggregate(values.getT1(), values.getT2(), values.getT3(), serviceUtil.getServiceAddress());
   }
 
   private ProductAggregate createProductAggregate(Product product, List<Recommendation> recommendations,
@@ -81,15 +119,18 @@ public class ProductCompositeServiceImpl implements ProductCompositeService {
 
     List<ReviewSummary> reviewSummaries = (reviews == null)
       ? null
-      : reviews.stream().map(r -> new ReviewSummary(r.getReviewId(), r.getAuthor(), r.getSubject(), r.getContent()))
+      : reviews.stream()
+        .map(r -> new ReviewSummary(r.getReviewId(), r.getAuthor(), r.getSubject(), r.getContent()))
         .collect(Collectors.toList());
 
     String productAddress = product.getServiceAddress();
     String reviewAddress = (reviews != null && !reviews.isEmpty())
-      ? reviews.get(0).getServiceAddress()
+      ? reviews.get(0)
+        .getServiceAddress()
       : "";
     String recommendationAddress = (recommendations != null && !recommendations.isEmpty())
-      ? recommendations.get(0).getServiceAddress()
+      ? recommendations.get(0)
+        .getServiceAddress()
       : "";
 
     ServiceAddresses serviceAddresses =
@@ -97,5 +138,4 @@ public class ProductCompositeServiceImpl implements ProductCompositeService {
 
     return new ProductAggregate(productId, name, weight, recommendationSummaries, reviewSummaries, serviceAddresses);
   }
-
 }

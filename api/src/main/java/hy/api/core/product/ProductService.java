@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import reactor.core.publisher.Mono;
 
 /**
  * The ProductService interface defines the REST API for managing products.
@@ -22,7 +23,7 @@ public interface ProductService {
    * @return the created product
    */
   @PostMapping(consumes = "application/json", produces = "application/json")
-  Product createProduct(@RequestBody Product body);
+  Mono<Product> createProduct(@RequestBody Product body);
 
   /**
    * Retrieves a product by its ID.
@@ -31,7 +32,7 @@ public interface ProductService {
    * @return the product with the specified ID, if found, else null
    */
   @GetMapping(value = "/{productId}", produces = "application/json")
-  Product getProduct(@PathVariable("productId") int productId);
+  Mono<Product> getProduct(@PathVariable("productId") int productId);
 
   /**
    * Delete a product by its ID.
@@ -39,5 +40,5 @@ public interface ProductService {
    * @param productId the ID of the product to delete
    */
   @DeleteMapping(value = "/{productId}")
-  void deleteProduct(@PathVariable("productId") int productId);
+  Mono<Void> deleteProduct(@PathVariable("productId") int productId);
 }

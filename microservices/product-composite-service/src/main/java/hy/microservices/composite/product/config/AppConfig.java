@@ -4,13 +4,18 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
+
 import io.swagger.v3.oas.models.ExternalDocumentation;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
+import lombok.extern.slf4j.Slf4j;
+import reactor.core.scheduler.Scheduler;
+import reactor.core.scheduler.Schedulers;
 
 @Configuration
+@Slf4j
 public class AppConfig {
   @Value("${api.common.version}")
   String apiVersion;
@@ -34,6 +39,24 @@ public class AppConfig {
   String apiContactUrl;
   @Value("${api.common.contact.email}")
   String apiContactEmail;
+
+  private final Integer threadPoolSize;
+  private final Integer taskQueueSize;
+
+  public AppConfig(@Value("${app.threadPoolSize:10}") Integer threadPoolSize,
+    @Value("${app.taskQueueSize:100}") Integer taskQueueSize) {
+    this.threadPoolSize = threadPoolSize;
+    this.taskQueueSize = taskQueueSize;
+  }
+
+  @Bean
+  Scheduler publishEventScheduler() {
+    log.info("{}: Using {} thread pool size with {} task queue size",
+      getClass().getSimpleName(),
+      threadPoolSize,
+      taskQueueSize);
+    return Schedulers.newBoundedElastic(threadPoolSize, taskQueueSize, "publish-pool");
+  }
 
   @Bean
   RestTemplate restTemplate() {
