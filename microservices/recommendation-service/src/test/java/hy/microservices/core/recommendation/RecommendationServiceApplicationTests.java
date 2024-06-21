@@ -19,7 +19,7 @@ import hy.api.exceptions.InvalidInputException;
 import hy.microservices.core.recommendation.persistence.RecommendationRepository;
 import hy.microservices.core.recommendation.services.MessageProcessorConfig.EventConsumer;
 
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, properties = {"eureka.client.enabled=false"})
 class RecommendationServiceApplicationTests extends MongoDbTestBase {
 
   @Autowired

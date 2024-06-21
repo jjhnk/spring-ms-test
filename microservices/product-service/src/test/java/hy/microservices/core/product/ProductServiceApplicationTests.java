@@ -24,7 +24,7 @@ import hy.api.exceptions.InvalidInputException;
 import hy.microservices.core.product.persistence.ProductRepository;
 import hy.microservices.core.product.services.MessageProcessorConfig.EventConsumer;
 
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, properties = {"eureka.client.enabled=false"})
 class ProductServiceApplicationTests extends MongoDbTestBase {
 
   @Autowired

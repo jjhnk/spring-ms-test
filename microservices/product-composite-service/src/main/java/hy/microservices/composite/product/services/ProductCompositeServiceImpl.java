@@ -2,10 +2,16 @@ package hy.microservices.composite.product.services;
 
 import static java.util.logging.Level.FINE;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextImpl;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.RestController;
 
 import hy.api.composite.product.ProductAggregate;
@@ -20,7 +26,7 @@ import hy.util.http.ServiceUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
-import reactor.util.function.Tuple3;
+import reactor.util.function.Tuple4;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,6 +35,7 @@ public class ProductCompositeServiceImpl implements ProductCompositeService {
   private final ServiceUtil serviceUtil;
   private final ProductCompositeIntegration integration;
   private static final String CLASS_NAME = ProductCompositeServiceImpl.class.getSimpleName();
+  private final SecurityContext nullSecCtx = new SecurityContextImpl();
 
   @Override
   public Mono<Void> createProduct(ProductAggregate body) {
@@ -36,6 +43,7 @@ public class ProductCompositeServiceImpl implements ProductCompositeService {
     try {
       log.info("{}::createProduct() createCompositeProduct: {}", getClass().getSimpleName(), body);
       List<Mono<?>> monoList = new ArrayList<>();
+      monoList.add(getLogAuthorizationInfoMono());
 
       Product product = new Product(body.getProductId(), body.getName(), body.getWeight(), null);
       monoList.add(integration.createProduct(product));
@@ -73,7 +81,9 @@ public class ProductCompositeServiceImpl implements ProductCompositeService {
     log.info("ProductCompositeServiceImpl::getProduct - productId: {}", productId);
 
     return Mono
-      .zip(integration.getProduct(productId),
+      .zip(
+        getSecurityContextMono(),
+        integration.getProduct(productId),
         integration.getRecommendations(productId).collectList(),
         integration.getReviews(productId).collectList())
       .map(this::createProductAggregate)
@@ -88,6 +98,7 @@ public class ProductCompositeServiceImpl implements ProductCompositeService {
       return Mono
         .zip(
           r -> "",
+          getLogAuthorizationInfoMono(),
           integration.deleteProduct(productId),
           integration.deleteRecommendations(productId),
           integration.deleteReviews(productId))
@@ -100,12 +111,14 @@ public class ProductCompositeServiceImpl implements ProductCompositeService {
     }
   }
 
-  private ProductAggregate createProductAggregate(Tuple3<Product, List<Recommendation>, List<Review>> values) {
-    return createProductAggregate(values.getT1(), values.getT2(), values.getT3(), serviceUtil.getServiceAddress());
+  private ProductAggregate createProductAggregate(Tuple4<SecurityContext, Product, List<Recommendation>, List<Review>> values) {
+    return createProductAggregate(values.getT1(), values.getT2(), values.getT3(), values.getT4(), serviceUtil.getServiceAddress());
   }
 
-  private ProductAggregate createProductAggregate(Product product, List<Recommendation> recommendations,
+  private ProductAggregate createProductAggregate(SecurityContext sc, Product product, List<Recommendation> recommendations,
     List<Review> reviews, String serviceAddress) {
+
+    logAuthorizationInfo(sc);
 
     int productId = product.getProductId();
     String name = product.getName();
@@ -137,5 +150,38 @@ public class ProductCompositeServiceImpl implements ProductCompositeService {
       new ServiceAddresses(serviceAddress, productAddress, reviewAddress, recommendationAddress);
 
     return new ProductAggregate(productId, name, weight, recommendationSummaries, reviewSummaries, serviceAddresses);
+  }
+
+  private Mono<SecurityContext> getLogAuthorizationInfoMono() {
+    return getSecurityContextMono().doOnNext(this::logAuthorizationInfo);
+  }
+
+  private Mono<SecurityContext> getSecurityContextMono() {
+    return ReactiveSecurityContextHolder.getContext().defaultIfEmpty(nullSecCtx);
+  }
+
+  private void logAuthorizationInfo(SecurityContext sc) {
+    if (sc != null && sc.getAuthentication() != null && sc.getAuthentication() instanceof JwtAuthenticationToken) {
+      Jwt jwtToken = ((JwtAuthenticationToken)sc.getAuthentication()).getToken();
+      logAuthorizationInfo(jwtToken);
+    } else {
+      log.warn("No JWT based Authentication supplied, running tests are we?");
+    }
+  }
+
+  private void logAuthorizationInfo(Jwt jwt) {
+    if (jwt == null) {
+      log.warn("No JWT supplied, running tests are we?");
+    } else {
+      if (log.isDebugEnabled()) {
+        URL issuer = jwt.getIssuer();
+        List<String> audience = jwt.getAudience();
+        Object subject = jwt.getClaims().get("sub");
+        Object scopes = jwt.getClaims().get("scope");
+        Object expires = jwt.getClaims().get("exp");
+
+        log.debug("Authorization info: Subject: {}, scopes: {}, expires {}: issuer: {}, audience: {}", subject, scopes, expires, issuer, audience);
+      }
+    }
   }
 }

@@ -21,7 +21,7 @@ configurations {
 
 ext {
 	mapstructVersion = '1.5.5.Final'
-	springCloudVersion = '2023.0.0'
+	springCloudVersion = '2023.0.2'
 }
 
 repositories {
@@ -40,6 +40,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 	implementation 'org.springframework.cloud:spring-cloud-starter-stream-kafka'
 	implementation 'org.springframework.cloud:spring-cloud-starter-stream-rabbit'
 	implementation "org.mapstruct:mapstruct:${mapstructVersion}"

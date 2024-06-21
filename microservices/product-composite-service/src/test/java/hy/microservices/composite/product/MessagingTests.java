@@ -32,8 +32,9 @@ import hy.api.core.review.Review;
 import hy.api.event.Event;
 import lombok.extern.slf4j.Slf4j;
 
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT,
-  properties = {"spring.main.allow-bean-definition-overriding=true"})
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = {TestSecurityConfig.class},
+  properties = {"spring.security.oauth2.resourceserver.jwt.issuer-uri=", "eureka.client.enabled=false",
+      "spring.main.allow-bean-definition-overriding=true"})
 @Import({TestChannelBinderConfiguration.class})
 @Slf4j
 class MessagingTests {

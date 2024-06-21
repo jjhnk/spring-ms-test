@@ -22,7 +22,7 @@ configurations {
 ext {
 	springdocVersion = '2.0.2'
 	mapstructVersion = '1.5.5.Final'
-	springCloudVersion = '2023.0.0'
+	springCloudVersion = '2023.0.2'
 }
 
 repositories {
@@ -38,9 +38,13 @@ dependencies {
 	implementation project(':util')
 
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 	implementation 'org.springframework.cloud:spring-cloud-starter-stream-kafka'
 	implementation 'org.springframework.cloud:spring-cloud-starter-stream-rabbit'
+	implementation 'org.springframework.security:spring-security-oauth2-jose'
+	implementation 'org.springframework.security:spring-security-oauth2-resource-server'
 	implementation "org.springdoc:springdoc-openapi-starter-common:${springdocVersion}"
 	implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:${springdocVersion}"
 	implementation "org.mapstruct:mapstruct:${mapstructVersion}"

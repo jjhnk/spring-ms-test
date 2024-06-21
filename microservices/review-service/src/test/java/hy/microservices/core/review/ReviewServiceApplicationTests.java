@@ -21,7 +21,7 @@ import hy.api.exceptions.InvalidInputException;
 import hy.microservices.core.review.persistence.ReviewRepository;
 import hy.microservices.core.review.services.MessageProcessorConfig.EventConsumer;
 
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, properties = {"eureka.client.enabled=false"})
 class ReviewServiceApplicationTests extends MySqlTestBase {
 
 	@Autowired
