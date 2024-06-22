@@ -1,0 +1,24 @@
+spring:
+  cloud:
+    config.server.native.searchLocations: file:${PWD}/config-repo
+
+management:
+  endpoints:
+    web.exposure.include: "*"
+  endpoint:
+    health.show-details: "ALWAYS"
+
+server:
+  port: 8888
+
+logging:
+  level:
+    root: info
+
+---
+
+spring:
+  config:
+    activate.on-profile: docker
+  cloud:
+    config.server.native.searchLocations: file:/config-repo

@@ -1,0 +1,4 @@
+app:
+  eureka:
+    username: u
+    password: p

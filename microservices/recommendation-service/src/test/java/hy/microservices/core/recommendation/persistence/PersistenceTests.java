@@ -10,7 +10,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.OptimisticLockingFailureException;
 import hy.microservices.core.recommendation.MongoDbTestBase;
 
-@DataMongoTest
+@DataMongoTest(properties = {"spring.cloud.config.enabled=false"})
 class PersistenceTests extends MongoDbTestBase {
   @Autowired
   private RecommendationRepository repository;

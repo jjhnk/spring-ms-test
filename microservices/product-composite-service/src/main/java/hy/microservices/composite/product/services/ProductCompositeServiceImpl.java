@@ -1,6 +1,7 @@
 package hy.microservices.composite.product.services;
 
 import static java.util.logging.Level.FINE;
+import static org.springframework.http.HttpStatus.values;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -82,11 +83,11 @@ public class ProductCompositeServiceImpl implements ProductCompositeService {
 
     return Mono
       .zip(
+        values -> createProductAggregate((SecurityContext) values[0], (Product) values[1], (List<Recommendation>) values[2], (List<Review>) values[3], serviceUtil.getServiceAddress()),
         getSecurityContextMono(),
         integration.getProduct(productId),
         integration.getRecommendations(productId).collectList(),
         integration.getReviews(productId).collectList())
-      .map(this::createProductAggregate)
       .doOnError(ex -> log.warn("getCompositeProduct failed: {}", ex.toString()))
       .log(log.getName(), FINE);
   }

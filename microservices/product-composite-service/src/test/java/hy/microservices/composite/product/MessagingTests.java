@@ -34,7 +34,8 @@ import lombok.extern.slf4j.Slf4j;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = {TestSecurityConfig.class},
   properties = {"spring.security.oauth2.resourceserver.jwt.issuer-uri=", "eureka.client.enabled=false",
-      "spring.main.allow-bean-definition-overriding=true"})
+      "spring.main.allow-bean-definition-overriding=true", "spring.cloud.stream.defaultBinder=rabbit",
+      "spring.cloud.config.enabled=false"})
 @Import({TestChannelBinderConfiguration.class})
 @Slf4j
 class MessagingTests {
