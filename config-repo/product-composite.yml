@@ -20,6 +20,8 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: http://${app.auth.server}:9999 # https://dev-a2z2mux06zphbdxf.us.auth0.com/
+  # codec:
+    # log-request-details: true
 
 server:
   port: 7000
@@ -30,8 +32,10 @@ server:
 logging:
   level:
     root: INFO
-    hy: DEBUG
-    '[org.springframework.web.server.adapter.HttpWebHandlerAdapter]': TRACE
+    hy: INFO
+    org.springframework.data.mongodb.core.ReactiveMongoTemplate: INFO
+    # org.springframework.web.reactive.function.client.ExchangeFunctions: TRACE
+    '[org.springframework.web.server.adapter.HttpWebHandlerAdapter]': INFO
 
 springdoc:
   packagesToScan: hy.microservices.composite.product

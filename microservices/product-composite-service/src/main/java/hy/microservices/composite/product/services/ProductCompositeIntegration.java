@@ -54,10 +54,10 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
   private final ServiceUtil serviceUtil;
 
 
-  public ProductCompositeIntegration(ObjectMapper mapper, WebClient.Builder webClient, StreamBridge streamBridge,
+  public ProductCompositeIntegration(ObjectMapper mapper, WebClient webClient, StreamBridge streamBridge,
     @Qualifier("publishEventScheduler") Scheduler scheduler, ServiceUtil serviceUtil) {
 
-    this.webClient = webClient.build();
+    this.webClient = webClient;
     this.mapper = mapper;
     this.streamBridge = streamBridge;
     this.publishScheduler = scheduler;

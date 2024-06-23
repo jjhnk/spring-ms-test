@@ -42,7 +42,7 @@ server:
 logging:
   level:
     root: INFO
-    hy: DEBUG
+    hy: INFO
     org.hibernate:
       SQL: DEBUG
       type.descriptor.sql.BasicBinder: TRACE

@@ -37,7 +37,7 @@ server:
 logging:
   level:
     root: INFO
-    hy: DEBUG
+    hy: INFO
     org.springframework.data.mongodb.core.ReactiveMongoTemplate: DEBUG
 
 ---

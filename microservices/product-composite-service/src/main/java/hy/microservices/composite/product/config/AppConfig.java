@@ -1,7 +1,7 @@
 package hy.microservices.composite.product.config;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.client.loadbalancer.LoadBalanced;
+import org.springframework.cloud.client.loadbalancer.reactive.ReactorLoadBalancerExchangeFilterFunction;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
@@ -44,11 +44,15 @@ public class AppConfig {
 
   private final Integer threadPoolSize;
   private final Integer taskQueueSize;
+  private final ReactorLoadBalancerExchangeFilterFunction lbFunction;
 
-  public AppConfig(@Value("${app.threadPoolSize:10}") Integer threadPoolSize,
-    @Value("${app.taskQueueSize:100}") Integer taskQueueSize) {
+  public AppConfig(
+    @Value("${app.threadPoolSize:10}") Integer threadPoolSize,
+    @Value("${app.taskQueueSize:100}") Integer taskQueueSize,
+    ReactorLoadBalancerExchangeFilterFunction lbFunction) {
     this.threadPoolSize = threadPoolSize;
     this.taskQueueSize = taskQueueSize;
+    this.lbFunction = lbFunction;
   }
 
   @Bean
@@ -81,9 +85,9 @@ public class AppConfig {
   }
 
   @Bean
-  @LoadBalanced
-  WebClient.Builder loadBalancedWebClientBuilder() {
-    return WebClient.builder();
+  WebClient webClient(WebClient.Builder builder) {
+    return builder.filter(lbFunction)
+      .build();
   }
 
 }
