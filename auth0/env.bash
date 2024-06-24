@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+TENANT=dev-a2z2mux06zphbdxf.us.auth0.com
+MGM_CLIENT_ID=I3wTTfhymOPOUkHvO263BmXM9Rzoca64
+MGM_CLIENT_SECRET=Oi8rF78kRpbVSm9ZWPBbWhbahoIMCp5tBDjxptnwv7M26sQ9j9S2gklcInjv-KLn
+USER_EMAIL=loungencookie@gmail.com
+USER_PASSWORD=witchcraft#1
