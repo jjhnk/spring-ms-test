@@ -50,7 +50,7 @@ spring:
       host: mongodb
 
 server:
-  port: 8080
+  port: 80
 
 ---
 
@@ -77,3 +77,20 @@ spring:
     activate.on-profile: streaming_instance_1
   cloud:
     stream.bindings.messageProcessor-in-0.consumer.instanceIndex: 1
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile:
+      - prod
+  data:
+    mongodb:
+      host: 172.17.0.1
+
+logging:
+  level:
+    root: WARN
+    hy: WARN
+    '[org.springframework.data.mongodb.core.ReactiveMongoTemplate]': WARN

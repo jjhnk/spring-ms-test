@@ -35,3 +35,8 @@ out/
 
 ### VS Code ###
 .vscode/
+
+
+### k8s ###
+*.tgz
+kubernetes/helm/components/config-server/config-repo

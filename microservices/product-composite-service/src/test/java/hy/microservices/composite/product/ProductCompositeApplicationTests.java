@@ -27,11 +27,13 @@ import hy.microservices.composite.product.services.ProductCompositeIntegration;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+// @formatter:off
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT,
 	classes = {TestSecurityConfig.class},
-	properties = {"spring.security.oauth2.resourceserver.jwt.issuer-uri=",
-			"spring.main.allow-bean-definition-overriding=true", "eureka.client.enabled=false",
-			"spring.cloud.config.enabled=false"})
+	properties = {
+		"spring.security.oauth2.resourceserver.jwt.issuer-uri=",
+		"spring.main.allow-bean-definition-overriding=true",
+		"spring.cloud.config.enabled=false"})
 class ProductCompositeApplicationTests {
 	private static final int PRODUCT_ID_OK = 1;
 	private static final int PRODUCT_ID_NOT_FOUND = 2;
@@ -93,4 +95,5 @@ class ProductCompositeApplicationTests {
 			.expectHeader().contentType(APPLICATION_JSON)
 			.expectBody();
 	}
+	// @formatter:on
 }

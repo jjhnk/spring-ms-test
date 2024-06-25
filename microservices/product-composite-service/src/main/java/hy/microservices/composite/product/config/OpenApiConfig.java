@@ -7,7 +7,8 @@ import io.swagger.v3.oas.annotations.security.OAuthScope;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 
 @SecurityScheme(
-    name = "security_auth", type = SecuritySchemeType.OAUTH2,
+  name = "security_auth",
+  type = SecuritySchemeType.OAUTH2,
   flows = @OAuthFlows(
     authorizationCode = @OAuthFlow(
       authorizationUrl = "${springdoc.oAuthFlow.authorizationUrl}",

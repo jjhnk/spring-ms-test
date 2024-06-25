@@ -19,8 +19,8 @@ import hy.api.exceptions.InvalidInputException;
 import hy.microservices.core.recommendation.persistence.RecommendationRepository;
 import hy.microservices.core.recommendation.services.MessageProcessorConfig.EventConsumer;
 
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT,
-  properties = {"eureka.client.enabled=false", "spring.cloud.config.enabled=false"})
+// @formatter:off
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, properties = {"spring.cloud.config.enabled=false"})
 class RecommendationServiceApplicationTests extends MongoDbTestBase {
 
   @Autowired
@@ -137,3 +137,4 @@ class RecommendationServiceApplicationTests extends MongoDbTestBase {
     messageProcessor.accept(event);
   }
 }
+// @formatter:on

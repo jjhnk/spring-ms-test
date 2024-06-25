@@ -58,7 +58,7 @@ spring:
     show-sql: false
 
 server:
-  port: 8080
+  port: 80
 
 ---
 
@@ -85,3 +85,20 @@ spring:
     activate.on-profile: streaming_instance_1
   cloud:
     stream.bindings.messageProcessor-in-0.consumer.instanceIndex: 1
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile:
+      - prod
+  datasource:
+    url: jdbc:mysql://172.17.0.1:3306/${spring.application.name}-db
+
+logging:
+  level:
+    root: WARN
+    hy: WARN
+    '[org.hibernate.SQL]': WARN
+    '[org.hibernate.type.descriptor.sql.BasicBinder]': WARN

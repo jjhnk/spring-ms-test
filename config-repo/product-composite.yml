@@ -19,7 +19,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://${app.auth.server}:9999 # https://dev-a2z2mux06zphbdxf.us.auth0.com/
+          issuer-uri: http://${app.auth.server} # https://dev-a2z2mux06zphbdxf.us.auth0.com/
   # codec:
     # log-request-details: true
 
@@ -33,9 +33,10 @@ logging:
   level:
     root: INFO
     hy: INFO
-    org.springframework.data.mongodb.core.ReactiveMongoTemplate: INFO
-    # org.springframework.web.reactive.function.client.ExchangeFunctions: TRACE
     '[org.springframework.web.server.adapter.HttpWebHandlerAdapter]': INFO
+    # '[org.springframework.data.mongodb.core.ReactiveMongoTemplate]': INFO
+    # org.springframework.web.reactive.function.client.ExchangeFunctions: TRACE
+
 
 springdoc:
   packagesToScan: hy.microservices.composite.product
@@ -45,7 +46,7 @@ springdoc:
     oauth2-redirect-url: /swagger-ui/oauth2-redirect.html
     oauth:
       clientId: writer
-      clientSecret: secret-writer
+      clientSecret: '{cipher}debb77857798ba70441b229de88624213b0a00b284f95fe31d1378d117cf3ffa'
       useBasicAuthenticationWithAccessCodeGrant: true
   oAuthFlow:
     authorizationUrl: https://localhost:8443/oauth2/authorize
@@ -137,8 +138,8 @@ resilience4j:
         permitted-number-of-calls-in-half-open-state: 3
         automatic-transition-from-open-to-half-open-enabled: true
         ignore-exceptions:
-          - hy.api.exceptions.InvalidInputException
-          - hy.api.exceptions.NotFoundException
+        - hy.api.exceptions.InvalidInputException
+        - hy.api.exceptions.NotFoundException
   timelimiter:
     instances:
       product:
@@ -149,7 +150,7 @@ resilience4j:
         max-attempts: 3
         wait-duration: 1000
         retry-exceptions:
-          - org.springframework.web.reactive.function.client.WebClientResponseException$InternalServerError
+        - org.springframework.web.reactive.function.client.WebClientResponseException$InternalServerError
 
 management:
   health:
@@ -160,16 +161,20 @@ management:
 
 spring:
   config:
-    activate.on-profile: docker
+    activate:
+      on-profile:
+      - docker
 
 server:
-  port: 8080
+  port: 80
 
 ---
 
 spring:
   config:
-    activate.on-profile: streaming_partitioned
+    activate:
+      on-profile:
+      - streaming_partitioned
   cloud:
     stream:
       bindings.products-out-0.producer:
@@ -181,3 +186,17 @@ spring:
       bindings.reviews-out-0.producer:
         partition-key-expression: headers['partitionKey']
         partition-count: 2
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile:
+      - prod
+
+logging:
+  level:
+    root: WARN
+    hy: WARN
+    '[org.springframework.web.server.adapter.HttpWebHandlerAdapter]': WARN

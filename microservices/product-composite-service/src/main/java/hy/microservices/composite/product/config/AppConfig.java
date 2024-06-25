@@ -1,7 +1,6 @@
 package hy.microservices.composite.product.config;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.client.loadbalancer.reactive.ReactorLoadBalancerExchangeFilterFunction;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
@@ -44,22 +43,19 @@ public class AppConfig {
 
   private final Integer threadPoolSize;
   private final Integer taskQueueSize;
-  private final ReactorLoadBalancerExchangeFilterFunction lbFunction;
 
+  // @formatter:off
   public AppConfig(
     @Value("${app.threadPoolSize:10}") Integer threadPoolSize,
-    @Value("${app.taskQueueSize:100}") Integer taskQueueSize,
-    ReactorLoadBalancerExchangeFilterFunction lbFunction) {
+    @Value("${app.taskQueueSize:100}") Integer taskQueueSize) {
     this.threadPoolSize = threadPoolSize;
     this.taskQueueSize = taskQueueSize;
-    this.lbFunction = lbFunction;
   }
+  // @formatter:on
 
   @Bean
   Scheduler publishEventScheduler() {
-    log.info("{}: Using {} thread pool size with {} task queue size",
-      getClass().getSimpleName(),
-      threadPoolSize,
+    log.info("{}: Using {} thread pool size with {} task queue size", getClass().getSimpleName(), threadPoolSize,
       taskQueueSize);
     return Schedulers.newBoundedElastic(threadPoolSize, taskQueueSize, "publish-pool");
   }
@@ -86,8 +82,7 @@ public class AppConfig {
 
   @Bean
   WebClient webClient(WebClient.Builder builder) {
-    return builder.filter(lbFunction)
-      .build();
+    return builder.build();
   }
 
 }

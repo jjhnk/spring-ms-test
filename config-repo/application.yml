@@ -10,30 +10,44 @@ spring:
       kafka.binder:
         brokers: 127.0.0.1
         defaultBrokerPort: 9092
+  lifecycle:
+    timeout-per-shutdown-phase: 10s
+
+server:
+  shutdown: graceful
 
 app:
-  eureka:
-    server: localhost
-    username: u
-    password: '{cipher}bf298f6d5f878b342f9e44bec08cb9ac00b4ce57e98316f030194a225fac89fb'
   auth:
     server: localhost
-
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: "http://${app.eureka.username}:${app.eureka.password}@${app.eureka.server}:8761/eureka/"
-    initialInstanceInfoReplicationIntervalSeconds: 5
-    registryFetchIntervalSeconds: 5
-  instance:
-    leaseRenewalIntervalInSeconds: 5
-    leaseExpirationDurationInSeconds: 5
 
 management:
   endpoints:
     web.exposure.include: "*"
   endpoint:
-    health.show-details: "ALWAYS"
+    health:
+      validate-group-membership: false
+      group:
+        readiness:
+          include:
+          - readinessState
+          - rabbit
+          - db
+          - mongo
+          show-details: always
+        liveness:
+          show-details: always
+      show-details: always
+      probes:
+        enabled: true
+  health:
+    rabbit.enabled: true
+    kafka.enabled: false
+    readinessstate:
+      enabled: true
+    livenessstate:
+      enabled: true
+    jms:
+      enabled: false
   zipkin:
     tracing:
       endpoint: http://zipkin-server:9411/api/v2/spans
@@ -42,7 +56,9 @@ management:
       probability: 1.0
 
 
-logging.pattern.level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
+logging:
+  pattern:
+    level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
 
 ---
 
@@ -56,8 +72,6 @@ spring:
     host: rabbitmq
 
 app:
-  eureka:
-    server: eureka
   auth:
     server: auth-server
 
@@ -72,4 +86,19 @@ spring:
   kafka:
     bootstrap-servers: kafka:9092
 
-management.health.rabbit.enabled: false
+management:
+  health:
+    rabbit.enabled: false
+    kafka.enabled: true
+
+---
+
+spring:
+  config:
+    activate.on-profile: prod
+  rabbitmq:
+    host: 172.17.0.1
+
+management:
+  endpoints:
+    web.exposure.include: health,info,circuitbreakerevents

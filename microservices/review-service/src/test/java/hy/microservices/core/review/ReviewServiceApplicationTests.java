@@ -21,8 +21,13 @@ import hy.api.exceptions.InvalidInputException;
 import hy.microservices.core.review.persistence.ReviewRepository;
 import hy.microservices.core.review.services.MessageProcessorConfig.EventConsumer;
 
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, properties = {"eureka.client.enabled=false",
-		"spring.cloud.config.enabled=false", "spring.jpa.hibernate.ddl-auto=update", "spring.cloud.config.enabled=false"})
+// @formatter:off
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, properties = {
+		"logging.level.hy=DEBUG",
+		"spring.cloud.config.enabled=false",
+		"spring.jpa.hibernate.ddl-auto=update",
+		"spring.cloud.stream.defaultBinder=rabbit"})
+// @formatter:on
 class ReviewServiceApplicationTests extends MySqlTestBase {
 
 	@Autowired
@@ -50,12 +55,12 @@ class ReviewServiceApplicationTests extends MySqlTestBase {
 		sendCreateReviewEvent(productId, 3);
 		assertThat(repository.findByProductId(productId)).hasSize(3);
 
-		getAndVerifyReviewsByProductId(productId, HttpStatus.OK).jsonPath("$.length()")
-			.isEqualTo(3)
-			.jsonPath("$[2].productId")
-			.isEqualTo(productId)
-			.jsonPath("$[2].reviewId")
-			.isEqualTo(3);
+		// @formatter:off
+		getAndVerifyReviewsByProductId(productId, HttpStatus.OK)
+			.jsonPath("$.length()").isEqualTo(3)
+			.jsonPath("$[2].productId").isEqualTo(productId)
+			.jsonPath("$[2].reviewId").isEqualTo(3);
+		// @formatter:on
 	}
 
 	@Test
@@ -89,25 +94,28 @@ class ReviewServiceApplicationTests extends MySqlTestBase {
 
 	@Test
 	void getReviewsMissingParameter() {
-		getAndVerifyReviewsByProductId("", BAD_REQUEST).jsonPath("$.path")
-			.isEqualTo("/review")
-			.jsonPath("$.message")
-			.isEqualTo("Required query parameter 'productId' is not present.");
+		// @formatter:off
+		getAndVerifyReviewsByProductId("", BAD_REQUEST)
+			.jsonPath("$.path").isEqualTo("/review")
+			.jsonPath("$.message").isEqualTo("Required query parameter 'productId' is not present.");
+		// @formatter:on
 	}
 
 	@Test
 	void getReviewsInvalidParameter() {
-
-		getAndVerifyReviewsByProductId("?productId=no-integer", BAD_REQUEST).jsonPath("$.path")
-			.isEqualTo("/review")
-			.jsonPath("$.message")
-			.isEqualTo("Type mismatch.");
+		getAndVerifyReviewsByProductId("?productId=no-integer", BAD_REQUEST)
+		// @formatter:off
+			.jsonPath("$.path").isEqualTo("/review")
+			.jsonPath("$.message").isEqualTo("Type mismatch.");
+		// @formatter:on
 	}
 
 	@Test
 	void getReviewsNotFound() {
-		getAndVerifyReviewsByProductId("?productId=213", OK).jsonPath("$.length()")
-			.isEqualTo(0);
+		// @formatter:off
+		getAndVerifyReviewsByProductId("?productId=213", OK)
+			.jsonPath("$.length()").isEqualTo(0);
+		// @formatter:on
 	}
 
 	private WebTestClient.BodyContentSpec getAndVerifyReviewsByProductId(int productId, HttpStatus expectedStatus) {
@@ -115,15 +123,15 @@ class ReviewServiceApplicationTests extends MySqlTestBase {
 	}
 
 	private WebTestClient.BodyContentSpec getAndVerifyReviewsByProductId(String query, HttpStatus expectedStatus) {
+		// @formatter:off
 		return client.get()
 			.uri("/review" + query)
 			.accept(APPLICATION_JSON)
 			.exchange()
-			.expectStatus()
-			.isEqualTo(expectedStatus)
-			.expectHeader()
-			.contentType(APPLICATION_JSON)
+			.expectStatus().isEqualTo(expectedStatus)
+			.expectHeader().contentType(APPLICATION_JSON)
 			.expectBody();
+			// @formatter:on
 	}
 
 	private void sendCreateReviewEvent(int productId, int reviewId) {

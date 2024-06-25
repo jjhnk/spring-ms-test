@@ -24,8 +24,8 @@ import hy.api.exceptions.InvalidInputException;
 import hy.microservices.core.product.persistence.ProductRepository;
 import hy.microservices.core.product.services.MessageProcessorConfig.EventConsumer;
 
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT,
-  properties = {"eureka.client.enabled=false", "spring.cloud.config.enabled=false"})
+// @formatter:off
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, properties = {"spring.cloud.config.enabled=false"})
 class ProductServiceApplicationTests extends MongoDbTestBase {
 
   @Autowired
@@ -132,3 +132,4 @@ class ProductServiceApplicationTests extends MongoDbTestBase {
     messageProcessor.accept(event);
   }
 }
+// @formatter:on
