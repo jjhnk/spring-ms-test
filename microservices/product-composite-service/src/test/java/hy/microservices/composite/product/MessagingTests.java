@@ -37,8 +37,7 @@ import lombok.extern.slf4j.Slf4j;
   properties = {
     "spring.security.oauth2.resourceserver.jwt.issuer-uri=",
     "spring.main.allow-bean-definition-overriding=true",
-    "spring.cloud.stream.defaultBinder=rabbit",
-    "spring.cloud.config.enabled=false"})
+    "spring.cloud.stream.defaultBinder=rabbit"})
 @Import({TestChannelBinderConfiguration.class})
 @Slf4j
 // @formatter:on

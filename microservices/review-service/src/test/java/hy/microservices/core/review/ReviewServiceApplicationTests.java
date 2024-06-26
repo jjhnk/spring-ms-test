@@ -24,7 +24,6 @@ import hy.microservices.core.review.services.MessageProcessorConfig.EventConsume
 // @formatter:off
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, properties = {
 		"logging.level.hy=DEBUG",
-		"spring.cloud.config.enabled=false",
 		"spring.jpa.hibernate.ddl-auto=update",
 		"spring.cloud.stream.defaultBinder=rabbit"})
 // @formatter:on

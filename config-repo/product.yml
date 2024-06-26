@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: product
   data:
     mongodb:
       host: localhost

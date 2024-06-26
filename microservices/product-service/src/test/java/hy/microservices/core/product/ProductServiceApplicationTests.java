@@ -25,7 +25,7 @@ import hy.microservices.core.product.persistence.ProductRepository;
 import hy.microservices.core.product.services.MessageProcessorConfig.EventConsumer;
 
 // @formatter:off
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, properties = {"spring.cloud.config.enabled=false"})
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 class ProductServiceApplicationTests extends MongoDbTestBase {
 
   @Autowired

@@ -9,7 +9,7 @@ import org.springframework.dao.OptimisticLockingFailureException;
 import hy.microservices.core.product.MongoDbTestBase;
 import reactor.test.StepVerifier;
 
-@DataMongoTest(properties = {"spring.cloud.config.enabled=false"})
+@DataMongoTest
 class PersistenceTests extends MongoDbTestBase {
 
   @Autowired

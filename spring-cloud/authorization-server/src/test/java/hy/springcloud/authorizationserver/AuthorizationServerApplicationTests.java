@@ -15,9 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-@SpringBootTest(
-	classes = {TestSecurityConfig.class},
-	properties = {"spring.cloud.config.enabled=false"})
+@SpringBootTest(classes = {TestSecurityConfig.class})
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 class AuthorizationServerApplicationTests {

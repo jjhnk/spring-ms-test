@@ -2,6 +2,10 @@ server:
   port: 9999
   forward-headers-strategy: framework
 
+spring:
+  application:
+    name: auth-server
+
 logging:
   level:
     root: INFO

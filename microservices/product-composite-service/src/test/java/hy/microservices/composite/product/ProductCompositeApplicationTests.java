@@ -32,8 +32,7 @@ import reactor.core.publisher.Mono;
 	classes = {TestSecurityConfig.class},
 	properties = {
 		"spring.security.oauth2.resourceserver.jwt.issuer-uri=",
-		"spring.main.allow-bean-definition-overriding=true",
-		"spring.cloud.config.enabled=false"})
+		"spring.main.allow-bean-definition-overriding=true"})
 class ProductCompositeApplicationTests {
 	private static final int PRODUCT_ID_OK = 1;
 	private static final int PRODUCT_ID_NOT_FOUND = 2;

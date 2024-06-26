@@ -20,7 +20,7 @@ import hy.microservices.core.recommendation.persistence.RecommendationRepository
 import hy.microservices.core.recommendation.services.MessageProcessorConfig.EventConsumer;
 
 // @formatter:off
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, properties = {"spring.cloud.config.enabled=false"})
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 class RecommendationServiceApplicationTests extends MongoDbTestBase {
 
   @Autowired

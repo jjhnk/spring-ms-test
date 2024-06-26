@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: recommendation
   data.mongodb:
     host: localhost
     port: 27017
