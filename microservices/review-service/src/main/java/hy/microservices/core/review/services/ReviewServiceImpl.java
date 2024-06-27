@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.RestController;
 
 import hy.api.core.review.Review;
@@ -54,7 +55,7 @@ public class ReviewServiceImpl implements ReviewService {
   }
 
   @Override
-  public Flux<Review> getReviews(int productId) {
+  public Flux<Review> getReviews(HttpHeaders headers, int productId) {
     validateProductId(productId);
 
     log.debug("ReviewServiceImpl::getReviews - productId: {}", productId);

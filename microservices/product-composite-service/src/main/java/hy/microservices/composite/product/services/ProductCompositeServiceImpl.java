@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.function.Supplier;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextImpl;
@@ -85,22 +86,37 @@ public class ProductCompositeServiceImpl implements ProductCompositeService {
   }
 
   @Override
-  public Mono<ProductAggregate> getProduct(int productId, int delay, int faultPercent) {
-    return observationWithProductInfo(productId, () -> getProductInternal(productId, delay, faultPercent));
+  public Mono<ProductAggregate> getProduct(HttpHeaders requestHeaders, int productId, int delay, int faultPercent) {
+    return observationWithProductInfo(productId, () -> getProductInternal(requestHeaders, productId, delay, faultPercent));
   }
 
-  Mono<ProductAggregate> getProductInternal(int productId, int delay, int faultPercent) {
+  Mono<ProductAggregate> getProductInternal(HttpHeaders requestHeaders, int productId, int delay, int faultPercent) {
     log.info("ProductCompositeServiceImpl::getProduct - productId: {}", productId);
+
+    HttpHeaders headers = getHeaders(requestHeaders, "X-group");
 
     return Mono
       .zip(
         getSecurityContextMono(),
-        integration.getProduct(productId, delay, faultPercent),
-        integration.getRecommendations(productId).collectList(),
-        integration.getReviews(productId).collectList())
+        integration.getProduct(headers, productId, delay, faultPercent),
+        integration.getRecommendations(headers, productId).collectList(),
+        integration.getReviews(headers, productId).collectList())
       .map(this::createProductAggregate)
       .doOnError(ex -> log.warn("getCompositeProduct failed: {}", ex.toString()))
       .log(log.getName(), FINE);
+  }
+
+  private HttpHeaders getHeaders(HttpHeaders requestHeaders, String... headers) {
+    log.trace("Will look for {} headers: {}", headers.length, headers);
+    HttpHeaders h = new HttpHeaders();
+    for (String header : headers) {
+      List<String> value = requestHeaders.get(header);
+      if (value != null) {
+        h.addAll(header, value);
+      }
+    }
+    log.trace("Will transfer {}, headers: {}", h.size(), h);
+    return h;
   }
 
   @Override
@@ -111,6 +127,7 @@ public class ProductCompositeServiceImpl implements ProductCompositeService {
   private Mono<Void> deleteProductInternal(int productId) {
     try {
       log.info("{}::deleteProduct() productId: {}", CLASS_NAME, productId);
+
       return Mono
         .zip(
           r -> "",
@@ -199,8 +216,7 @@ public class ProductCompositeServiceImpl implements ProductCompositeService {
       .defaultIfEmpty(nullSecCtx);
   }
 
-  private void logAuthorizationInfo(
-    SecurityContext sc) {
+  private void logAuthorizationInfo(SecurityContext sc) {
     if (sc != null && sc.getAuthentication() != null && sc.getAuthentication() instanceof JwtAuthenticationToken) {
       Jwt jwtToken = ((JwtAuthenticationToken) sc.getAuthentication()).getToken();
       logAuthorizationInfo(jwtToken);

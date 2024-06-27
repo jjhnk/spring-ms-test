@@ -11,4 +11,5 @@ ports:
 
 service:
   ports:
-  - port: 27017
+  - name: mongo
+    port: 27017

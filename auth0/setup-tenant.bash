@@ -4,7 +4,7 @@ source env.bash
 
 CLIENT_REDIRECT_URI=https://my.redirect.uri
 API_NAME=product-composite
-API_URL=https://localhost:8443/product-composite
+API_URL=https://minikube.me/product-composite
 
 # set -x
 set -e

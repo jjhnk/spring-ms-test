@@ -19,6 +19,8 @@ app:
     server: localhost
 
 management:
+  server:
+    port: 4004
   endpoints:
     web.exposure.include: "*"
   endpoint:
@@ -48,7 +50,7 @@ management:
       enabled: false
   zipkin:
     tracing:
-      endpoint: http://zipkin-server:9411/api/v2/spans
+      endpoint: http://jaeger-collector.istio-system:9411/api/v2/spans
   tracing:
     sampling:
       probability: 1.0

@@ -2,6 +2,7 @@ package hy.microservices.core.recommendation.services;
 
 import java.util.logging.Level;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.RestController;
 import hy.api.core.recommendation.Recommendation;
 import hy.api.core.recommendation.RecommendationService;
@@ -39,7 +40,7 @@ public class RecommendationServiceImpl implements RecommendationService {
   }
 
   @Override
-  public Flux<Recommendation> getRecommendations(int productId) {
+  public Flux<Recommendation> getRecommendations(HttpHeaders headers, int productId) {
     validateProduct(productId);
 
     return repository.findByProductId(productId)

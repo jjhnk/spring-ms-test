@@ -37,7 +37,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://${app.auth.server} # https://dev-a2z2mux06zphbdxf.us.auth0.com/
+          issuer-uri: ${jwt.issuer.uri}
 
 server:
   port: 8443
@@ -45,6 +45,10 @@ server:
     key-store-type: PKCS12
     key-store: classpath:keystore/edge.p12
     key-alias: localhost
+
+management:
+  server:
+    port: 8443
 
 logging:
   level:

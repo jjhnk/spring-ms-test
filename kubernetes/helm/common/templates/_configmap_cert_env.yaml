@@ -1,0 +1,9 @@
+{{- define "common.configmap_cert_env" -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: configmap-cert-env
+data:
+  JWT_ISSUER_URI: {{ .Values.jwtIssuerUri }}
+  JWT_TOKEN_ENDPOINT: {{ .Values.jwtTokenEndpoint }}
+{{- end -}}

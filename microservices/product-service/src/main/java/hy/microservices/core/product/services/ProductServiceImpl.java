@@ -6,6 +6,7 @@ import java.time.Duration;
 import java.util.Random;
 
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.RestController;
 
 import hy.api.core.product.Product;
@@ -40,7 +41,7 @@ public class ProductServiceImpl implements ProductService {
   }
 
   @Override
-  public Mono<Product> getProduct(int productId, int delay, int faultPercent) {
+  public Mono<Product> getProduct(HttpHeaders headers, int productId, int delay, int faultPercent) {
     validateProductId(productId);
 
     return repository.findByProductId(productId)

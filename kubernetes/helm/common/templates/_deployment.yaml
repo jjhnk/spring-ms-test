@@ -19,8 +19,16 @@ spec:
       app.kubernetes.io/name: {{ include "common.name" . }}
   template:
     metadata:
+{{- if .Values.annotations }}
+{{- with .Values.annotations }}
+      annotations:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- end }}
       labels:
         app.kubernetes.io/name: {{ include "common.name" . }}
+        app: {{ include "common.name" . }}
+        version: {{ .Values.image.tag }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
@@ -35,6 +43,15 @@ spec:
           {{- range $key, $val := .Values.env }}
           - name: {{ $key }}
             value: {{ $val }}
+          {{- end }}
+          {{- if .Values.envFromConfigRefs }}
+          {{- range .Values.envFromConfigRefs }}
+          - name: {{ .name }}
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .valueFrom.configMapKeyRef.name }}
+                key: {{ .valueFrom.configMapKeyRef.key }}
+          {{- end }}
           {{- end }}
           {{- end }}
           {{- if .Values.envFromSecretRefs }}

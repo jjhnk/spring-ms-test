@@ -22,11 +22,15 @@ public class AppConfig {
 
   @EventListener(ContextRefreshedEvent.class)
   public void initIndicesAfterStartup() {
+    // @formatter:off
     MappingContext<? extends MongoPersistentEntity<?>, MongoPersistentProperty> mappingContext =
       mongoTemplate.getConverter().getMappingContext();
+    // @formatter:on
     MongoPersistentEntityIndexResolver indexResolver = new MongoPersistentEntityIndexResolver(mappingContext);
 
     ReactiveIndexOperations indexOps = mongoTemplate.indexOps(RecommendationEntity.class);
-    indexResolver.resolveIndexFor(RecommendationEntity.class).forEach(indexOps::ensureIndex);
+    indexResolver.resolveIndexFor(RecommendationEntity.class)
+      .forEach(indexOps::ensureIndex);
   }
+
 }

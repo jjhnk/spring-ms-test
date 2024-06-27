@@ -12,8 +12,7 @@ public class AppConfig {
   private final Integer threadPoolSize;
   private final Integer taskQueueSize;
 
-  public AppConfig(
-    @Value("${app.threadPoolSize:10}") Integer threadPoolSize,
+  public AppConfig(@Value("${app.threadPoolSize:10}") Integer threadPoolSize,
     @Value("${app.taskQueueSize:100}") Integer taskQueueSize) {
     this.threadPoolSize = threadPoolSize;
     this.taskQueueSize = taskQueueSize;
@@ -23,4 +22,5 @@ public class AppConfig {
   Scheduler jdbcScheduler() {
     return Schedulers.newBoundedElastic(threadPoolSize, taskQueueSize, "jdbc-pool");
   }
+
 }

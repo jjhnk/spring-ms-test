@@ -93,6 +93,6 @@ spring:
 
 logging:
   level:
-    root: WARN
-    hy: WARN
-    '[org.springframework.data.mongodb.core.ReactiveMongoTemplate]': WARN
+    root: DEBUG
+    hy: DEBUG
+    '[org.springframework.data.mongodb.core.ReactiveMongoTemplate]': DEBUG

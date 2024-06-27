@@ -8,6 +8,7 @@ import java.net.URI;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cloud.stream.function.StreamBridge;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
@@ -80,7 +81,7 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
   @Retry(name = "product")
   @TimeLimiter(name = "product")
   @CircuitBreaker(name = "product", fallbackMethod = "getProductFallbackValue")
-  public Mono<Product> getProduct(int productId, int delay, int faultPercent) {
+  public Mono<Product> getProduct(HttpHeaders headers, int productId, int delay, int faultPercent) {
     URI uri = UriComponentsBuilder.fromUriString(PRODUCT_SERVICE_URL + "/product/{productId}")
       .queryParam("delay", delay)
       .queryParam("faultPercent", faultPercent)
@@ -89,6 +90,7 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
     log.debug("[GET] product id:{} @{}", productId, uri);
     return webClient.get()
       .uri(uri)
+      .headers(h -> h.addAll(headers))
       .retrieve()
       .bodyToMono(Product.class)
       .log(log.getName(), FINE)
@@ -97,7 +99,7 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
 
   @SuppressWarnings("unused")
   // private method will remove fields
-  Mono<Product> getProductFallbackValue(int productId, int delay, int faultPercent,
+  Mono<Product> getProductFallbackValue(HttpHeaders headers, int productId, int delay, int faultPercent,
     CallNotPermittedException ex) {
     log.warn(
       "Creating a fail-fast fallback product for productId = {}, delay = {}, faultPercent = {} and exception = {} ",
@@ -105,6 +107,10 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
       delay,
       faultPercent,
       ex.toString());
+
+      if (productId < 1) {
+        throw new InvalidInputException("Invalid productId: " + productId);
+      }
 
     if (productId == 13) {
       String errMsg = "Product Id: " + productId + " not found in fallback cache!";
@@ -138,7 +144,7 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
   // @formatter:on
 
   @Override
-  public Flux<Recommendation> getRecommendations(int productId) {
+  public Flux<Recommendation> getRecommendations(HttpHeaders headers, int productId) {
     URI url = UriComponentsBuilder.fromUriString(RECOMMENDATION_SERVICE_URL + "/recommendation")
       .queryParam("productId", productId)
       .build()
@@ -147,6 +153,7 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
     log.debug("[GET] recommendations id:{}, @{}", productId, url);
     return webClient.get()
       .uri(url)
+      .headers(h -> h.addAll(headers))
       .retrieve()
       .bodyToFlux(Recommendation.class)
       .log(log.getName(), FINE)
@@ -177,7 +184,7 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
   // @formatter:on
 
   @Override
-  public Flux<Review> getReviews(int productId) {
+  public Flux<Review> getReviews(HttpHeaders headers, int productId) {
     URI url = UriComponentsBuilder.fromUriString(REVIEW_SERVICE_URL + "/review")
       .queryParam("productId", productId)
       .build()
@@ -186,6 +193,7 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
     log.debug("[GET] reviews id:{}, @{}", productId, url);
     return webClient.get()
       .uri(url)
+      .headers(h -> h.addAll(headers))
       .retrieve()
       .bodyToFlux(Review.class)
       .log(log.getName(), FINE)
