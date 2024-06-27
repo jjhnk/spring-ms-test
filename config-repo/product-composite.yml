@@ -21,7 +21,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${jwt.issuer.uri}
+          issuer-uri: ${jwt.issuer.uri:http://auth-server}
   # codec:
     # log-request-details: true
 
