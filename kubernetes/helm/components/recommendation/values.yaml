@@ -4,8 +4,10 @@ image:
   name: recommendation-service
 
 env:
+  SPRING_APPLICATION_NAME: recommendation
   SPRING_PROFILES_ACTIVE: "docker"
-  SPRING_CONFIG_LOCATION: file:/config-repo/application.yml,file:/config-repo/recommendation.yml
+  SPRING_CONFIG_LOCATION: file:/config/application.yml,file:/config/recommendation.yml
+  LOGGING_CONFIG: file:/config/logback-spring.xml
 
 livenessProbe_enabled: true
 
@@ -14,4 +16,5 @@ readinessProbe_enabled: true
 configmap:
   enabled: true
   volumeMounts:
-    mountPath: /config-repo
+    mountPath: /config
+  useLogback: true

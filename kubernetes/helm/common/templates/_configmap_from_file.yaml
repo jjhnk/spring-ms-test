@@ -8,5 +8,9 @@ metadata:
     helm.sh/chart: {{ include "common.chart" . }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 data:
-{{ (.Files.Glob "config-repo/*").AsConfig | indent 2 }}
+{{ (.Files.Glob "config/repo/*").AsConfig | indent 2 }}
+{{- if .Values.configmap.useLogback }}
+  logback-spring.xml: |-
+{{ .Files.Get "config/logback-spring.xml" | indent 4 }}
+{{- end }}
 {{- end -}}

@@ -5,14 +5,14 @@ services:
     mem_limit: 512m
     environment:
       - SPRING_PROFILES_ACTIVE=docker
-      - SPRING_CONFIG_LOCATION=file:/config-repo/application.yml,file:/config-repo/product.yml
+      - SPRING_CONFIG_LOCATION=file:/config/application.yml,file:/config/product.yml
       - SPRING_RABBITMQ_USERNAME=${RABBITMQ_USR}
       - SPRING_RABBITMQ_PASSWORD=${RABBITMQ_PWD}
       - SPRING_DATA_MONGODB_AUTHENTICATION_DATABASE=admin
       - SPRING_DATA_MONGODB_USERNAME=${MONGODB_USR}
       - SPRING_DATA_MONGODB_PASSWORD=${MONGODB_PWD}
     volumes:
-      - ./config-repo:/config-repo
+      - ./config:/config
     depends_on:
       mongodb:
         condition: service_healthy
@@ -25,14 +25,14 @@ services:
     mem_limit: 512m
     environment:
       - SPRING_PROFILES_ACTIVE=docker
-      - SPRING_CONFIG_LOCATION=file:/config-repo/application.yml,file:/config-repo/recommendation.yml
+      - SPRING_CONFIG_LOCATION=file:/config/application.yml,file:/config/recommendation.yml
       - SPRING_RABBITMQ_USERNAME=${RABBITMQ_USR}
       - SPRING_RABBITMQ_PASSWORD=${RABBITMQ_PWD}
       - SPRING_DATA_MONGODB_AUTHENTICATION_DATABASE=admin
       - SPRING_DATA_MONGODB_USERNAME=${MONGODB_USR}
       - SPRING_DATA_MONGODB_PASSWORD=${MONGODB_PWD}
     volumes:
-      - ./config-repo:/config-repo
+      - ./config:/config
     depends_on:
       mongodb:
         condition: service_healthy
@@ -45,13 +45,13 @@ services:
     mem_limit: 512m
     environment:
       - SPRING_PROFILES_ACTIVE=docker
-      - SPRING_CONFIG_LOCATION=file:/config-repo/application.yml,file:/config-repo/review.yml
+      - SPRING_CONFIG_LOCATION=file:/config/application.yml,file:/config/review.yml
       - SPRING_RABBITMQ_USERNAME=${RABBITMQ_USR}
       - SPRING_RABBITMQ_PASSWORD=${RABBITMQ_PWD}
       - SPRING_DATASOURCE_USERNAME=${MYSQL_USR}
       - SPRING_DATASOURCE_PASSWORD=${MYSQL_PWD}
     volumes:
-      - ./config-repo:/config-repo
+      - ./config:/config
     depends_on:
       mysql:
         condition: service_healthy
@@ -65,11 +65,11 @@ services:
     mem_limit: 512m
     environment:
       - SPRING_PROFILES_ACTIVE=docker
-      - SPRING_CONFIG_LOCATION=file:/config-repo/application.yml,file:/config-repo/product-composite.yml
+      - SPRING_CONFIG_LOCATION=file:/config/application.yml,file:/config/product-composite.yml
       - SPRING_RABBITMQ_USERNAME=${RABBITMQ_USR}
       - SPRING_RABBITMQ_PASSWORD=${RABBITMQ_PWD}
     volumes:
-      - ./config-repo:/config-repo
+      - ./config:/config
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -131,12 +131,12 @@ services:
     mem_limit: 512m
     environment:
       - SPRING_PROFILES_ACTIVE=docker
-      - SPRING_CONFIG_LOCATION=file:/config-repo/application.yml,file:/config-repo/gateway.yml
+      - SPRING_CONFIG_LOCATION=file:/config/application.yml,file:/config/gateway.yml
       - SERVER_SSL_KEY_STORE_PASSWORD=${GATEWAY_TLS_PWD}
       - SPRING_RABBITMQ_USERNAME=${RABBITMQ_USR}
       - SPRING_RABBITMQ_PASSWORD=${RABBITMQ_PWD}
     volumes:
-      - ./config-repo:/config-repo
+      - ./config:/config
     ports:
       - "8443:8443"
     depends_on:
@@ -149,11 +149,11 @@ services:
     mem_limit: 512m
     environment:
       - SPRING_PROFILES_ACTIVE=docker
-      - SPRING_CONFIG_LOCATION=file:/config-repo/application.yml,file:/config-repo/auth-server.yml
+      - SPRING_CONFIG_LOCATION=file:/config/application.yml,file:/config/auth-server.yml
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_USR}
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PWD}
     volumes:
-      - ./config-repo:/config-repo
+      - ./config:/config
     healthcheck:
       test: ["CMD", "curl", "-fs", "http://localhost:4004/actuator/health"]
       interval: 5s
