@@ -24,6 +24,10 @@ management:
   endpoints:
     web.exposure.include: "*"
   endpoint:
+    prometheus:
+      enabled: true
+    metrics:
+      enabled: true
     health:
       validate-group-membership: false
       group:
@@ -54,7 +58,9 @@ management:
   tracing:
     sampling:
       probability: 1.0
-
+  metrics:
+    tags:
+      application: ${spring.application.index}
 
 logging:
   pattern:
@@ -101,4 +107,4 @@ spring:
 
 management:
   endpoints:
-    web.exposure.include: health,info,circuitbreakerevents
+    web.exposure.include: health,info,circuitbreakerevents,prometheus

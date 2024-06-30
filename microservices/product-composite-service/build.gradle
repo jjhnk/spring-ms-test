@@ -41,6 +41,7 @@ dependencies {
 	implementation project(':api')
 	implementation project(':util')
 
+	implementation 'io.micrometer:micrometer-registry-prometheus' // see https://github.com/micrometer-metrics/micrometer/wiki/1.13-Migration-Guide:1.12.6'
 	implementation 'io.micrometer:micrometer-tracing-bridge-brave'
 	implementation 'io.zipkin.reporter2:zipkin-reporter-brave'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'

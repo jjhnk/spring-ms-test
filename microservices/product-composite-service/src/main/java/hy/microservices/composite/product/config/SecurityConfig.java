@@ -5,7 +5,6 @@ import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.security.config.Customizer.withDefaults;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
@@ -18,9 +17,6 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 public class SecurityConfig {
   private static final String SERVICE_URL = "/product-composite/**";
 
-  // public SecurityConfig(@Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}") String issuerUri) {
-  //   this.issuerUri = issuerUri;
-  // }
   @Bean
   SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
     http.csrf(CsrfSpec::disable)

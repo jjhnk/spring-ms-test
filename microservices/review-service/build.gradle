@@ -37,6 +37,7 @@ dependencies {
 	implementation project(':util')
 
 	implementation 'com.mysql:mysql-connector-j:8.4.0'
+	implementation 'io.micrometer:micrometer-registry-prometheus' // see https://github.com/micrometer-metrics/micrometer/wiki/1.13-Migration-Guide'
 	implementation 'io.micrometer:micrometer-tracing-bridge-brave'
 	implementation 'io.zipkin.reporter2:zipkin-reporter-brave'
 	implementation 'net.ttddyy.observation:datasource-micrometer-spring-boot:1.0.0'

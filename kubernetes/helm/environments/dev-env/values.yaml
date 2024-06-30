@@ -60,6 +60,10 @@ review:
 product-composite:
   envFromSecretRefs:
     - rabbitmq-credentials
+  requests:
+    memory: 600Mi
+  limits:
+    memory: 1200Mi
 
 destinationRules:
   - name: product-composite

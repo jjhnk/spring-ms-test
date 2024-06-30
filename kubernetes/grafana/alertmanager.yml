@@ -1,0 +1,186 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app.kubernetes.io/component: server
+    app.kubernetes.io/name: alertmanager
+    app.kubernetes.io/instance: alertmanager
+    app.kubernetes.io/version: v1.9.0
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: alertmanager
+  name: alertmanager
+  namespace: istio-system
+  annotations:
+    {}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/component: server
+    app.kubernetes.io/name: alertmanager
+    app.kubernetes.io/instance: alertmanager
+    app.kubernetes.io/version: v1.9.0
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: alertmanager
+  name: alertmanager
+  namespace: istio-system
+data:
+  config.yml: |-
+    global:
+      smtp_require_tls: false
+      smtp_smarthost: mail-server:1025
+      smtp_from: monitoring-from@example.com
+      smtp_hello: alertmanager
+      resolve_timeout: 10s
+
+    route:
+      group_by: ['alertname']
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 3h
+      receiver: email-notifier
+
+    receivers:
+      - name: 'email-notifier'
+        email_configs:
+          - to: 'hy@mail.minikube.me'
+            send_resolved: true
+            from: 'alertmanager@example.com'
+            headers:
+              Subject: 'Prometheus Alert: {{ .CommonLabels.alertname }}'
+              To: monitoring-to@example.com
+            html: |
+              {{ range .Alerts }}
+                <p>
+                  <strong>{{ .Annotations.summary }}</strong><br>
+                  {{ .Annotations.description }}
+                </p>
+                <hr>
+              {{ end }}
+            tls_config:
+                insecure_skip_verify: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    alertmanager.io/scrape: 'true'
+    alertmanager.io/path: '/alertmanager/metrics'
+    app.kubernetes.io/instance: alertmanager
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: alertmanager
+    app.kubernetes.io/version: 9.0.1
+  name: alertmanager
+  namespace: istio-system
+spec:
+  ports:
+  - name: http
+    protocol: TCP
+    port: 9093
+    targetPort: 9093
+  selector:
+    app.kubernetes.io/component: server
+    app.kubernetes.io/name: alertmanager
+    app.kubernetes.io/instance: alertmanager
+  sessionAffinity: None
+  type: "ClusterIP"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/component: server
+    app.kubernetes.io/name: alertmanager
+    app.kubernetes.io/instance: alertmanager
+    app.kubernetes.io/version: 9.0.1
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: alertmanager
+  name: alertmanager
+  namespace: istio-system
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: server
+      app.kubernetes.io/name: alertmanager
+      app.kubernetes.io/instance: alertmanager
+  replicas: 1
+  revisionHistoryLimit: 10
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: server
+        app.kubernetes.io/name: alertmanager
+        app.kubernetes.io/instance: alertmanager
+        app.kubernetes.io/version: 9.0.1
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/part-of: alertmanager
+
+        sidecar.istio.io/inject: "false"
+    spec:
+      containers:
+      - name: alertmanager
+        image: prom/alertmanager:v0.22.0
+        imagePullPolicy: "IfNotPresent"
+        args:
+        - "--config.file=/etc/alertmanager/config.yml"
+        ports:
+        - name: alertmanager
+          containerPort: 9093
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/alertmanager
+          readOnly: true
+      volumes:
+      - name: config-volume
+        configMap:
+          name: alertmanager
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: alertmanager-gateway
+  namespace: istio-system
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - hosts:
+    - "alertmanager.minikube.me"
+    port:
+      number: 443
+      name: https-prom
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: hands-on-certificate
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: alertmanager-vs
+  namespace: istio-system
+spec:
+  hosts:
+  - "alertmanager.minikube.me"
+  gateways:
+  - alertmanager-gateway
+  http:
+  - route:
+    - destination:
+        host: alertmanager
+        port:
+          number: 9093
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: alertmanager
+  namespace: istio-system
+spec:
+  host: alertmanager
+  trafficPolicy:
+    tls:
+      mode: DISABLE
+---

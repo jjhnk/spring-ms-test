@@ -31,7 +31,7 @@ spec:
   - kibana.minikube.me
   - elasticsearch.minikube.me
   - mail.minikube.me
+  - alertmanager.minikube.me
   issuerRef:
     name: ca-issuer
   secretName: hands-on-certificate
-
