@@ -1,5 +1,5 @@
 apiVersion: v2
-appVersion: "1.0"
+appVersion: "1.1"
 description: A Helm chart for HANDS-ON MICROSERVICES WITH SPRING BOOT AND SPRING CLOUD running in a Dev and Test Environment
 name: dev-env
 version: 1.0.0
@@ -16,3 +16,7 @@ dependencies:
   - name: mysql
     version: 1.0.0
     repository: file://../../components/mysql
+
+  - name: postgres
+    version: 1.0.0
+    repository: file://../../components/postgres

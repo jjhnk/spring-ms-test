@@ -11,13 +11,15 @@ spring:
   cache:
     type: redis
   datasource:
-    url: jdbc:mysql://localhost/${spring.application.name}-db
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:postgresql://localhost/${spring.application.name}-db
+    # driver-class-name: com.mysql.cj.jdbc.Driver
+    # driver-class-name: com.postgresql.Driver
     hikari.initializationFailTimeout: 60000
   jpa:
     hibernate:
       ddl-auto: update
-    #database-platform: org.hibernate.dialect.MySQLDialect # TODO: remove this
+    # database-platform: org.hibernate.dialect.MySQLDialect # TODO: remove this
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
   cloud:
     function:
@@ -62,7 +64,7 @@ spring:
   config:
     activate.on-profile: docker
   datasource:
-    url: jdbc:mysql://mysql.persistence/${spring.application.name}-db
+    url: jdbc:postgresql://postgres.persistence/${spring.application.name}-db
   jpa:
     show-sql: false
 
@@ -103,7 +105,7 @@ spring:
       on-profile:
       - prod
   datasource:
-    url: jdbc:mysql://172.17.0.1:3306/${spring.application.name}-db
+    url: jdbc:postgresql://postgres.persistence/${spring.application.name}-db
 
 logging:
   level:

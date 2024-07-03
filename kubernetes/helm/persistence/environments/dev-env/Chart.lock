@@ -8,5 +8,8 @@ dependencies:
 - name: mysql
   repository: file://../../components/mysql
   version: 1.0.0
-digest: sha256:ea68c7be37805621df20e331a2146835c80cc9797bb54c0449d96271e6165f2a
-generated: "2024-07-02T14:19:00.4978648+09:00"
+- name: postgres
+  repository: file://../../components/postgres
+  version: 1.0.0
+digest: sha256:45b4e9c2ad2202eca0aa3a9bfb4a8c24f54b733c887ade0b2d80eade6562d409
+generated: "2024-07-03T18:26:42.3693492+09:00"

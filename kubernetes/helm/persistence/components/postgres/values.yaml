@@ -1,0 +1,19 @@
+fullnameOverride: postgres
+
+image:
+  repository: registry.hub.docker.com/library
+  name: postgres
+  tag: latest
+  pullPolicy: IfNotPresent
+
+ports:
+  - containerPort: 5432
+
+resources:
+  limits:
+    memory: 512Mi
+
+service:
+  ports:
+  - name: postgres
+    port: 5432

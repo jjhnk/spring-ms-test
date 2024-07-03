@@ -12,6 +12,10 @@ secrets:
     SPRING_DATASOURCE_USERNAME: mysql-user-dev
     SPRING_DATASOURCE_PASSWORD: mysql-pwd-dev
 
+  postgres-credentials:
+    SPRING_DATASOURCE_USERNAME: postgres-user
+    SPRING_DATASOURCE_PASSWORD: postgres-pwd
+
   redis-credentials:
     SPRING_DATA_REDIS_PASSWORD: redis-password
 
@@ -34,7 +38,7 @@ recommendation:
 review:
   envFromSecretRefs:
     - rabbitmq-credentials
-    - mysql-credentials
+    - postgres-credentials
     - redis-credentials
 
 product-composite:

@@ -9,6 +9,10 @@ secrets:
     MYSQL_USER: mysql-user-dev
     MYSQL_PASSWORD: mysql-pwd-dev
 
+  postgres-server-credentials:
+    POSTGRES_USER: postgres-user
+    POSTGRES_PASSWORD: postgres-pwd
+
 mongodb:
   envFromSecretRefs:
     - mongodb-server-credentials
@@ -16,3 +20,7 @@ mongodb:
 mysql:
   envFromSecretRefs:
     - mysql-server-credentials
+
+postgres:
+  envFromSecretRefs:
+    - postgres-server-credentials

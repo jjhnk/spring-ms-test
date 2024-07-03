@@ -50,10 +50,13 @@ dependencies {
 	implementation 'org.springframework.retry:spring-retry'
 	implementation "org.mapstruct:mapstruct:${mapstructVersion}"
 
+
 	compileOnly 'org.projectlombok:lombok'
 	compileOnly "org.mapstruct:mapstruct-processor:${mapstructVersion}"
 	annotationProcessor 'org.projectlombok:lombok'
 	annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+
+	runtimeOnly 'org.postgresql:postgresql'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'io.projectreactor:reactor-test'
