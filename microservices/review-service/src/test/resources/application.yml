@@ -1,6 +1,7 @@
 server.error.include-message: always
-
 spring.cloud.stream.defaultBinder: rabbit
+spring.cache.type: none
+spring.data.redis.cluster.nodes: localhost:6379
 
 logging:
   level:

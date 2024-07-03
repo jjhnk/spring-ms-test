@@ -1,3 +1,5 @@
 server.error.include-message: always
 spring.data.mongodb.auto-index-creation: true
 spring.cloud.stream.defaultBinder: rabbit
+spring.cache.type: none
+spring.data.redis.cluster.nodes: localhost:6379

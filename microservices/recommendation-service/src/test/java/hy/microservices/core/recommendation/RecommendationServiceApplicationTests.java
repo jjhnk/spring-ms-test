@@ -118,6 +118,7 @@ class RecommendationServiceApplicationTests extends MongoDbTestBase {
     HttpStatus expectedStatus) {
     return client.get()
       .uri("/recommendation" + query)
+      .header("Cache-Control", "no-store")
       .accept(APPLICATION_JSON)
       .exchange()
       .expectStatus().isEqualTo(expectedStatus)

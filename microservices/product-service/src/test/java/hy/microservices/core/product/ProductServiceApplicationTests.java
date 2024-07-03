@@ -107,6 +107,12 @@ class ProductServiceApplicationTests extends MongoDbTestBase {
       .jsonPath("$.message").isEqualTo("Invalid productId: " + productInvalid);
   }
 
+  private void sendCreateProductEvent(int productId) {
+    Product product = new Product(productId, "name" + productId, productId, "SA");
+    Event<Integer, Product> event = new Event<>(Event.Type.CREATE, productId, product);
+    messageProcessor.accept(event);
+  }
+
   private WebTestClient.BodyContentSpec getAndVerifyProduct(int productId, HttpStatus expectedStatus) {
     return getAndVerifyProduct("/" + productId, expectedStatus);
   }
@@ -115,16 +121,11 @@ class ProductServiceApplicationTests extends MongoDbTestBase {
     return client.get()
       .uri("/product" + productIdPath)
       .accept(APPLICATION_JSON)
+      .header("Cache-Control", "no-store")
       .exchange()
       .expectStatus().isEqualTo(expectedStatus)
       .expectHeader().contentType(APPLICATION_JSON)
       .expectBody();
-  }
-
-  private void sendCreateProductEvent(int productId) {
-    Product product = new Product(productId, "name" + productId, productId, "SA");
-    Event<Integer, Product> event = new Event<>(Event.Type.CREATE, productId, product);
-    messageProcessor.accept(event);
   }
 
   private void sendDeleteProductEvent(int productId) {

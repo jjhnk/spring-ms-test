@@ -76,5 +76,15 @@ public class Recommendation {
     this.serviceAddress = serviceAddress;
   }
 
-
+  @Override
+  public String toString() {
+    return "Recommendation ["
+      + "productId=" + productId
+      + ", recommendationId=" + recommendationId
+      + ", author='" + author + "'"
+      + ", rate=" + rate
+      + ", content='" + content + "'"
+      + ", serviceAddress='" + serviceAddress
+      + ']';
+  }
 }

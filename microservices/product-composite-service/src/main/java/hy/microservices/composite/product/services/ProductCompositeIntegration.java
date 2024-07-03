@@ -68,7 +68,7 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
   // @formatter:off
   @Override
   public Mono<Product> createProduct(Product body) {
-    log.debug("[POST] product id: {} @{}", body.getProductId(), PRODUCT_SERVICE_URL);
+    log.info("[POST] product id: {} @{}", body.getProductId(), PRODUCT_SERVICE_URL);
     return Mono.fromCallable(() -> {
         sendMessage("products-out-0", new Event<>(Event.Type.CREATE, body.getProductId(), body));
         return body;
@@ -87,7 +87,7 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
       .queryParam("faultPercent", faultPercent)
       .build(productId);
 
-    log.debug("[GET] product id:{} @{}", productId, uri);
+    log.info("[GET] product id:{} @{}", productId, uri);
     return webClient.get()
       .uri(uri)
       .headers(h -> h.addAll(headers))
@@ -133,7 +133,7 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
   // @formatter:off
   @Override
   public Mono<Recommendation> createRecommendation(Recommendation body) {
-    log.debug("[POST] recommendation id: {} @{}", body.getProductId(), RECOMMENDATION_SERVICE_URL);
+    log.info("[POST] recommendation id: {} @{}", body.getProductId(), RECOMMENDATION_SERVICE_URL);
     return Mono.fromCallable(() -> {
         sendMessage("recommendations-out-0",
         new Event<Integer, Recommendation>(Event.Type.CREATE, body.getProductId(), body));
@@ -150,7 +150,7 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
       .build()
       .toUri();
 
-    log.debug("[GET] recommendations id:{}, @{}", productId, url);
+    log.info("[GET] recommendations id:{}, @{}", productId, url);
     return webClient.get()
       .uri(url)
       .headers(h -> h.addAll(headers))
@@ -162,7 +162,7 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
 
   @Override
   public Mono<Void> deleteRecommendations(int productId) {
-    log.debug("[DELETE] recommendations id:{}, @{}", productId, RECOMMENDATION_SERVICE_URL);
+    log.info("[DELETE] recommendations id:{}, @{}", productId, RECOMMENDATION_SERVICE_URL);
     return Mono
       .fromRunnable(
         () -> sendMessage("recommendations-out-0", new Event<Integer, Void>(Event.Type.DELETE, productId, null)))
@@ -173,7 +173,7 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
   // @formatter:off
   @Override
   public Mono<Review> createReview(Review body) {
-    log.debug("[POST] review id: {} @{}", body.getProductId(), REVIEW_SERVICE_URL);
+    log.info("[POST] review id: {} @{}", body.getProductId(), REVIEW_SERVICE_URL);
     return Mono
       .fromCallable(() -> {
         sendMessage("reviews-out-0", new Event<Integer, Review>(Event.Type.CREATE, body.getProductId(), body));
@@ -190,7 +190,7 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
       .build()
       .toUri();
 
-    log.debug("[GET] reviews id:{}, @{}", productId, url);
+    log.info("[GET] reviews id:{}, @{}", productId, url);
     return webClient.get()
       .uri(url)
       .headers(h -> h.addAll(headers))
@@ -202,7 +202,7 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
 
   @Override
   public Mono<Void> deleteReviews(int productId) {
-    log.debug("[DELETE] reviews id:{}, @{}", productId, REVIEW_SERVICE_URL);
+    log.info("[DELETE] reviews id:{}, @{}", productId, REVIEW_SERVICE_URL);
     return Mono
       .fromRunnable(() -> sendMessage("reviews-out-0", new Event<Integer, Void>(Event.Type.DELETE, productId, null)))
       .subscribeOn(publishScheduler)
@@ -210,7 +210,7 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
   }
 
   private <T> void sendMessage(String bindingName, Event<Integer, T> event) {
-    log.debug("{} Sending a {} message to {}", getClass().getSimpleName(), event.getType(), bindingName);
+    log.info("{} Sending a {} message to {}", getClass().getSimpleName(), event.getType(), bindingName);
     Message<Event<Integer, T>> message = MessageBuilder.withPayload(event)
       .setHeader("partitionKey", event.getKey())
       .build();

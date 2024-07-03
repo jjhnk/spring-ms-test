@@ -1,5 +1,7 @@
 package hy.microservices.core.review.persistence;
 
+import java.io.Serializable;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -19,7 +21,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @EqualsAndHashCode
 @ToString
-public class ReviewEntity {
+public class ReviewEntity implements Serializable {
   @Id @GeneratedValue
   private int id;
 

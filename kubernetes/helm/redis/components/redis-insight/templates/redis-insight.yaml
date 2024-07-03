@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-insight
+  labels:
+    app: redis-insight
+spec:
+  replicas:
+  selector:
+    matchLabels:
+      app: redis-insight
+  template:
+    metadata:
+      labels:
+        app: redis-insight
+    spec:
+      containers:
+      - name:  redis-insight
+        image: redis/redisinsight:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 5540
+          protocol: TCP
+        volumeMounts:
+        - name: redis-insight
+          mountPath: /data
+      volumes:
+      - name: redis-insight
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-insight
+  labels:
+    service: redis-insight
+spec:
+  type: ClusterIP
+  selector:
+    app: redis-insight
+  ports:
+    - port: 80
+      targetPort: 5540

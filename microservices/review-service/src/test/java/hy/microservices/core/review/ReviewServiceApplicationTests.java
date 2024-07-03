@@ -125,6 +125,7 @@ class ReviewServiceApplicationTests extends MySqlTestBase {
 		// @formatter:off
 		return client.get()
 			.uri("/review" + query)
+			.header("Cache-Control", "no-store")
 			.accept(APPLICATION_JSON)
 			.exchange()
 			.expectStatus().isEqualTo(expectedStatus)

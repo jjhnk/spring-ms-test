@@ -45,7 +45,9 @@ management:
         enabled: true
   health:
     rabbit.enabled: true
-    kafka.enabled: false
+    mongo.enabled: true
+    db.enabled: true
+    redis.enabled: true
     readinessstate:
       enabled: true
     livenessstate:
@@ -75,7 +77,7 @@ spring:
     stream:
       kafka.binder.brokers: kafka
   rabbitmq:
-    host: rabbitmq
+    host: rabbitmq.message-queue
 
 app:
   auth:

@@ -23,7 +23,7 @@ livenessProbe:
     scheme: HTTP
     path: /actuator/health/liveness
     port: 4004
-  initialDelaySeconds: 10
+  initialDelaySeconds: 30
   periodSeconds: 10
   timeoutSeconds: 2
   failureThreshold: 20
@@ -35,7 +35,7 @@ readinessProbe:
     scheme: HTTP
     path: /actuator/health/readiness
     port: 4004
-  initialDelaySeconds: 10
+  initialDelaySeconds: 30
   periodSeconds: 10
   timeoutSeconds: 2
   failureThreshold: 3
@@ -46,7 +46,11 @@ configmap:
 
 resources:
   limits:
-    memory: 350Mi
+    memory: 1000Mi
+    cpu: "1"
+  requests:
+    memory: 500Mi
+    cpu: "0.2"
 
 service:
   type: ClusterIP

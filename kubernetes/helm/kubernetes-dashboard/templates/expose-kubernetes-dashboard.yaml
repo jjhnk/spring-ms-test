@@ -1,0 +1,54 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: kubernetes-dashboard-gateway
+  namespace: kubernetes-dashboard
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - hosts:
+      - '*'
+    port:
+      name: http
+      number: 80
+      protocol: HTTP
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - 'kubernetes-dashboard.minikube.me'
+    port:
+      number: 443
+      name: https
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: hands-on-certificate
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: kubernetes-dashboard-vs
+  namespace: kubernetes-dashboard
+spec:
+  hosts:
+  - 'kubernetes-dashboard.minikube.me'
+  gateways:
+  - kubernetes-dashboard-gateway
+  http:
+  - route:
+    - destination:
+        host: kubernetes-dashboard-kong-proxy
+        port:
+          number: 80
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: kubernetes-dashboard
+  namespace: kubernetes-dashboard
+spec:
+  host: kubernetes-dashboard
+  trafficPolicy:
+    tls:
+      mode: DISABLE

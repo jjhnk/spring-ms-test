@@ -1,0 +1,12 @@
+dependencies:
+- name: common
+  repository: file://../../../common
+  version: 1.0.0
+- name: elasticsearch
+  repository: file://../../components/elasticsearch
+  version: 1.0.0
+- name: kibana
+  repository: file://../../components/kibana
+  version: 1.0.0
+digest: sha256:ad3c84180824edc3c9c7e272a9ddf81c882cdaa0fa9da038aab555f5f128d39a
+generated: "2024-07-02T14:45:14.6537537+09:00"

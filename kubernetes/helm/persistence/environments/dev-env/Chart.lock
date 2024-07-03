@@ -1,0 +1,12 @@
+dependencies:
+- name: common
+  repository: file://../../../common
+  version: 1.0.0
+- name: mongodb
+  repository: file://../../components/mongodb
+  version: 1.0.0
+- name: mysql
+  repository: file://../../components/mysql
+  version: 1.0.0
+digest: sha256:ea68c7be37805621df20e331a2146835c80cc9797bb54c0449d96271e6165f2a
+generated: "2024-07-02T14:19:00.4978648+09:00"

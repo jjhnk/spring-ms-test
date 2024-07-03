@@ -1,6 +1,6 @@
 package hy.api.core.review;
 
-public class Review {
+public class Review  {
   private int productId;
   private int reviewId;
   private String author;
@@ -77,13 +77,13 @@ public class Review {
 
   @Override
   public String toString() {
-    return "Review("
+    return "Review ["
       + "productId=" + productId
       + ", reviewId=" + reviewId
       + ", author='" + author + "'"
       + ", subject='" + subject + "'"
       + ", content='" + content + "'"
       + ", serviceAddress='" + serviceAddress
-      + ')';
+      + ']';
   }
 }

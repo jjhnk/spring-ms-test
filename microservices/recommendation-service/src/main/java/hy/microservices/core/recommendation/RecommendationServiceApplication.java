@@ -2,14 +2,17 @@ package hy.microservices.core.recommendation;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
+
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Hooks;
 
 @SpringBootApplication
 @ComponentScan("hy")
 @Slf4j
+@EnableCaching
 public class RecommendationServiceApplication {
 
 	public static void main(String[] args) {

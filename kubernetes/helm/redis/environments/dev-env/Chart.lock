@@ -1,0 +1,12 @@
+dependencies:
+- name: common
+  repository: file://../../../common
+  version: 1.0.0
+- name: redis-insight
+  repository: file://../../components/redis-insight
+  version: 1.0.0
+- name: redis-cluster
+  repository: file://../../components/redis-cluster
+  version: 10.2.5
+digest: sha256:3f005b53fc24e7114ac8c951edd021a55b05acd1ca58c2f10c96b55f98f2bf0f
+generated: "2024-07-02T13:15:18.1423688+09:00"

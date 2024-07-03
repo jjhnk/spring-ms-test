@@ -2,6 +2,7 @@ package hy.microservices.core.review;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 
@@ -11,6 +12,7 @@ import reactor.core.publisher.Hooks;
 @SpringBootApplication
 @ComponentScan("hy")
 @Slf4j
+@EnableCaching
 public class ReviewServiceApplication {
 
 	public static void main(String[] args) {

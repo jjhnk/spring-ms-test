@@ -2,6 +2,7 @@ package hy.microservices.core.product;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 
@@ -10,6 +11,7 @@ import reactor.core.publisher.Hooks;
 
 @SpringBootApplication
 @ComponentScan(basePackages = "hy")
+@EnableCaching
 @Slf4j
 public class ProductServiceApplication {
 

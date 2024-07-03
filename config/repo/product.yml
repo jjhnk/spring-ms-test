@@ -7,6 +7,14 @@ spring:
       port: 27017
       database: ${spring.application.name}-db
       auto-index-creation: true
+    redis:
+      cluster:
+        nodes: redis-cluster.redis:6379
+        max-redirects: 10
+      repositories:
+        enabled: false
+  cache:
+    type: redis
   cloud:
     function:
       definition: messageProcessor
@@ -49,7 +57,7 @@ spring:
     activate.on-profile: docker
   data:
     mongodb:
-      host: mongodb
+      host: mongodb.persistence
 
 server:
   port: 80

@@ -42,7 +42,7 @@ public class HealthCheckConfig {
 
   private Mono<Health> getHealth(String baseUrl) {
     String url = baseUrl + "/actuator/health";
-    LOG.debug("Setting up a call to the Health API on URL: {}", url);
+    LOG.info("Setting up a call to the Health API on URL: {}", url);
     return webClient.get()
       .uri(url)
       .retrieve()

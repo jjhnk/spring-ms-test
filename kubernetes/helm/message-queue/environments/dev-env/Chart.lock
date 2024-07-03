@@ -1,0 +1,9 @@
+dependencies:
+- name: common
+  repository: file://../../../common
+  version: 1.0.0
+- name: rabbitmq
+  repository: file://../../components/rabbitmq
+  version: 1.0.0
+digest: sha256:4e5543e39ed794c0f32eb730cb511e0524fae3c8618d3b9f5ffb859755da35e8
+generated: "2024-07-02T14:26:32.2492512+09:00"

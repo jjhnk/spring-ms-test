@@ -1,0 +1,28 @@
+fullnameOverride: auth-server
+
+annotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/port: "4004"
+  prometheus.io/scheme: http
+  prometheus.io/path: "/actuator/prometheus"
+
+image:
+  name: auth-server
+
+env:
+  SPRING_APPLICATION_NAME: auth-server
+  SPRING_PROFILES_ACTIVE: "docker"
+  SPRING_CONFIG_LOCATION: file:/config/application.yml,file:/config/auth-server.yml
+  LOGGING_CONFIG: file:/config/logback-spring.xml
+
+livenessProbe_enabled: true
+
+readinessProbe_enabled: true
+readinessProbe:
+  initialDelaySeconds: 60
+
+configmap:
+  enabled: true
+  volumeMounts:
+    mountPath: /config
+  useLogback: true

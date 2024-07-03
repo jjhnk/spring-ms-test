@@ -1,0 +1,8 @@
+secrets:
+  rabbitmq-server-credentials:
+    RABBITMQ_DEFAULT_USER: rabbit-user-dev
+    RABBITMQ_DEFAULT_PASS: rabbit-pwd-dev
+
+rabbitmq:
+  envFromSecretRefs:
+    - rabbitmq-server-credentials

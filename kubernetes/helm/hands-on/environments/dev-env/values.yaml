@@ -1,0 +1,56 @@
+secrets:
+  rabbitmq-credentials:
+    SPRING_RABBITMQ_USERNAME: rabbit-user-dev
+    SPRING_RABBITMQ_PASSWORD: rabbit-pwd-dev
+
+  mongodb-credentials:
+    SPRING_DATA_MONGODB_AUTHENTICATION_DATABASE: admin
+    SPRING_DATA_MONGODB_USERNAME: mongodb-user-dev
+    SPRING_DATA_MONGODB_PASSWORD: mongodb-pwd-dev
+
+  mysql-credentials:
+    SPRING_DATASOURCE_USERNAME: mysql-user-dev
+    SPRING_DATASOURCE_PASSWORD: mysql-pwd-dev
+
+  redis-credentials:
+    SPRING_DATA_REDIS_PASSWORD: redis-password
+
+auth-server:
+  envFromSecretRefs:
+    - rabbitmq-credentials
+
+product:
+  envFromSecretRefs:
+    - rabbitmq-credentials
+    - mongodb-credentials
+    - redis-credentials
+
+recommendation:
+  envFromSecretRefs:
+    - rabbitmq-credentials
+    - mongodb-credentials
+    - redis-credentials
+
+review:
+  envFromSecretRefs:
+    - rabbitmq-credentials
+    - mysql-credentials
+    - redis-credentials
+
+product-composite:
+  envFromSecretRefs:
+    - rabbitmq-credentials
+  requests:
+    memory: 600Mi
+  limits:
+    memory: 1200Mi
+
+destinationRules:
+  - name: product-composite
+  - name: auth-server
+  - name: product
+  - name: recommendation
+  - name: review
+
+jwtIssuerUri: http://auth-server # https://dev-a2z2mux06zphbdxf.us.auth0.com/
+jwtTokenEndpoint: http://auth-server.hands-on.svc.cluster.local/oauth2/jwks # https://dev-a2z2mux06zphbdxf.us.auth0.com/.well-known/jwks.json

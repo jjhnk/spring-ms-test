@@ -1,0 +1,46 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: redis-insight-gateway
+  namespace: redis
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - hosts:
+    - "redis-insight.minikube.me"
+    port:
+      number: 443
+      name: https-prom
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: hands-on-certificate
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: redis-insight-vs
+  namespace: redis
+spec:
+  hosts:
+  - "redis-insight.minikube.me"
+  gateways:
+  - redis-insight-gateway
+  http:
+  - route:
+    - destination:
+        host: redis-insight
+        port:
+          number: 80
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: redis-insight
+  namespace: redis
+spec:
+  host: redis-insight
+  trafficPolicy:
+    tls:
+      mode: DISABLE
