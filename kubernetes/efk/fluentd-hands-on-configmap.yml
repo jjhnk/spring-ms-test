@@ -5,6 +5,14 @@ metadata:
   namespace: kube-system
 data:
   fluentd-hands-on.conf: |
+    <filter kubernetes.**>
+      @type grep
+      <exclude>
+        key $.kubernetes.namespace_name
+        pattern ^(kube-system|logging|istio-system|kubernetes-dashboard)$
+      </exclude>
+    </filter>
+
     <match kubernetes.**istio**>
       @type rewrite_tag_filter
       <rule>

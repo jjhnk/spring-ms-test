@@ -20,7 +20,6 @@ spring:
       ddl-auto: update
     # database-platform: org.hibernate.dialect.MySQLDialect # TODO: remove this
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-    show-sql: true
   cloud:
     function:
       definition: messageProcessor

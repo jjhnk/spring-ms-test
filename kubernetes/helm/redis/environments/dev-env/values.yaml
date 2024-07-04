@@ -1,6 +1,6 @@
 secrets:
   redis-server-credentials:
-    redis-password: redis-password
+    REDIS_PASSWORD: redis-password
 
 redis-cluster:
   envFromSecretRefs:
