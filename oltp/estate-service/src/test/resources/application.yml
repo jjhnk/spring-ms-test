@@ -1,0 +1,10 @@
+server.error.include-message: always
+spring.cache.type: none
+spring.data.redis.cluster.nodes: localhost:6379
+
+logging:
+  level:
+    root: INFO
+    hy: INFO
+    '[org.hibernate.SQL]': DEBUG
+    '[org.hibernate.type.descriptor.sql.BasicBinder]': TRACE

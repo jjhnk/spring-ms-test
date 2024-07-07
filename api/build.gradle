@@ -1,15 +1,36 @@
 plugins {
     id 'io.spring.dependency-management' version '1.1.5'
     id 'java'
+    id 'maven-publish'
 }
 
 group = 'hy.microservices.api'
-version = '1.0.0-SNAPSHOT'
+version = '1.0.0'
 
 java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(21)
 	}
+    withSourcesJar()
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+    // repositories {
+    //     maven {
+    //         name = 'localNexus'
+    //         url = uri('http://localhost:8081/repository/maven-releases/')
+    //         allowInsecureProtocol = true
+    //         credentials {
+    //             username = project.findProperty("nexusUsername") ?: "admin"
+    //             password = project.findProperty("nexusPassword") ?: "admin"
+    //         }
+    //     }
+    // }
 }
 
 repositories {
