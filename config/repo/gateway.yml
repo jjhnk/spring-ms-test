@@ -26,7 +26,12 @@ spring:
     - id: product-composite-swagger-ui
       uri: http://product-composite
       predicates:
-      - Path=/openapi/**
+      - Path=/openapi/product-composite/**
+
+    - id: estate-swagger-ui
+      uri: http://estate.hy-oltp
+      predicates:
+      - Path=/openapi/estate/**
 
     - id: product-composite-swagger-ui-webjars
       uri: http://product-composite

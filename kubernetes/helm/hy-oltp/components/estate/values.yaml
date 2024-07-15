@@ -1,0 +1,50 @@
+fullnameOverride: estate
+
+annotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/port: "4004"
+  prometheus.io/scheme: http
+  prometheus.io/path: "/actuator/prometheus"
+
+image:
+  repository: oltp
+  name: estate-service
+
+env:
+  SPRING_APPLICATION_NAME: estate
+  SPRING_PROFILES_ACTIVE: "docker"
+  SPRING_CONFIG_LOCATION: file:/config/application.yml,file:/config/estate.yml
+  LOGGING_CONFIG: file:/config/logback-spring.xml
+
+livenessProbe_enabled: true
+
+readinessProbe_enabled: true
+
+configmap:
+  enabled: true
+  volumeMounts:
+    mountPath: /config
+  useLogback: true
+
+envFromConfigRefs:
+  - name: JWT_ISSUER_URI
+    valueFrom:
+      configMapKeyRef:
+        name: configmap-cert-env
+        key: JWT_ISSUER_URI
+  - name: JWT_TOKEN_ENDPOINT
+    valueFrom:
+      configMapKeyRef:
+        name: configmap-cert-env
+        key: JWT_TOKEN_ENDPOINT
+  - name: JWT_AUTHORIZATION_ENDPOINT
+    valueFrom:
+      configMapKeyRef:
+        name: configmap-cert-env
+        key: JWT_AUTHORIZATION_ENDPOINT
+
+service:
+  ports:
+    - port: 80
+      name: http
+      targetPort: 80

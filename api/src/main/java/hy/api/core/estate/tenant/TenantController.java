@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -22,7 +23,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  *
  * @see Tenant
  */
-@RequestMapping("/property/tenant")
+@RequestMapping("/estate/tenant")
 @SecurityRequirement(name = "security_auth")
 @Tag(name = "Tenant", description = "Tenant API")
 public interface TenantController {
@@ -34,15 +35,15 @@ public interface TenantController {
    * @return the created tenant
    */
   @Operation(
-    summary = "${api.property.tenant.main.create.description}",
-    description = "${api.property.tenant.main.create.notes}")
+    summary = "${api.estate.tenant.main.create.description}",
+    description = "${api.estate.tenant.main.create.notes}")
   @ApiResponses(
     value = {
-      @ApiResponse(responseCode = "200", description = "${api.responseCodes.ok.description"),
+      @ApiResponse(responseCode = "200", description = "${api.responseCodes.ok.description}"),
       @ApiResponse(responseCode = "400", description = "${api.responseCodes.badRequest.description}"),
       @ApiResponse(responseCode = "422", description = "${api.responseCodes.unprocessableEntity.description}")})
   @PostMapping(consumes = "application/json", produces = "application/json")
-  public Tenant createTenant(Tenant tenant);
+  public Tenant createTenant(@RequestBody Tenant tenant);
 
   /**
    * Gets a tenant
@@ -52,8 +53,8 @@ public interface TenantController {
    * @return the tenant
    */
   @Operation(
-    summary = "${api.property.tenant.main.get.description}",
-    description = "${api.property.tenant.main.get.notes}")
+    summary = "${api.estate.tenant.main.get.description}",
+    description = "${api.estate.tenant.main.get.notes}")
   @ApiResponses(
     value = {
       @ApiResponse(responseCode = "200", description = "${api.responseCodes.ok.description}"),
@@ -70,8 +71,8 @@ public interface TenantController {
    * @return the list of tenants
    */
   @Operation(
-    summary = "${api.property.tenant.main.get-list.description}",
-    description = "${api.property.tenant.main.get-list.notes}")
+    summary = "${api.estate.tenant.main.get-list.description}",
+    description = "${api.estate.tenant.main.get-list.notes}")
   @ApiResponses(
     value = {
       @ApiResponse(responseCode = "200", description = "${api.responseCodes.ok.description}"),
@@ -90,15 +91,15 @@ public interface TenantController {
    * @return the updated tenant
    */
   @Operation(
-    summary = "${api.property.tenant.main.update.description}",
-    description = "${api.property.tenant.main.update.notes}")
+    summary = "${api.estate.tenant.main.update.description}",
+    description = "${api.estate.tenant.main.update.notes}")
   @ApiResponses(
     value = {
       @ApiResponse(responseCode = "200", description = "${api.responseCodes.ok.description}"),
       @ApiResponse(responseCode = "400", description = "${api.responseCodes.badRequest.description}"),
       @ApiResponse(responseCode = "422", description = "${api.responseCodes.unprocessableEntity.description}")})
   @PutMapping(value = "/{id}", consumes = "application/json", produces = "application/json")
-  public Tenant updateTenant(@RequestHeader HttpHeaders headers, @PathVariable("id") int id, Tenant tenant);
+  public Tenant updateTenant(@RequestHeader HttpHeaders headers, @PathVariable("id") int id, @RequestBody Tenant tenant);
 
   /**
    * Deletes a tenant
@@ -107,8 +108,8 @@ public interface TenantController {
    * @param id the ID of the tenant
    */
   @Operation(
-    summary = "${api.property.tenant.main.delete.description}",
-    description = "${api.property.tenant.main.delete.notes}")
+    summary = "${api.estate.tenant.main.delete.description}",
+    description = "${api.estate.tenant.main.delete.notes}")
   @ApiResponses(
     value = {
       @ApiResponse(responseCode = "200", description = "${api.responseCodes.ok.description}"),

@@ -1,0 +1,612 @@
+spring:
+  application:
+    name: estate
+  data:
+    redis:
+      cluster:
+        nodes: redis-cluster.redis:6379
+        max-redirects: 10
+      repositories:
+        enabled: false
+  cache:
+    type: redis
+  datasource:
+    url: jdbc:postgresql://localhost/${spring.application.name}-db
+    # driver-class-name: com.mysql.cj.jdbc.Driver
+    # driver-class-name: com.postgresql.Driver
+    hikari.initializationFailTimeout: 60000
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  cloud:
+    function:
+      definition: messageProcessor
+    stream:
+      default.contentType: application/json
+      bindings:
+        messageProcessor-in-0:
+          destination: ${spring.application.name}s
+          group: ${spring.application.name}sGroup
+          consumer:
+            maxAttempts: 3
+            backOffInitialInterval: 500
+            backOffMaxInterval: 1000
+            backOffMultiplier: 2.0
+      rabbit:
+        bindings.messageProcessor-in-0:
+          consumer:
+            autoBindDlq: true
+            republishToDlq: true
+      kafka:
+        bindings.messageProcessor-in-0:
+          consumer:
+            enableDlq: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # issuer-uri: ${jwt.issuer.uri:http://auth-server.hands-on}
+          jwk-set-uri: http://keycloak.minikube.me/realms/dev/protocol/openid-connect/certs
+          # issuer-uri: ${jwt.issuer.uri:http://localhost:9000}
+      client:
+        registration:
+          keycloak:
+            client-id: estate-service
+            authorization-grant-type: authorization_code
+        provider:
+          keycloak:
+            jwk-set-uri: http://keycloak.minikube.me/realms/dev/protocol/openid-connect/certs
+            # issuer-uri: ${jwt.issuer.uri:http://localhost:9000}
+
+  websecurity:
+    debug: false
+
+server:
+  port: 7004
+  forward-headers-strategy: framework
+  error:
+    include-message: always
+
+logging:
+  level:
+    root: INFO
+    hy: INFO
+    org:
+      hibernate:
+        SQL: INFO
+        type.descriptor.sql.BasicBinder: INFO
+      springframework:
+        security: WARN
+
+springdoc:
+  swagger-ui:
+    path: /${spring.application.name}/openapi/swagger-ui.html
+    oauth2-redirect-url: /swagger-ui/oauth2-redirect.html
+    oauth:
+      clientId: ${springdoc.swagger.ui.oauth.client.id}
+      clientSecret: ${springdoc.swagger.ui.oauth.client.secret}
+      useBasicAuthenticationWithAccessCodeGrant: true
+  oAuthFlow:
+    tokenUrl: ${jwt.token.endpoint}
+    authorizationUrl: ${jwt.authorization.endpoint}
+  api-docs:
+    path: /${spring.application.name}/openapi/v3/api-docs
+  cache:
+    disabled: true
+
+api:
+  common:
+    version: 1.0.0
+    title: Building API
+    description: Description of the API...
+    termsOfService: MY TERMS OF SERVICE
+    license: MY LICENSE
+    licenseUrl: MY LICENSE URL
+    externalDocDesc: MY WIKI PAGE
+    externalDocUrl: MY WIKI URL
+    contact:
+      name: NAME OF CONTACT
+      url: URL TO CONTACT
+      email: contact@mail.com
+
+  responseCodes:
+    ok.description: OK
+    badRequest.description: Bad Request, invalid format of the request. See response message for more information
+    notFound.description: Not found, the specified id does not exist
+    noContent.description: No content, the specified id does not exist
+    unprocessableEntity.description: Unprocessable entity, input parameters caused the processing to fail. See response message for more information
+
+  estate:
+    building:
+      main:
+        create:
+          description: Creates a new building
+          notes: |
+            # Normal response
+            The building information posted to the API will be created and returned in the response.
+
+            # Expected error responses
+            1. If the posted building data is invalid,
+               a **400 - Bad Request** error will be returned.
+            1. If a building with the same ID already exists,
+               a **422 - Unprocessable Entity** error will be returned.
+
+        get:
+          description: Retrieves a building by its ID
+          notes: |
+            # Normal response
+            The building with the specified ID will be retrieved and returned in the response.
+
+            # Expected error responses
+            1. If the building ID is invalid,
+               a **400 - Bad Request** error will be returned.
+            1. If the building is not found,
+               a **404 - Not Found** error will be returned.
+            1. If the request is otherwise unprocessable,
+               a **422 - Unprocessable Entity** error will be returned.
+
+        get-list:
+          description: Retrieves a list of all buildings
+          notes: |
+            # Normal response
+            A list of all buildings will be retrieved and returned in the response.
+
+            # Expected error responses
+            1. If the request is invalid,
+               a **400 - Bad Request** error will be returned.
+            1. If no buildings are found,
+               a **404 - Not Found** error will be returned.
+            1. If the request is otherwise unprocessable,
+               a **422 - Unprocessable Entity** error will be returned.
+
+        update:
+          description: Updates a building by its ID
+          notes: |
+            # Normal response
+            The building with the specified ID will be updated with the provided data and returned in the response.
+
+            # Expected error responses
+            1. If the building ID or the provided data is invalid,
+               a **400 - Bad Request** error will be returned.
+            1. If the request is otherwise unprocessable,
+               a **422 - Unprocessable Entity** error will be returned.
+
+        delete:
+          description: Deletes a building by its ID
+          notes: |
+            # Normal response
+            The building with the specified ID will be deleted.
+
+            # Expected error responses
+            1. If the building ID is invalid,
+               a **400 - Bad Request** error will be returned.
+            1. If the building is not found,
+               a **204 - No Content** response will be returned.
+            1. If the request is otherwise unprocessable,
+               a **422 - Unprocessable Entity** error will be returned.
+
+    lease:
+      main:
+        create:
+          description: Creates a new lease
+          notes: |
+            # Normal response
+            The lease information posted to the API will be created and returned in the response.
+
+            # Expected error responses
+            1. If the posted lease data is invalid,
+               a **400 - Bad Request** error will be returned.
+            1. If a lease with the same ID already exists,
+               a **422 - Unprocessable Entity** error will be returned.
+
+        get:
+          description: Retrieves a lease by its ID
+          notes: |
+            # Normal response
+            The lease with the specified ID will be retrieved and returned in the response.
+
+            # Expected error responses
+            1. If the lease ID is invalid,
+               a **400 - Bad Request** error will be returned.
+            1. If the lease is not found,
+               a **404 - Not Found** error will be returned.
+            1. If the request is otherwise unprocessable,
+               a **422 - Unprocessable Entity** error will be returned.
+
+        get-list:
+          description: Retrieves a list of all leases
+          notes: |
+            # Normal response
+            A list of all leases will be retrieved and returned in the response.
+
+            # Expected error responses
+            1. If the request is invalid,
+               a **400 - Bad Request** error will be returned.
+            1. If no leases are found,
+               a **404 - Not Found** error will be returned.
+            1. If the request is otherwise unprocessable,
+               a **422 - Unprocessable Entity** error will be returned.
+
+        update:
+          description: Updates a lease by its ID
+          notes: |
+            # Normal response
+            The lease with the specified ID will be updated with the provided data and returned in the response.
+
+            # Expected error responses
+            1. If the lease ID or the provided data is invalid,
+               a **400 - Bad Request** error will be returned.
+            1. If the request is otherwise unprocessable,
+               a **422 - Unprocessable Entity** error will be returned.
+
+        delete:
+          description: Deletes a lease by its ID
+          notes: |
+            # Normal response
+            The lease with the specified ID will be deleted.
+
+            # Expected error responses
+            1. If the lease ID is invalid,
+               a **400 - Bad Request** error will be returned.
+            1. If the lease is not found,
+               a **204 - No Content** response will be returned.
+            1. If the request is otherwise unprocessable,
+               a **422 - Unprocessable Entity** error will be returned.
+
+    tenant:
+      main:
+        create:
+          description: Creates a new tenant
+          notes: |
+            # Normal response
+            The tenant information posted to the API will be created and returned in the response.
+
+            # Expected error responses
+            1. If the posted tenant data is invalid,
+               a **400 - Bad Request** error will be returned.
+            1. If a tenant with the same ID already exists,
+               a **422 - Unprocessable Entity** error will be returned.
+
+        get:
+          description: Retrieves a tenant by its ID
+          notes: |
+            # Normal response
+            The tenant with the specified ID will be retrieved and returned in the response.
+
+            # Expected error responses
+            1. If the tenant ID is invalid,
+               a **400 - Bad Request** error will be returned.
+            1. If the tenant is not found,
+               a **404 - Not Found** error will be returned.
+            1. If the request is otherwise unprocessable,
+               a **422 - Unprocessable Entity** error will be returned.
+
+        get-list:
+          description: Retrieves a list of all tenants
+          notes: |
+            # Normal response
+            A list of all tenants will be retrieved and returned in the response.
+
+            # Expected error responses
+            1. If the request is invalid,
+               a **400 - Bad Request** error will be returned.
+            1. If no tenants are found,
+               a **404 - Not Found** error will be returned.
+            1. If the request is otherwise unprocessable,
+               a **422 - Unprocessable Entity** error will be returned.
+
+        update:
+          description: Updates a tenant by its ID
+          notes: |
+            # Normal response
+            The tenant with the specified ID will be updated with the provided data and returned in the response.
+
+            # Expected error responses
+            1. If the tenant ID or the provided data is invalid,
+               a **400 - Bad Request** error will be returned.
+            1. If the request is otherwise unprocessable,
+               a **422 - Unprocessable Entity** error will be returned.
+
+        delete:
+          description: Deletes a tenant by its ID
+          notes: |
+            # Normal response
+            The tenant with the specified ID will be deleted.
+
+            # Expected error responses
+            1. If the tenant ID is invalid,
+               a **400 - Bad Request** error will be returned.
+            1. If the tenant is not found,
+               a **204 - No Content** response will be returned.
+            1. If the request is otherwise unprocessable,
+               a **422 - Unprocessable Entity** error will be returned.
+
+    unit:
+      main:
+        create:
+          description: Creates a new unit
+          notes: |
+            # Normal response
+            The unit information posted to the API will be created and returned in the response.
+
+            # Expected error responses
+            1. If the posted unit data is invalid,
+               a **400 - Bad Request** error will be returned.
+            1. If a unit with the same ID already exists,
+               a **422 - Unprocessable Entity** error will be returned.
+
+        get:
+          description: Retrieves a unit by its ID
+          notes: |
+            # Normal response
+            The unit with the specified ID will be retrieved and returned in the response.
+
+            # Expected error responses
+            1. If the unit ID is invalid,
+               a **400 - Bad Request** error will be returned.
+            1. If the unit is not found,
+               a **404 - Not Found** error will be returned.
+            1. If the request is otherwise unprocessable,
+               a **422 - Unprocessable Entity** error will be returned.
+
+        get-list:
+          description: Retrieves a list of all units
+          notes: |
+            # Normal response
+            A list of all units will be retrieved and returned in the response.
+
+            # Expected error responses
+            1. If the request is invalid,
+               a **400 - Bad Request** error will be returned.
+            1. If no units are found,
+               a **404 - Not Found** error will be returned.
+            1. If the request is otherwise unprocessable,
+               a **422 - Unprocessable Entity** error will be returned.
+
+        update:
+          description: Updates an existing unit
+          notes: |
+            # Normal response
+            The unit with the specified ID will be updated with the provided data and returned in the response.
+
+            # Expected error responses
+            1. If the unit ID or the provided data is invalid,
+               a **400 - Bad Request** error will be returned.
+            1. If the request is otherwise unprocessable,
+               a **422 - Unprocessable Entity** error will be returned.
+
+        delete:
+          description: Deletes a unit by its ID
+          notes: |
+            # Normal response
+            The unit with the specified ID will be deleted.
+
+            # Expected error responses
+            1. If the unit ID is invalid,
+               a **400 - Bad Request** error will be returned.
+            1. If the unit is not found,
+               a **204 - No Content** response will be returned.
+            1. If the request is otherwise unprocessable,
+               a **422 - Unprocessable Entity** error will be returned.
+
+      detail:
+        create:
+          description: Creates new unit details
+          notes: |
+            # Normal response
+            The unit details posted to the API will be created and returned in the response.
+
+            # Expected error responses
+            1. If the posted unit details data is invalid,
+               a **400 - Bad Request** error will be returned.
+            1. If the request is otherwise unprocessable,
+               a **422 - Unprocessable Entity** error will be returned.
+
+        get:
+          description: Retrieves unit details by unit ID
+          notes: |
+            # Normal response
+            The unit details for the specified unit ID will be retrieved and returned in the response.
+
+            # Expected error responses
+            1. If the unit ID is invalid,
+               a **400 - Bad Request** error will be returned.
+            1. If the unit details are not found,
+               a **404 - Not Found** error will be returned.
+            1. If the request is otherwise unprocessable,
+               a **422 - Unprocessable Entity** error will be returned.
+
+        update:
+          description: Updates existing unit details
+          notes: |
+            # Normal response
+            The unit details for the specified unit ID will be updated with the provided data and returned in the response.
+
+            # Expected error responses
+            1. If the unit ID or the provided data is invalid,
+               a **400 - Bad Request** error will be returned.
+            1. If the request is otherwise unprocessable,
+               a **422 - Unprocessable Entity** error will be returned.
+
+        delete:
+          description: Deletes unit details by unit ID
+          notes: |
+            # Normal response
+            The unit details for the specified unit ID will be deleted.
+
+            # Expected error responses
+            1. If the unit ID is invalid,
+               a **400 - Bad Request** error will be returned.
+            1. If the unit details are not found,
+               a **204 - No Content** response will be returned.
+            1. If the request is otherwise unprocessable,
+               a **422 - Unprocessable Entity** error will be returned.
+
+      room:
+        create:
+          description: Creates a new room
+          notes: |
+            # Normal response
+            The room information posted to the API will be created and returned in the response.
+
+            # Expected error responses
+            1. If the posted room data is invalid,
+               a **400 - Bad Request** error will be returned.
+            1. If the request is otherwise unprocessable,
+               a **422 - Unprocessable Entity** error will be returned.
+
+        get:
+          description: Retrieves a room by unit ID and room ID
+          notes: |
+            # Normal response
+            The room with the specified unit ID and room ID will be retrieved and returned in the response.
+
+            # Expected error responses
+            1. If the unit ID or room ID is invalid,
+               a **400 - Bad Request** error will be returned.
+            1. If the room is not found,
+               a **404 - Not Found** error will be returned.
+            1. If the request is otherwise unprocessable,
+               a **422 - Unprocessable Entity** error will be returned.
+
+        update:
+          description: Updates an existing room
+          notes: |
+            # Normal response
+            The room with the specified unit ID and room ID will be updated with the provided data and returned in the response.
+
+            # Expected error responses
+            1. If the unit ID, room ID, or the provided data is invalid,
+               a **400 - Bad Request** error will be returned.
+            1. If the request is otherwise unprocessable,
+               a **422 - Unprocessable Entity** error will be returned.
+
+        delete:
+          description: Deletes a room by unit ID and room ID
+          notes: |
+            # Normal response
+            The room with the specified unit ID and room ID will be deleted.
+
+            # Expected error responses
+            1. If the unit ID or room ID is invalid,
+               a **400 - Bad Request** error will be returned.
+            1. If the room is not found,
+               a **204 - No Content** response will be returned.
+            1. If the request is otherwise unprocessable,
+               a **422 - Unprocessable Entity** error will be returned.
+
+      room-list:
+        create:
+          description: Creates a list of rooms
+          notes: |
+            # Normal response
+            The rooms information posted to the API will be created and returned in the response.
+
+            # Expected error responses
+            1. If the posted rooms data is invalid,
+               a **400 - Bad Request** error will be returned.
+            1. If the request is otherwise unprocessable,
+               a **422 - Unprocessable Entity** error will be returned.
+
+        get-list:
+          description: Retrieves a list of rooms by unit ID
+          notes: |
+            # Normal response
+            The list of rooms for the specified unit ID will be retrieved and returned in the response.
+
+            # Expected error responses
+            1. If the unit ID is invalid,
+               a **400 - Bad Request** error will be returned.
+            1. If no rooms are found,
+               a **404 - Not Found** error will be returned.
+            1. If the request is otherwise unprocessable,
+               a **422 - Unprocessable Entity** error will be returned.
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      product:
+        allow-health-indicator-to-fail: false
+        register-health-indicator: true
+        sliding-window-type: count-based
+        sliding-window-size: 5
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 10000
+        permitted-number-of-calls-in-half-open-state: 3
+        automatic-transition-from-open-to-half-open-enabled: true
+        ignore-exceptions:
+        - hy.api.exceptions.InvalidInputException
+        - hy.api.exceptions.NotFoundException
+  timelimiter:
+    instances:
+      product:
+        timeout-duration: 2s
+  retry:
+    instances:
+      product:
+        max-attempts: 3
+        wait-duration: 1000
+        retry-exceptions:
+        - org.springframework.web.reactive.function.client.WebClientResponseException$InternalServerError
+
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+
+---
+
+spring:
+  config:
+    activate.on-profile: docker
+  datasource:
+    url: jdbc:postgresql://postgres.persistence/${spring.application.name}-db
+  jpa:
+    show-sql: false
+
+server:
+  port: 80
+
+---
+
+spring:
+  config:
+    activate.on-profile: streaming_partitioned
+  cloud:
+    stream.bindings.messageProcessor-in-0.consumer:
+      partitioned: true
+      instanceCount: 2
+
+---
+
+spring:
+  config:
+    activate.on-profile: streaming_instance_0
+  cloud:
+    stream.bindings.messageProcessor-in-0.consumer.instanceIndex: 0
+
+---
+
+spring:
+  config:
+    activate.on-profile: streaming_instance_1
+  cloud:
+    stream.bindings.messageProcessor-in-0.consumer.instanceIndex: 1
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile:
+      - prod
+  datasource:
+    url: jdbc:postgresql://postgres.persistence/${spring.application.name}-db
+
+logging:
+  level:
+    root: WARN
+    hy: WARN
+    '[org.hibernate.SQL]': WARN
+    '[org.hibernate.type.descriptor.sql.BasicBinder]': WARN

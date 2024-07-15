@@ -1,61 +1,45 @@
 package hy.oltp.core.estate.lease.service;
 
+import static org.mapstruct.NullValuePropertyMappingStrategy.IGNORE;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
 import hy.api.core.estate.lease.Lease;
 import hy.api.core.estate.lease.LeaseDetail;
 import hy.api.core.estate.tenant.Tenant;
 import hy.api.core.estate.unit.Unit;
+import hy.oltp.core.estate.lease.persistence.LeaseDetailEntity;
 import hy.oltp.core.estate.lease.persistence.LeaseEntity;
 import hy.oltp.core.estate.tenant.persistence.TenantEntity;
-import hy.oltp.core.estate.tenant.service.TenantMapper;
 import hy.oltp.core.estate.unit.persistence.UnitEntity;
-import hy.oltp.core.estate.unit.service.UnitMapper;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface LeaseMapper {
   LeaseMapper INSTANCE = Mappers.getMapper(LeaseMapper.class);
 
-  @Named("entityToApi")
   Lease entityToApi(LeaseEntity entity);
 
-  @Named("entityToApiWithout")
-  @Mapping(target = "tenant", ignore = true)
-  @Mapping(target = "unit", ignore = true)
-  Lease entityToApiWithout(LeaseEntity entity);
-
-  @Named("apiToEntity")
   @Mapping(target = "version", ignore = true)
   LeaseEntity apiToEntity(Lease lease);
 
-  @Named("apiToEntityWithout")
-  @Mapping(target = "tenant", ignore = true)
-  @Mapping(target = "unit", ignore = true)
+  @Mapping(target = "id", ignore = true)
   @Mapping(target = "version", ignore = true)
-  LeaseEntity apiToEntityWithout(Lease lease);
+  @Mapping(target = "unit", nullValuePropertyMappingStrategy = IGNORE)
+  @Mapping(target = "tenant", nullValuePropertyMappingStrategy = IGNORE)
+  void updateEntityFromApi(Lease lease, @MappingTarget LeaseEntity entity);
 
-  Lease leaseDetailEntityToApi(LeaseDetail leaseDetail);
+  LeaseDetail entityToApi(LeaseDetailEntity entity);
 
-  LeaseDetail leaseDetailApiToEntity(LeaseDetail leaseDetail);
+  LeaseDetailEntity apiToEntity(LeaseDetail api);
 
+  @Mapping(target = "building", ignore = true)
+  @Mapping(target = "leases", ignore = true)
+  Unit unitEntityToUnit(UnitEntity unitEntity);
 
-
-  default UnitEntity unitApiToEntity(Unit unit) {
-    return UnitMapper.INSTANCE.apiToEntityWithout(unit);
-  }
-
-  default Unit unitEntityToApi(UnitEntity unitEntity) {
-    return UnitMapper.INSTANCE.entityToApiWithout(unitEntity);
-  }
-
-  default TenantEntity tenantApiToEntity(Lease lease) {
-    return TenantMapper.INSTANCE.apiToEntityWithout(lease.getTenant());
-  }
-
-  default Tenant tenantEntityToApi(TenantEntity entity) {
-    return TenantMapper.INSTANCE.entityToApiWithout(entity);
-  }
+  @Mapping(target = "leases", ignore = true)
+  Tenant tenantEntityToTenant(TenantEntity tenantEntity);
 }

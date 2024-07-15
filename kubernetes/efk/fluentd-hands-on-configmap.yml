@@ -9,7 +9,16 @@ data:
       @type grep
       <exclude>
         key $.kubernetes.namespace_name
+        # Disable redundant namespace
         pattern ^(kube-system|logging|istio-system|kubernetes-dashboard)$
+      </exclude>
+    </filter>
+
+    <filter kubernetes.**>
+      @type grep
+      <exclude>
+        key $.kubernetes.container_name
+        pattern ^(istio-proxy)$
       </exclude>
     </filter>
 
@@ -22,6 +31,7 @@ data:
       </rule>
     </match>
 
+    # -- Customize the tag for spring-boot logs --
     <match kubernetes.**hands-on**>
       @type rewrite_tag_filter
       <rule>
@@ -30,6 +40,17 @@ data:
         tag spring-boot.${tag}
       </rule>
     </match>
+
+    <match kubernetes.**hy-oltp**>
+      @type rewrite_tag_filter
+      <rule>
+        key log
+        pattern ^(.*)$
+        tag spring-boot.${tag}
+      </rule>
+    </match>
+    # -- END --
+
 
     <match spring-boot.**>
       @type rewrite_tag_filter

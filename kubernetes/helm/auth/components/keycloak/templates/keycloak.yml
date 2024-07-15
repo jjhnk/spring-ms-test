@@ -1,0 +1,101 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: keycloak
+  labels:
+    app: keycloak
+spec:
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+    - name: https
+      port: 443
+      targetPort: 8443
+  selector:
+    app: keycloak
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keycloak
+  labels:
+    app: keycloak
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: keycloak
+  template:
+    metadata:
+      labels:
+        app: keycloak
+    spec:
+      containers:
+      - name: keycloak
+        image: quay.io/keycloak/keycloak:25.0.1
+        args: ["start-dev"]
+        env:
+          - name: KEYCLOAK_ADMIN
+            value: "admin"
+          - name: KEYCLOAK_ADMIN_PASSWORD
+            value: "admin"
+          - name: KC_PROXY
+            value: "edge"
+          - name: KC_HTTP_ENABLED
+            value: "true"
+          - name: USER_TIMEZONE
+            value: "Asia/Seoul"
+          - name: KC_DB
+            value: postgres
+          - name: KC_DB_URL
+            value: "jdbc:postgresql://postgres.persistence/${POSTGRES_DB}"
+          - name: POSTGRES_DB
+            valueFrom:
+              secretKeyRef:
+                name: postgres-credentials
+                key: POSTGRES_DB
+          - name: KC_DB_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: postgres-credentials
+                key: DB_USERNAME
+          - name: KC_DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: postgres-credentials
+                key: DB_PASSWORD
+          # - name: KEYCLOAK_HTTPS_USE_PEM
+          #   value: "true"
+          # - name: KEYCLOAK_HTTPS_PORT
+          #   value: "8443"
+          # - name: KEYCLOAK_ENABLE_HTTPS
+          #   value: "true"
+          # - name: KEYCLOAK_HTTPS_CERTIFICATE_FILE
+          #   value: "/usr/local/certificates/tls.crt"
+          # - name: KEYCLOAK_HTTPS_CERTIFICATE_KEY_FILE
+          #   value: "/usr/local/certificates/tls.key"
+
+        ports:
+          - name: http
+            containerPort: 8080
+        ports:
+          - name: https
+            containerPort: 8443
+        readinessProbe:
+          httpGet:
+            path: /realms/master
+            port: 8080
+      #   volumeMounts:
+      #   - name: certificates
+      #     mountPath: "/usr/local/certificates/"
+      #     readOnly: true
+      # volumes:
+      # - name: certificates
+      #   secret:
+      #     secretName: ca-secret
+      #     items:
+      #     - key: tls.crt
+      #       path: tls.crt
+      #     - key: tls.key
+      #       path: tls.key

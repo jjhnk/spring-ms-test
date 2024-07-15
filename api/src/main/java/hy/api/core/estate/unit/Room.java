@@ -1,5 +1,12 @@
 package hy.api.core.estate.unit;
 
+import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 /**
  * Represents a room in a unit
  *
@@ -7,25 +14,20 @@ package hy.api.core.estate.unit;
  * @see UnitDetail
  * @see RoomTypes
  */
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = Room.class)
+@JsonInclude(Include.NON_NULL)
 public class Room {
   private int id;
   private Unit unit;
   private String name;
-  private String type;
+  private RoomTypes type;
   private int squareFeet;
   private int windowsCount;
 
-  public Room() {
-    this(0, null, null, null, 0, 0);
-  }
+  public Room() {}
 
-  public Room(int id) {
-    this(id, null, null, null, 0, 0);
-  }
-
-  public Room(int id, Unit unit, String name, String type, int squareFeet, int windowsCount) {
+  public Room(int id, String name, RoomTypes type, int squareFeet, int windowsCount) {
     this.id = id;
-    this.unit = unit;
     this.name = name;
     this.type = type;
     this.squareFeet = squareFeet;
@@ -56,11 +58,11 @@ public class Room {
     this.name = name;
   }
 
-  public String getType() {
+  public RoomTypes getType() {
     return type;
   }
 
-  public void setType(String type) {
+  public void setType(RoomTypes type) {
     this.type = type;
   }
 
@@ -80,5 +82,58 @@ public class Room {
     this.windowsCount = windowsCount;
   }
 
+  @Override
+  public int hashCode() {
+    return Objects.hash(name, type, squareFeet, windowsCount);
+  }
 
+  // @formatter:off
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+
+    if (obj == null || getClass() != obj.getClass()) {
+      return false;
+    }
+
+    Room other = (Room) obj;
+    return name.equals(other.name)
+      && type.equals(other.type)
+      && squareFeet == other.squareFeet
+      && windowsCount == other.windowsCount;
+  }
+  // @formatter:on
+
+
+  @Override
+  // @formatter:off
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("\"room\":{");
+    sb.append("\"id\":" + id);
+    if (unit != null) {
+      sb.append(",\"unit\":" + unit.toReferredString());
+    }
+    sb.append(",\"name\":\"" + name + "\"");
+    sb.append(",\"type\":\"" + type + "\"");
+    sb.append(",\"squareFeet\":" + squareFeet);
+    sb.append(",\"windowsCount\":" + windowsCount);
+    sb.append("}");
+    return sb.toString();
+  }
+  // @formatter:on
+
+  public String toReferredString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("{");
+    sb.append("\"id\":" + id);
+    sb.append(",\"name\":\"" + name + "\"");
+    sb.append(",\"type\":\"" + type + "\"");
+    sb.append(",\"squareFeet\":" + squareFeet );
+    sb.append(",\"windowsCount\":" + windowsCount );
+    sb.append("}");
+    return sb.toString();
+  }
 }

@@ -80,7 +80,6 @@ public final class CacheUtility<T> {
       return false;
     }
 
-    log.info("Adding {} to cache", key);
     addToCache(key, value);
     return true;
   }

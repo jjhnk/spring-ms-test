@@ -3,10 +3,12 @@ package hy.api.core.estate.lease;
 import java.util.List;
 
 import org.springframework.http.HttpHeaders;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,7 +26,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  *
  * @see Lease
  */
-@RequestMapping("/property/lease")
+@RequestMapping("/estate/lease")
 @SecurityRequirement(name = "security_auth")
 @Tag(name = "Lease", description = "The Lease API")
 public interface LeaseController {
@@ -35,14 +37,14 @@ public interface LeaseController {
    * @param lease the lease
    * @return the created lease
    */
-  @Operation(summary = "${api.lease.main.create.description}", description = "${api.lease.main.create.notes}")
+  @Operation(summary = "${api.estate.lease.main.create.description}", description = "${api.estate.lease.main.create.notes}")
   @ApiResponses(
     value = {
-      @ApiResponse(responseCode = "200", description = "${api.responseCodes.ok.description"),
+      @ApiResponse(responseCode = "200", description = "${api.responseCodes.ok.description}"),
       @ApiResponse(responseCode = "400", description = "${api.responseCodes.badRequest.description}"),
       @ApiResponse(responseCode = "422", description = "${api.responseCodes.unprocessableEntity.description}")})
   @PostMapping(consumes = "application/json", produces = "application/json")
-  public Lease createLease(Lease lease);
+  public Lease createLease(@RequestBody Lease lease);
 
   /**
    * Gets a lease.
@@ -51,7 +53,7 @@ public interface LeaseController {
    * @param id the ID of the lease
    * @return the lease
    */
-  @Operation(summary = "${api.lease.main.get.description}", description = "${api.lease.main.get.notes}")
+  @Operation(summary = "${api.estate.lease.main.get.description}", description = "${api.estate.lease.main.get.notes}")
   @ApiResponses(
     value = {
       @ApiResponse(responseCode = "200", description = "${api.responseCodes.ok.description}"),
@@ -70,7 +72,7 @@ public interface LeaseController {
    * @see Tenant
    * @see UnitSummary
    */
-  @Operation(summary = "${api.lease.main.getAll.description}", description = "${api.lease.main.getAll.notes}")
+  @Operation(summary = "${api.estate.lease.main.get-list.description}", description = "${api.estate.lease.main.get-list.notes}")
   @ApiResponses(
     value = {
       @ApiResponse(responseCode = "200", description = "${api.responseCodes.ok.description}"),
@@ -91,14 +93,14 @@ public interface LeaseController {
    * @param lease the updated lease
    * @return the updated lease
    */
-  @Operation(summary = "${api.lease.main.update.description}", description = "${api.lease.main.update.notes}")
+  @Operation(summary = "${api.estate.lease.main.update.description}", description = "${api.estate.lease.main.update.notes}")
   @ApiResponses(
     value = {
       @ApiResponse(responseCode = "200", description = "${api.responseCodes.ok.description}"),
       @ApiResponse(responseCode = "400", description = "${api.responseCodes.badRequest.description}"),
       @ApiResponse(responseCode = "422", description = "${api.responseCodes.unprocessableEntity.description}")})
   @PutMapping(value = "/{id}", consumes = "application/json", produces = "application/json")
-  public Lease updateLease(@RequestHeader HttpHeaders headers, @PathVariable("id") int id, Lease lease);
+  public Lease updateLease(@RequestHeader HttpHeaders headers, @PathVariable("id") int id, @RequestBody Lease lease);
 
   /**
    * Deletes a lease.
@@ -106,5 +108,12 @@ public interface LeaseController {
    * @param headers the HTTP headers
    * @param id the ID of the lease
    */
+  @Operation(summary = "${api.estate.lease.main.delete.description}", description = "${api.estate.lease.main.delete.notes}")
+  @ApiResponses(
+    value = {
+      @ApiResponse(responseCode = "200", description = "${api.responseCodes.ok.description}"),
+      @ApiResponse(responseCode = "204", description = "${api.responseCodes.noContent.description}"),
+      @ApiResponse(responseCode = "422", description = "${api.responseCodes.unprocessableEntity.description}")})
+  @DeleteMapping(value = "/{id}")
   public void deleteLease(@RequestHeader HttpHeaders headers, @PathVariable("id") int id);
 }

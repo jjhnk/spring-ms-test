@@ -3,6 +3,7 @@ apiVersion: security.istio.io/v1beta1
 kind: AuthorizationPolicy
 metadata:
   name: product-composite-require-jwt
+  namespace: {{ .Values.namespace }}
 spec:
   action: ALLOW
   rules:
@@ -15,6 +16,7 @@ apiVersion: security.istio.io/v1beta1
 kind: PeerAuthentication
 metadata:
   name: default
+  namespace: {{ .Values.namespace }}
 spec:
   mtls:
     mode: PERMISSIVE
@@ -23,6 +25,7 @@ apiVersion: security.istio.io/v1beta1
 kind: RequestAuthentication
 metadata:
   name: product-composite-request-authentication
+  namespace: {{ .Values.namespace }}
 spec:
   jwtRules:
   - forwardOriginalToken: true
@@ -35,7 +38,8 @@ spec:
 apiVersion: networking.istio.io/v1beta1
 kind: Gateway
 metadata:
-  name: hands-on-gw
+  name: {{ .Values.namespace }}-gw
+  namespace: {{ .Values.namespace }}
 spec:
   selector:
     istio: ingressgateway
@@ -53,60 +57,46 @@ spec:
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
-  name: hands-on-vs
+  name: {{ .Values.namespace }}-vs
+  namespace: {{ .Values.namespace }}
 spec:
   gateways:
-  - hands-on-gw
+  - {{ .Values.namespace }}-gw
   hosts:
   - minikube.me
   http:
+  {{- range .Values.httpRoutes }}
   - match:
+    {{- range .match }}
     - uri:
-        prefix: /oauth2
+      {{- if .uri.prefix }}
+        prefix: {{ .uri.prefix }}
+      {{- else if .uri.regex }}
+        regex: {{ .uri.regex }}
+      {{- end }}
+    {{- end }}
+    {{- if .rewrite }}
+    rewrite:
+      uriRegexRewrite:
+        match: {{ .rewrite.uriRegexRewrite.match }}
+        rewrite: {{ .rewrite.uriRegexRewrite.rewrite }}
+    {{- end }}
     route:
+    {{- range .route }}
     - destination:
-        host: auth-server
-  - match:
-    - uri:
-        prefix: /login
-    route:
-    - destination:
-        host: auth-server
-  - match:
-    - uri:
-        prefix: /error
-    route:
-    - destination:
-        host: auth-server
-  - match:
-    - uri:
-        prefix: /product-composite
-    route:
-    - destination:
-        host: product-composite
+        host: {{ .destination.host }}
+        {{- if .destination.port }}
         port:
-          number: 80
-  - match:
-    - uri:
-        prefix: /openapi
-    route:
-    - destination:
-        host: product-composite
-        port:
-          number: 80
-  - match:
-    - uri:
-        prefix: /webjars
-    route:
-    - destination:
-        host: product-composite
-        port:
-          number: 80
+          number: {{ .destination.port.number }}
+        {{- end }}
+    {{- end }}
+  {{- end }}
 ---
 apiVersion: networking.istio.io/v1beta1
 kind: Gateway
 metadata:
   name: health-gateway
+  namespace: {{ .Values.namespace }}
 spec:
   selector:
     istio: ingressgateway
@@ -119,12 +109,13 @@ spec:
       protocol: HTTPS
     tls:
       mode: SIMPLE
-      credentialName: hands-on-certificate
+      credentialName: {{ .Values.namespace }}-certificate
 ---
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: health-vs
+  namespace: {{ .Values.namespace }}
 spec:
   hosts:
   - "health.minikube.me"

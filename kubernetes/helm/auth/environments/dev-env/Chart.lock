@@ -1,0 +1,9 @@
+dependencies:
+- name: common
+  repository: file://../../../common
+  version: 1.0.0
+- name: keycloak
+  repository: file://../../components/keycloak
+  version: 1.0.0
+digest: sha256:79d4baa6133932ba97c95ea1082e0a24904b7349677e6b72bee3a0bf135b96fa
+generated: "2024-07-12T21:36:35.5150486+09:00"

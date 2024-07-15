@@ -1,0 +1,14 @@
+apiVersion: v2
+appVersion: "1.0"
+description: A Helm chart for logging in dev environment
+name: dev-env
+version: 1.0.0
+
+dependencies:
+  - name: common
+    version: 1.0.0
+    repository: file://../../../common
+
+  - name: keycloak
+    version: 1.0.0
+    repository: file://../../components/keycloak

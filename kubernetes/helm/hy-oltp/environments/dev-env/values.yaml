@@ -1,0 +1,31 @@
+secrets:
+  rabbitmq-credentials:
+    SPRING_RABBITMQ_USERNAME: rabbit-user-dev
+    SPRING_RABBITMQ_PASSWORD: rabbit-pwd-dev
+
+  postgres-credentials:
+    SPRING_DATASOURCE_USERNAME: postgres-user
+    SPRING_DATASOURCE_PASSWORD: postgres-pwd
+
+  redis-credentials:
+    SPRING_DATA_REDIS_PASSWORD: redis-password
+
+  springdoc-estate-credentials:
+    SPRINGDOC_SWAGGER_UI_OAUTH_CLIENT_ID: estate-service
+    SPRINGDOC_SWAGGER_UI_OAUTH_CLIENT_SECRET: XvUwnVoX6nrrwrp41cpmxPaCr6kOjnTq
+
+estate:
+  envFromSecretRefs:
+    - rabbitmq-credentials
+    - postgres-credentials
+    - redis-credentials
+    - springdoc-estate-credentials
+
+destinationRules:
+  - name: estate
+
+namespace: hy-oltp
+
+jwtIssuerUri: https://keycloak.minikube.me/realms/dev
+jwtTokenEndpoint: https://keycloak.minikube.me/realms/dev/protocol/openid-connect/token
+jwtAuthorizationEndpoint: https://keycloak.minikube.me/realms/dev/protocol/openid-connect/auth

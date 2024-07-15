@@ -6,4 +6,5 @@ metadata:
 data:
   JWT_ISSUER_URI: {{ .Values.jwtIssuerUri }}
   JWT_TOKEN_ENDPOINT: {{ .Values.jwtTokenEndpoint }}
+  JWT_AUTHORIZATION_ENDPOINT: {{ .Values.jwtAuthorizationEndpoint }}
 {{- end -}}

@@ -2,9 +2,12 @@ package hy.util.http;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
+@ConditionalOnProperty(name = "app.reactive.enabled", havingValue = "true", matchIfMissing = true)
 @Component
 public class ServiceUtil {
   private final String port;

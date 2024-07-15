@@ -5,12 +5,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.server.adapter.ForwardedHeaderTransformer;
 
-import io.swagger.v3.oas.models.ExternalDocumentation;
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.info.Contact;
-import io.swagger.v3.oas.models.info.Info;
-import io.swagger.v3.oas.models.info.License;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
@@ -18,28 +14,6 @@ import reactor.core.scheduler.Schedulers;
 @Configuration
 @Slf4j
 public class AppConfig {
-  @Value("${api.common.version}")
-  String apiVersion;
-  @Value("${api.common.title}")
-  String apiTitle;
-  @Value("${api.common.description}")
-  String apiDescription;
-  @Value("${api.common.termsOfService}")
-  String apiTermsOfService;
-  @Value("${api.common.license}")
-  String apiLicense;
-  @Value("${api.common.licenseUrl}")
-  String apiLicenseUrl;
-  @Value("${api.common.externalDocDesc}")
-  String apiExternalDocDesc;
-  @Value("${api.common.externalDocUrl}")
-  String apiExternalDocUrl;
-  @Value("${api.common.contact.name}")
-  String apiContactName;
-  @Value("${api.common.contact.url}")
-  String apiContactUrl;
-  @Value("${api.common.contact.email}")
-  String apiContactEmail;
 
   private final Integer threadPoolSize;
   private final Integer taskQueueSize;
@@ -66,23 +40,13 @@ public class AppConfig {
   }
 
   @Bean
-  OpenAPI getOpenApi() {
-    return new OpenAPI().info(new Info().title(apiTitle)
-      .description(apiDescription)
-      .version(apiVersion)
-      .contact(new Contact().name(apiContactName)
-        .url(apiContactUrl)
-        .email(apiContactEmail))
-      .termsOfService(apiTermsOfService)
-      .license(new License().name(apiLicense)
-        .url(apiLicenseUrl)))
-      .externalDocs(new ExternalDocumentation().description(apiExternalDocDesc)
-        .url(apiExternalDocUrl));
+  WebClient webClient(WebClient.Builder builder) {
+    return builder.build();
   }
 
   @Bean
-  WebClient webClient(WebClient.Builder builder) {
-    return builder.build();
+  public ForwardedHeaderTransformer forwardedHeaderTransformer() {
+    return new ForwardedHeaderTransformer();
   }
 
 }

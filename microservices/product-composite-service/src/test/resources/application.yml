@@ -22,3 +22,15 @@ spring:
         products-out-0.destination: products
         recommendations-out-0.destination: recommendations
         reviews-out-0.destination: reviews
+
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: estate-service
+            authorization-grant-type: authorization_code
+            scope: openid
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:13000/realms/dev

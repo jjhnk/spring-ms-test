@@ -56,5 +56,43 @@ destinationRules:
   - name: recommendation
   - name: review
 
+namespace: hands-on
+
+httpRoutes:
+  - match:
+      - uri:
+          prefix: /oauth2
+    route:
+      - destination:
+          host: auth-server
+  - match:
+      - uri:
+          prefix: /login
+    route:
+      - destination:
+          host: auth-server
+  - match:
+      - uri:
+          prefix: /error
+    route:
+      - destination:
+          host: auth-server
+  - match:
+      - uri:
+          prefix: /product-composite
+    route:
+      - destination:
+          host: product-composite
+          port:
+            number: 80
+  - match:
+      - uri:
+          prefix: /estate
+    route:
+      - destination:
+          host: estate.hy-oltp.svc.cluster.local
+          port:
+            number: 80
+
 jwtIssuerUri: http://auth-server # https://dev-a2z2mux06zphbdxf.us.auth0.com/
 jwtTokenEndpoint: http://auth-server.hands-on.svc.cluster.local/oauth2/jwks # https://dev-a2z2mux06zphbdxf.us.auth0.com/.well-known/jwks.json

@@ -15,6 +15,6 @@ import org.springframework.data.repository.NoRepositoryBean;
  *
  */
 @NoRepositoryBean
-public interface BaseRepository<T, I extends Number> extends JpaRepository<T, I>, QuerydslPredicateExecutor<T> {
+public interface BaseRepository<T, I> extends JpaRepository<T, I>, QuerydslPredicateExecutor<T> {
 
 }

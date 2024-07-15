@@ -15,19 +15,20 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @Configuration
 @EnableWebFluxSecurity
 public class SecurityConfig {
-  private static final String SERVICE_URL = "/product-composite/**";
+  private static final String SCOPE_PRODUCT_READ = "SCOPE_product:read";
+  private static final String SCOPE_PRODUCT_WRITE = "SCOPE_product:write";
+  private static final String MICRO_SERVICE_URL = "/product-composite/**";
 
   @Bean
   SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
     http.csrf(CsrfSpec::disable)
       .authorizeExchange(exchange ->
         exchange
-          .pathMatchers("/openapi/**").permitAll()
-          .pathMatchers("/webjars/**").permitAll()
+          .pathMatchers("/product-composite/openapi/**").permitAll()
           .pathMatchers("/actuator/**").permitAll()
-          .pathMatchers(POST, SERVICE_URL).hasAuthority("SCOPE_product:write")
-          .pathMatchers(DELETE, SERVICE_URL).hasAuthority("SCOPE_product:write")
-          .pathMatchers(GET, SERVICE_URL).hasAuthority("SCOPE_product:read")
+          .pathMatchers(POST, MICRO_SERVICE_URL).hasAuthority(SCOPE_PRODUCT_WRITE)
+          .pathMatchers(GET, MICRO_SERVICE_URL).hasAuthority(SCOPE_PRODUCT_READ)
+          .pathMatchers(DELETE, MICRO_SERVICE_URL).hasAuthority(SCOPE_PRODUCT_WRITE)
           .anyExchange().authenticated()
       )
       .oauth2ResourceServer(oauth2 -> oauth2.jwt(withDefaults()));

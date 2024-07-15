@@ -30,6 +30,16 @@ spec:
         app: {{ include "common.name" . }}
         version: {{ .Values.image.tag }}
     spec:
+      {{- if .Values.hostAliases }}
+      hostAliases:
+        {{- range .Values.hostAliases }}
+        - ip: "{{ .ip }}"
+          hostnames:
+            {{- range .hostnames }}
+            - "{{ . }}"
+            {{- end }}
+        {{- end }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}/{{ .Values.image.name }}:{{ .Values.image.tag }}"

@@ -29,7 +29,14 @@ public class UnitRepositoryImpl implements UnitRepositoryCustom {
   @Override
   public List<UnitEntity> findByTenantId(int tenantId) {
     QUnitEntity entity = QUnitEntity.unitEntity;
-    BooleanExpression predicate = entity.leases.any().id.eq(tenantId);
+    BooleanExpression predicate = entity.leases.any().tenant.id.eq(tenantId);
+    return query.selectFrom(entity).where(predicate).fetch();
+  }
+
+  @Override
+  public List<UnitEntity> findByBuildingIdAndTenantId(int buildingId, int tenantId) {
+    QUnitEntity entity = QUnitEntity.unitEntity;
+    BooleanExpression predicate = entity.building.id.eq(buildingId).and(entity.leases.any().id.eq(tenantId));
     return query.selectFrom(entity).where(predicate).fetch();
   }
 }

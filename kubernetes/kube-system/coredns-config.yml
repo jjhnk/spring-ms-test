@@ -1,0 +1,36 @@
+apiVersion: v1
+data:
+  Corefile: |
+    .:53 {
+        log
+        errors
+        rewrite name keycloak.minikube.me keycloak.auth.svc.cluster.local
+        health {
+           lameduck 5s
+        }
+        ready
+        kubernetes cluster.local in-addr.arpa ip6.arpa {
+           pods insecure
+           fallthrough in-addr.arpa ip6.arpa
+           ttl 30
+        }
+        prometheus :9153
+        hosts {
+           192.168.65.254 host.minikube.internal
+           fallthrough
+        }
+        forward . /etc/resolv.conf {
+           max_concurrent 1000
+        }
+        cache 30
+        loop
+        reload
+        loadbalance
+    }
+kind: ConfigMap
+metadata:
+  creationTimestamp: "2024-06-24T09:09:28Z"
+  name: coredns
+  namespace: kube-system
+  resourceVersion: "1221653"
+  uid: 17fe4bec-762b-46d1-b5af-081655c3b92c

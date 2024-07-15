@@ -18,14 +18,15 @@ import lombok.extern.slf4j.Slf4j;
 public class BuildingService {
   private static final String MSG_NOT_FOUND_WITH_ID = "Building not found with id ";
   private static final String CACHE_KEY = "buildings:";
-  private static final BuildingMapper mapper = BuildingMapper.INSTANCE;
+
   private final BuildingRepository repository;
-
   private final CacheUtility<BuildingEntity> cacheUtility;
+  private final BuildingMapper mapper;
 
-  public BuildingService(BuildingRepository repository, CacheUtility<BuildingEntity> cacheUtility) {
+  public BuildingService(BuildingRepository repository, CacheUtility<BuildingEntity> cacheUtility, BuildingMapper mapper) {
     this.repository = repository;
     this.cacheUtility = cacheUtility;
+    this.mapper = mapper == null ? BuildingMapper.INSTANCE : mapper;
   }
 
   public Building createBuilding(Building estate) {
@@ -53,6 +54,7 @@ public class BuildingService {
   }
 
   public void deleteBuilding(HttpHeaders headers, int id) {
+    log.info("Deleting building {}", id);
     var found = getEntityFromCacheOrRepository(headers, id);
     repository.delete(found);
     cacheUtility.safeRemoveFromCache(headers, CACHE_KEY + id);
@@ -70,15 +72,15 @@ public class BuildingService {
 
   private List<Building> getEntitiesFromCacheOrRepository(HttpHeaders headers) {
     var cached = cacheUtility.safeGetListFromCache(headers, CACHE_KEY);
-    if (cached != null) {
+    if (cached != null && !cached.isEmpty()) {
       return cached.stream()
-        .map(e -> mapper.entityToApi(e))
+        .map(mapper::entityToApi)
         .collect(Collectors.toList());
     }
 
     return repository.findAll()
       .stream()
-      .map(e -> mapper.entityToApi(e))
+      .map(mapper::entityToApi)
       .collect(Collectors.toList());
   }
 }

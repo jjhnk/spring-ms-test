@@ -1,6 +1,9 @@
 package hy.oltp.core.estate.lease.persistence;
 
-import java.util.Date;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Objects;
+
 import hy.api.core.estate.lease.LeaseStatus;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
@@ -21,10 +24,10 @@ import lombok.ToString;
 @ToString
 public class LeaseDetailEntity {
   @NotNull
-  private Date startDate;
+  private Instant startedAt;
 
   @NotNull
-  private Date endDate;
+  private Instant endedAt;
 
   @Min(0)
   private double rentAmount;
@@ -35,4 +38,28 @@ public class LeaseDetailEntity {
   @Enumerated(EnumType.STRING)
   @NotNull
   private LeaseStatus status;
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(startedAt, endedAt, rentAmount, securityDeposit, status);
+  }
+
+  // @formatter:off
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null || getClass() != obj.getClass()) {
+      return false;
+    }
+
+    LeaseDetailEntity other = (LeaseDetailEntity) obj;
+    return startedAt.truncatedTo(ChronoUnit.MILLIS).equals(other.startedAt.truncatedTo(ChronoUnit.MILLIS))
+      && endedAt.truncatedTo(ChronoUnit.MILLIS).equals(other.endedAt.truncatedTo(ChronoUnit.MILLIS))
+      && rentAmount == other.rentAmount
+      && securityDeposit == other.securityDeposit
+      && status.equals(other.status);
+  }
+  // @formatter:on
 }

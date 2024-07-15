@@ -44,18 +44,26 @@ springdoc:
   packagesToScan: hy.microservices.composite.product
   pathsToMatch: /**
   swagger-ui:
-    path: /openapi/swagger-ui.html
+    path: /${spring.application.name}/openapi/swagger-ui.html
     oauth2-redirect-url: /swagger-ui/oauth2-redirect.html
     oauth:
       clientId: writer
-      # TODO: EXTERNALIZE!
       clientSecret: secret-writer
       useBasicAuthenticationWithAccessCodeGrant: true
+    urls:
+    - url: https://minikube.me/product-composite/openapi/v3/api-docs
+      name: Product Composite
+    - url: https://minikube.me/estate/openapi/v3/api-docs
+      name: Estate
+  webjars:
+    # To change the webjars prefix that is visible the URL of swagger-ui for **spring-webflux**.
+    # see https://springdoc.org/properties.html
+    prefix: /webjars
   oAuthFlow:
-    authorizationUrl: https://localhost:8443/oauth2/authorize
-    tokenUrl: https://localhost:8443/oauth2/token
+    authorizationUrl: https://keycloak.minikube.me/oauth2/authorize
+    tokenUrl: https://keycloak.minikube.me/oauth2/token
   api-docs:
-    path: /openapi/v3/api-docs
+    path: /${spring.application.name}/openapi/v3/api-docs
   cache:
     disabled: true
 
@@ -170,6 +178,11 @@ spring:
 
 server:
   port: 80
+
+springdoc:
+  oAuthFlow:
+    authorizationUrl: https://minikube.me/oauth2/authorize
+    tokenUrl: https://minikube.me/oauth2/token
 
 ---
 

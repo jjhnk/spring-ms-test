@@ -48,6 +48,8 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom {
     if (unit != null) {
       for (RoomEntity room : rooms) {
         room.setUnit(unit);
+        em.detach(room);
+        room.setId(0);
         em.persist(room);
       }
       return rooms;

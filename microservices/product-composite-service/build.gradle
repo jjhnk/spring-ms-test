@@ -20,9 +20,9 @@ configurations {
 }
 
 ext {
-	springdocVersion = '2.0.2'
 	mapstructVersion = '1.5.5.Final'
 	springCloudVersion = '2023.0.2'
+	springdocVersion = '2.6.0'
 }
 
 repositories {

@@ -61,6 +61,23 @@ services:
       rabbitmq.message-queue:
         condition: service_healthy
 
+  estate-service:
+    build: oltp/estate-service
+    image: oltp/estate-service
+    mem_limit: 512m
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_CONFIG_LOCATION=file:/config/repo/application.yml,file:/config/repo/estate.yml
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USR}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PWD}
+      - SPRING_DATA_REDIS_PASSWORD=${REDIS_PWD}
+    volumes:
+      - ./config:/config
+    depends_on:
+      postgres.persistence:
+        condition: service_healthy
+      rabbitmq.message-queue:
+        condition: service_healthy
 
   product-composite:
     build: microservices/product-composite-service

@@ -1,0 +1,30 @@
+# app:
+#   reactive:
+#     enabled: false
+
+# logging:
+#   level:
+#     root: INFO
+#     hy: INFO
+#     org.hibernate.stat: debug
+#     org.hibernate.SQL_SLOW: info
+#     org.hibernate.cache: debug
+#     '[org.hibernate.SQL]': DEBUG
+#     '[org.hibernate.type.descriptor.sql.BasicBinder]': TRACE
+#     '[org.hibernate.orm.jdbc.bind]': TRACE
+#     '[org.hibernate.type.descriptor.sql]': TRACE
+
+# spring:
+#   cache:
+#     type: none
+#   data:
+#     redis.cluster.nodes: localhost:6379
+#   datasource:
+#     url: jdbc:h2:mem:testdb
+#     driverClassName: org.h2.Driver
+#     username: sa
+#     password: password
+#   jpa:
+#     hibernate:
+#       ddl-auto: update
+#     database-platform: org.hibernate.dialect.H2Dialect

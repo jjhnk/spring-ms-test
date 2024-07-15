@@ -1,10 +1,56 @@
-server.error.include-message: always
-spring.cache.type: none
-spring.data.redis.cluster.nodes: localhost:6379
+server:
+  error:
+    include-message: always
+
+app:
+  reactive:
+    enabled: false
+
+api:
+  common:
+    version:
+    title:
+    description:
+    termsOfService:
+    license:
+    licenseUrl:
+    externalDocDesc:
+    externalDocUrl:
+    contact:
+      name:
+      url:
+      email:
 
 logging:
   level:
     root: INFO
     hy: INFO
+    '[org.hibernate.stat]': debug
+    '[org.hibernate.SQL_SLOW]': info
+    '[org.hibernate.cache]': debug
     '[org.hibernate.SQL]': DEBUG
     '[org.hibernate.type.descriptor.sql.BasicBinder]': TRACE
+    '[org.hibernate.orm.jdbc.bind]': TRACE
+    '[org.hibernate.type.descriptor.sql]': TRACE
+    '[org.springframework.http.converter]': DEBUG
+    '[com.fasterxml.jackson]': DEBUG
+
+spring:
+  cache:
+    type: none
+  data:
+    redis.cluster.nodes: localhost:6379
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  main:
+    allow-bean-definition-overriding: true
+
+  security:
+    oauth2.resourceserver.jwt.issuer-uri:
+
+springdoc:
+  oAuthFlow:
+    authorizationUrl: http://localhost:10443
+    tokenUrl: http://localhost:10443

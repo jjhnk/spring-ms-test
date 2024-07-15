@@ -7,5 +7,5 @@ public interface LeaseRepositoryCustom {
 
   List<LeaseEntity> findByUnitId(int unitId);
 
-  List<LeaseEntity> findByTenantIdOrUnitId(int tenantId, int unitId);
+  List<LeaseEntity> findByTenantIdAndUnitId(int tenantId, int unitId);
 }

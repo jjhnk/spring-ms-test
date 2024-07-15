@@ -1,5 +1,7 @@
 package hy.oltp.core.estate.unit.persistence;
 
+import java.util.Objects;
+
 import hy.api.core.estate.unit.UnitStatus;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
@@ -22,9 +24,32 @@ public class UnitSummaryEntity {
   private String unitNumber;
 
   @Min(0)
-  private int floorNumber;
+  private int floorNumber = 0;
 
   @NotNull
   @Enumerated(EnumType.STRING)
   private UnitStatus status;
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(unitNumber, floorNumber, status);
+  }
+
+  // @formatter:off
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+
+    if (obj == null || getClass() != obj.getClass()) {
+      return false;
+    }
+
+    UnitSummaryEntity other = (UnitSummaryEntity) obj;
+    return unitNumber.equals(other.unitNumber)
+      && floorNumber == other.floorNumber
+      && status.equals(other.status);
+  }
+  // @formatter:on
 }

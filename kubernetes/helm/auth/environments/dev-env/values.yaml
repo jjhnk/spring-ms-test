@@ -1,0 +1,9 @@
+secrets:
+  postgres-credentials:
+    DB_USERNAME: postgres-user
+    DB_PASSWORD: postgres-pwd
+    POSTGRES_DB: keycloak
+
+keycloak:
+  envFromSecretRefs:
+    - postgres-credentials

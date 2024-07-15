@@ -1,0 +1,29 @@
+{{- define "common.istio_simple" -}}
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ .Values.namespace }}-vs
+  namespace: {{ .Values.namespace }}
+spec:
+  gateways:
+  - {{ .Values.namespace }}-gw
+  hosts:
+  - minikube.me
+  http:
+  {{- range .Values.httpRoutes }}
+  - match:
+    {{- range .match }}
+    - uri:
+        prefix: {{ .uri.prefix }}
+    {{- end }}
+    route:
+    {{- range .route }}
+    - destination:
+        host: {{ .destination.host }}
+        {{- if .destination.port }}
+        port:
+          number: {{ .destination.port.number }}
+        {{- end }}
+    {{- end }}
+  {{- end }}
+{{- end -}}

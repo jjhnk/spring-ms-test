@@ -1,5 +1,10 @@
 package hy.oltp.core.estate.unit.persistence;
 
+import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import hy.api.core.estate.unit.RoomTypes;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -24,6 +29,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class RoomEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,6 +40,7 @@ public class RoomEntity {
 
   @ManyToOne
   @JoinColumn(name = "unit_id", nullable = false)
+  // @JsonBackReference
   private UnitEntity unit;
 
   @NotNull
@@ -49,11 +56,34 @@ public class RoomEntity {
   @Min(0)
   private int windowsCount;
 
-  public RoomEntity(UnitEntity unit, String name, RoomTypes type, int squareFeet, int windowsCount) {
-    this.unit = unit;
+  public RoomEntity(String name, RoomTypes type, int squareFeet, int windowsCount) {
     this.name = name;
     this.type = type;
     this.squareFeet = squareFeet;
     this.windowsCount = windowsCount;
   }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(name, type, squareFeet, windowsCount);
+  }
+
+  // @formatter:off
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+
+    if (obj == null || getClass() != obj.getClass()) {
+      return false;
+    }
+
+    RoomEntity other = (RoomEntity) obj;
+    return name.equals(other.name)
+      && type.equals(other.type)
+      && squareFeet == other.squareFeet
+      && windowsCount == other.windowsCount;
+  }
+  // @formatter:on
 }

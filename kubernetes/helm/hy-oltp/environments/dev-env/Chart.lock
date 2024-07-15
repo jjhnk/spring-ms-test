@@ -1,0 +1,9 @@
+dependencies:
+- name: common
+  repository: file://../../../common
+  version: 1.0.0
+- name: estate
+  repository: file://../../components/estate
+  version: 1.0.0
+digest: sha256:61b1e71d7b109febf0c621a2d32425b4f6190c2892b22590259dcc924411138f
+generated: "2024-07-10T18:24:46.7393705+09:00"

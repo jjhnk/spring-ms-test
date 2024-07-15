@@ -20,11 +20,12 @@ public class TenantService {
   private static final String CACHE_KEY = "tenants:";
   private final TenantRepository repository;
   private final CacheUtility<TenantEntity> cacheUtility;
-  private static final TenantMapper mapper = TenantMapper.INSTANCE;
+  private final TenantMapper mapper;
 
-  public TenantService(TenantRepository repository, CacheUtility<TenantEntity> cacheUtility) {
+  public TenantService(TenantRepository repository, CacheUtility<TenantEntity> cacheUtility, TenantMapper mapper) {
     this.repository = repository;
     this.cacheUtility = cacheUtility;
+    this.mapper = mapper == null ? TenantMapper.INSTANCE : mapper;
   }
 
   public Tenant createTenant(Tenant tenant) {
@@ -35,7 +36,7 @@ public class TenantService {
 
   public Tenant getTenant(HttpHeaders headers, int id) {
     var entity = getEntityFromCacheOrRepository(headers, id);
-    cacheUtility.safeAddToCache(headers, CACHE_KEY, null);
+    cacheUtility.safeAddToCache(headers, CACHE_KEY, entity);
     return mapper.entityToApi(entity);
   }
 
@@ -69,15 +70,15 @@ public class TenantService {
 
   private List<Tenant> getEntitiesFromCacheOrRepository(HttpHeaders headers) {
     var cached = cacheUtility.safeGetListFromCache(headers, CACHE_KEY);
-    if (cached != null) {
+    if (cached != null && !cached.isEmpty()) {
       return cached.stream()
-        .map(e -> mapper.entityToApi(e))
+        .map(mapper::entityToApi)
         .collect(Collectors.toList());
     }
 
     return repository.findAll()
       .stream()
-      .map(e -> mapper.entityToApi(e))
+      .map(mapper::entityToApi)
       .collect(Collectors.toList());
   }
 }

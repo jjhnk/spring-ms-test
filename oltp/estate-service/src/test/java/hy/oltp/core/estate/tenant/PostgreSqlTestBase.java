@@ -1,10 +1,14 @@
 package hy.oltp.core.estate.tenant;
 
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 
+import hy.oltp.core.estate.TestSecurityConfig;
+
+@ContextConfiguration(classes = {TestSecurityConfig.class})
 public abstract class PostgreSqlTestBase {
   @SuppressWarnings({"resource", "rawtypes"})
   private static final JdbcDatabaseContainer database =

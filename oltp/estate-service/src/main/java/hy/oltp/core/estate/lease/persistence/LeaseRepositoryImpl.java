@@ -33,9 +33,9 @@ public class LeaseRepositoryImpl implements LeaseRepositoryCustom {
   }
 
   @Override
-  public List<LeaseEntity> findByTenantIdOrUnitId(int tenantId, int unitId) {
+  public List<LeaseEntity> findByTenantIdAndUnitId(int tenantId, int unitId) {
     QLeaseEntity entity = QLeaseEntity.leaseEntity;
-    BooleanExpression predicate = entity.tenant.id.eq(tenantId).or(entity.unit.id.eq(unitId));
+    BooleanExpression predicate = entity.tenant.id.eq(tenantId).and(entity.unit.id.eq(unitId));
     return query.selectFrom(entity).where(predicate).fetch();
   }
 

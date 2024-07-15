@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,7 +26,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  *
  * @see Unit
  */
-@RequestMapping("/property/unit")
+@RequestMapping("/estate/unit")
 @SecurityRequirement(name = "security_auth")
 @Tag(name = "Unit", description = "Unit API")
 public interface UnitController {
@@ -37,15 +38,15 @@ public interface UnitController {
    * @return the created unit
    */
   @Operation(
-    summary = "${api.property.unit.main.create.description}",
-    description = "${api.property.unit.main.create.notes}")
+    summary = "${api.estate.unit.main.create.description}",
+    description = "${api.estate.unit.main.create.notes}")
   @ApiResponses(
     value = {
-      @ApiResponse(responseCode = "200", description = "${api.responseCodes.ok.description"),
+      @ApiResponse(responseCode = "200", description = "${api.responseCodes.ok.description}"),
       @ApiResponse(responseCode = "400", description = "${api.responseCodes.badRequest.description}"),
       @ApiResponse(responseCode = "422", description = "${api.responseCodes.unprocessableEntity.description}")})
   @PostMapping(consumes = "application/json", produces = "application/json")
-  public Unit createUnit(Unit unit);
+  public Unit createUnit(@RequestBody Unit unit);
 
   /**
    * Retrieves a unit by its ID.
@@ -54,7 +55,7 @@ public interface UnitController {
    * @param id the ID of the unit
    * @return the unit with the specified ID
    */
-  @Operation(summary = "${api.property.unit.main.get.description}", description = "${api.property.unit.main.get.notes}")
+  @Operation(summary = "${api.estate.unit.main.get.description}", description = "${api.estate.unit.main.get.notes}")
   @ApiResponses(
     value = {
       @ApiResponse(responseCode = "200", description = "${api.responseCodes.ok.description}"),
@@ -77,8 +78,8 @@ public interface UnitController {
    * @see Tenant
    */
   @Operation(
-    summary = "${api.property.unit.main.get-list.description}",
-    description = "${api.property.unit.main.get-list.notes}")
+    summary = "${api.estate.unit.main.get-list.description}",
+    description = "${api.estate.unit.main.get-list.notes}")
   @ApiResponses(
     value = {
       @ApiResponse(responseCode = "200", description = "${api.responseCodes.ok.description}"),
@@ -101,15 +102,15 @@ public interface UnitController {
    * @return the updated unit
    */
   @Operation(
-    summary = "${api.property.unit.main.update.description}",
-    description = "${api.property.unit.main.update.notes}")
+    summary = "${api.estate.unit.main.update.description}",
+    description = "${api.estate.unit.main.update.notes}")
   @ApiResponses(
     value = {
       @ApiResponse(responseCode = "200", description = "${api.responseCodes.ok.description}"),
       @ApiResponse(responseCode = "400", description = "${api.responseCodes.badRequest.description}"),
       @ApiResponse(responseCode = "422", description = "${api.responseCodes.unprocessableEntity.description}")})
   @PutMapping(value = "/{id}", consumes = "application/json", produces = "application/json")
-  public Unit updateUnit(@RequestHeader HttpHeaders headers, @PathVariable("id") int id, Unit unit);
+  public Unit updateUnit(@RequestHeader HttpHeaders headers, @PathVariable("id") int id, @RequestBody Unit unit);
 
   /**
    * Deletes a unit by its ID.
@@ -118,8 +119,8 @@ public interface UnitController {
    * @param id the ID of the unit
    */
   @Operation(
-    summary = "${api.property.unit.main.delete.description}",
-    description = "${api.property.unit.main.delete.notes}")
+    summary = "${api.estate.unit.main.delete.description}",
+    description = "${api.estate.unit.main.delete.notes}")
   @ApiResponses(
     value = {
       @ApiResponse(responseCode = "200", description = "${api.responseCodes.ok.description}"),
@@ -132,19 +133,19 @@ public interface UnitController {
    * Creates a new unit details
    *
    * @param id the ID of the unit
-   * @param unitDetails the unit details
+   * @param unitDetail the unit details
    * @return the created unit
    */
   @Operation(
-    summary = "${api.property.unit.detail.create.description}",
-    description = "${api.property.unit.detail.create.notes}")
+    summary = "${api.estate.unit.detail.create.description}",
+    description = "${api.estate.unit.detail.create.notes}")
   @ApiResponses(
     value = {
-      @ApiResponse(responseCode = "200", description = "${api.responseCodes.ok.description"),
+      @ApiResponse(responseCode = "200", description = "${api.responseCodes.ok.description}"),
       @ApiResponse(responseCode = "400", description = "${api.responseCodes.badRequest.description}"),
       @ApiResponse(responseCode = "422", description = "${api.responseCodes.unprocessableEntity.description}")})
   @PostMapping(value = "/{id}/details", consumes = "application/json", produces = "application/json")
-  public UnitDetail createUnitDetail(@PathVariable("id") int id, UnitDetail unitDetails);
+  public UnitDetail createUnitDetail(@PathVariable("id") int id, @RequestBody UnitDetail unitDetail);
 
   /**
    * Retrieves a unit details
@@ -154,8 +155,8 @@ public interface UnitController {
    * @return the unit
    */
   @Operation(
-    summary = "${api.property.unit.detail.get.description}",
-    description = "${api.property.unit.detail.get.notes}")
+    summary = "${api.estate.unit.detail.get.description}",
+    description = "${api.estate.unit.detail.get.notes}")
   @ApiResponses(
     value = {
       @ApiResponse(responseCode = "200", description = "${api.responseCodes.ok.description}"),
@@ -174,8 +175,8 @@ public interface UnitController {
    * @return the updated unit
    */
   @Operation(
-    summary = "${api.property.unit.detail.update.description}",
-    description = "${api.property.unit.detail.update.notes}")
+    summary = "${api.estate.unit.detail.update.description}",
+    description = "${api.estate.unit.detail.update.notes}")
   @ApiResponses(
     value = {
       @ApiResponse(responseCode = "200", description = "${api.responseCodes.ok.description}"),
@@ -185,7 +186,7 @@ public interface UnitController {
   public UnitDetail updateUnitDetail(
     @RequestHeader HttpHeaders headers,
     @PathVariable("id") int id,
-    UnitDetail unitDetails);
+    @RequestBody UnitDetail unitDetails);
 
   /**
    * Deletes a unit details
@@ -194,8 +195,8 @@ public interface UnitController {
    * @param id the ID of the unit
    */
   @Operation(
-    summary = "${api.property.unit.detail.delete.description}",
-    description = "${api.property.unit.detail.delete.notes}")
+    summary = "${api.estate.unit.detail.delete.description}",
+    description = "${api.estate.unit.detail.delete.notes}")
   @ApiResponses(
     value = {
       @ApiResponse(responseCode = "200", description = "${api.responseCodes.ok.description}"),
@@ -212,15 +213,15 @@ public interface UnitController {
    * @return the created room
    */
   @Operation(
-    summary = "${api.property.unit.room.create.description}",
-    description = "${api.property.unit.room.create.notes}")
+    summary = "${api.estate.unit.room.create.description}",
+    description = "${api.estate.unit.room.create.notes}")
   @ApiResponses(
     value = {
-      @ApiResponse(responseCode = "200", description = "${api.responseCodes.ok.description"),
+      @ApiResponse(responseCode = "200", description = "${api.responseCodes.ok.description}"),
       @ApiResponse(responseCode = "400", description = "${api.responseCodes.badRequest.description}"),
       @ApiResponse(responseCode = "422", description = "${api.responseCodes.unprocessableEntity.description}")})
   @PostMapping(value = "/{unitId}/details/room", consumes = "application/json", produces = "application/json")
-  public Room createRoom(@PathVariable("unitId") int unitId, Room room);
+  public Room createRoom(@PathVariable("unitId") int unitId, @RequestBody Room room);
 
   /**
    * Creates a list of rooms
@@ -230,15 +231,15 @@ public interface UnitController {
    * @return the created rooms
    */
   @Operation(
-    summary = "${api.property.unit.room-list.create.description}",
-    description = "${api.property.unit.room-list.create.notes}")
+    summary = "${api.estate.unit.room-list.create.description}",
+    description = "${api.estate.unit.room-list.create.notes}")
   @ApiResponses(
     value = {
-      @ApiResponse(responseCode = "200", description = "${api.responseCodes.ok.description"),
+      @ApiResponse(responseCode = "200", description = "${api.responseCodes.ok.description}"),
       @ApiResponse(responseCode = "400", description = "${api.responseCodes.badRequest.description}"),
       @ApiResponse(responseCode = "422", description = "${api.responseCodes.unprocessableEntity.description}")})
   @PostMapping(value = "/{unitId}/details/rooms", consumes = "application/json", produces = "application/json")
-  public List<Room> createRooms(@PathVariable("unitId") int unitId, List<Room> rooms);
+  public List<Room> createRooms(@PathVariable("unitId") int unitId, @RequestBody List<Room> rooms);
 
   /**
    * Retrieves a room
@@ -248,7 +249,7 @@ public interface UnitController {
    * @param roomId the ID of the room
    * @return the room
    */
-  @Operation(summary = "${api.property.unit.room.get.description}", description = "${api.property.unit.room.get.notes}")
+  @Operation(summary = "${api.estate.unit.room.get.description}", description = "${api.estate.unit.room.get.notes}")
   @ApiResponses(
     value = {
       @ApiResponse(responseCode = "200", description = "${api.responseCodes.ok.description}"),
@@ -269,8 +270,8 @@ public interface UnitController {
    * @return the rooms
    */
   @Operation(
-    summary = "${api.property.unit.room.get-list.description}",
-    description = "${api.property.unit.room.get-list.notes}")
+    summary = "${api.estate.unit.room.get-list.description}",
+    description = "${api.estate.unit.room.get-list.notes}")
   @ApiResponses(
     value = {
       @ApiResponse(responseCode = "200", description = "${api.responseCodes.ok.description}"),
@@ -290,8 +291,8 @@ public interface UnitController {
    * @return the updated room
    */
   @Operation(
-    summary = "${api.property.unit.room.update.description}",
-    description = "${api.property.unit.room.update.notes}")
+    summary = "${api.estate.unit.room.update.description}",
+    description = "${api.estate.unit.room.update.notes}")
   @ApiResponses(
     value = {
       @ApiResponse(responseCode = "200", description = "${api.responseCodes.ok.description}"),
@@ -302,7 +303,7 @@ public interface UnitController {
     @RequestHeader HttpHeaders headers,
     @PathVariable("unitId") int unitId,
     @PathVariable("roomId") int roomId,
-    Room room);
+    @RequestBody Room room);
 
   /**
    * Deletes a room
@@ -312,8 +313,8 @@ public interface UnitController {
    * @param roomId the ID of the room
    */
   @Operation(
-    summary = "${api.property.unit.room.delete.description}",
-    description = "${api.property.unit.room.delete.notes}")
+    summary = "${api.estate.unit.room.delete.description}",
+    description = "${api.estate.unit.room.delete.notes}")
   @ApiResponses(
     value = {
       @ApiResponse(responseCode = "200", description = "${api.responseCodes.ok.description}"),
