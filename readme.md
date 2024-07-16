@@ -20,19 +20,19 @@ Spring Ms Test 프로젝트는 적절한 수준의 개발 환경을 제공하여
 
 # Features
 
-링크: [Features](./docs/featuers.md)
+링크: [Features](./docs/features.md)
 
 목차:
 
-- [1. 모니터링 (Monitoring)](./docs/featuers.md/#1-모니터링-monitoring)
-- [2. 로깅 (Logging, Distributed Tracing)](./docs/featuers.md/#2-로깅-logging-distributed-tracing)
-- [3. 중앙집중적 API Documentation (Centralized Documentation)](./docs/featuers.md/#3-중앙집중적-api-documentation-centralized-documentation)
-- [4. 인증 (Authentication)](./docs/featuers.md/#4-인증-authentication)
-- [5. 중앙집중적 환경설정 (Centralized Configuration)](./docs/featuers.md/#5-중앙집중적-환경설정-centralized-configuration)
-- [6. 서비스 디스커버리 (Service Discovery)](./docs/featuers.md/#6-서비스-디스커버리-service-discovery)
-- [7. 엣지 서버 (Edge Server)](./docs/featuers.md/#7-엣지-서버-edge-server)
-- [8. 서비스 메시 (Service Mesh)](./docs/featuers.md/#8-서비스-메시-service-mesh)
-- [9. 프로젝트에 대하여 (요약)](./docs/featuers.md/#9-프로젝트에-대하여-요약)
+- [1. 모니터링 (Monitoring)](./docs/features.md/#1-모니터링-monitoring)
+- [2. 로깅 (Logging, Distributed Tracing)](./docs/features.md/#2-로깅-logging-distributed-tracing)
+- [3. 중앙집중적 API Documentation (Centralized Documentation)](./docs/features.md/#3-중앙집중적-api-documentation-centralized-documentation)
+- [4. 인증 (Authentication)](./docs/features.md/#4-인증-authentication)
+- [5. 중앙집중적 환경설정 (Centralized Configuration)](./docs/features.md/#5-중앙집중적-환경설정-centralized-configuration)
+- [6. 서비스 디스커버리 (Service Discovery)](./docs/features.md/#6-서비스-디스커버리-service-discovery)
+- [7. 엣지 서버 (Edge Server)](./docs/features.md/#7-엣지-서버-edge-server)
+- [8. 서비스 메시 (Service Mesh)](./docs/features.md/#8-서비스-메시-service-mesh)
+- [9. 프로젝트에 대하여 (요약)](./docs/features.md/#9-프로젝트에-대하여-요약)
 
 # Prerequisite
 
