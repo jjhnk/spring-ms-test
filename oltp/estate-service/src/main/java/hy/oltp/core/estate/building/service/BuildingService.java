@@ -37,7 +37,7 @@ public class BuildingService {
 
   public Building getBuilding(HttpHeaders headers, int id) {
     var entity = getEntityFromCacheOrRepository(headers, id);
-    cacheUtility.safeAddToCache(headers, CACHE_KEY, entity);
+    cacheUtility.safeAddToCache(headers, CACHE_KEY + id, entity);
     return mapper.entityToApi(entity);
   }
 
@@ -49,7 +49,7 @@ public class BuildingService {
     var found = getEntityFromCacheOrRepository(headers, id);
     mapper.updateEntityFromApi(building, found);
     var saved = repository.save(found);
-    cacheUtility.safeAddToCache(headers, CACHE_KEY, saved);
+    cacheUtility.safeAddToCache(headers, CACHE_KEY + id, saved);
     return mapper.entityToApi(saved);
   }
 
@@ -71,12 +71,13 @@ public class BuildingService {
   }
 
   private List<Building> getEntitiesFromCacheOrRepository(HttpHeaders headers) {
-    var cached = cacheUtility.safeGetListFromCache(headers, CACHE_KEY);
+    // TODO: consider whether caching or not entity when post
+    /* var cached = cacheUtility.safeGetListFromCache(headers, CACHE_KEY);
     if (cached != null && !cached.isEmpty()) {
       return cached.stream()
         .map(mapper::entityToApi)
         .collect(Collectors.toList());
-    }
+    } */
 
     return repository.findAll()
       .stream()

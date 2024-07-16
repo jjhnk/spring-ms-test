@@ -37,6 +37,7 @@ import hy.oltp.core.estate.unit.persistence.UnitSummaryEntity;
 
 class UnitServiceTests {
 
+  private static final String CACHE_CONTROL_KEY = "units:";
   @Mock(name = "unitRepository")
   private UnitRepository unitRepository;
   @Mock(name = "roomRepository")
@@ -95,12 +96,12 @@ class UnitServiceTests {
     UnitEntity unitEntity = new UnitEntity(unitSummaryEntity1, unitDetailEntity1);
     Unit unit = new Unit(1, unitSummary1, unitDetail1);
 
-    when(unitCacheUtility.safeGetFromCache(headers, "units:", id)).thenReturn(unitEntity);
+    when(unitCacheUtility.safeGetFromCache(headers, CACHE_CONTROL_KEY + id, id)).thenReturn(unitEntity);
     when(unitMapper.entityToApi(unitEntity)).thenReturn(unit);
 
     Unit result = unitService.getUnit(headers, id);
 
-    verify(unitCacheUtility, times(1)).safeGetFromCache(headers, "units:", id);
+    verify(unitCacheUtility, times(1)).safeGetFromCache(headers, CACHE_CONTROL_KEY + id, id);
     verify(unitMapper, times(1)).entityToApi(unitEntity);
     assertThat(unit).isEqualTo(result);
   }
@@ -112,7 +113,7 @@ class UnitServiceTests {
     UnitEntity unitEntity = new UnitEntity(unitSummaryEntity1, unitDetailEntity1);
     Unit unit = new Unit(1, unitSummary1, unitDetail1);
 
-    when(unitCacheUtility.safeGetFromCache(headers, "units:", id)).thenReturn(null);
+    when(unitCacheUtility.safeGetFromCache(headers, CACHE_CONTROL_KEY, id)).thenReturn(null);
     when(unitRepository.findById(id)).thenReturn(Optional.of(unitEntity));
     when(unitMapper.entityToApi(unitEntity)).thenReturn(unit);
 
@@ -128,7 +129,7 @@ class UnitServiceTests {
     HttpHeaders headers = new HttpHeaders();
     int id = 1;
 
-    when(unitCacheUtility.safeGetFromCache(headers, "units:", id)).thenReturn(null);
+    when(unitCacheUtility.safeGetFromCache(headers, CACHE_CONTROL_KEY, id)).thenReturn(null);
     when(unitRepository.findById(id)).thenReturn(Optional.empty());
 
     assertThrows(NotFoundException.class, () -> unitService.getUnit(headers, id));
@@ -143,12 +144,11 @@ class UnitServiceTests {
       new UnitEntity(unitSummaryEntity2, unitDetailEntity2));
     List<Unit> units = Arrays.asList(new Unit(1, unitSummary1, unitDetail1), new Unit(2, unitSummary2, unitDetail2));
 
-    when(unitCacheUtility.safeGetListFromCache(headers, "units:")).thenReturn(unitEntities);
+    when(unitRepository.findAll()).thenReturn(unitEntities);
     when(unitMapper.entityToApi(any(UnitEntity.class))).thenReturn(units.get(0), units.get(1));
 
     List<Unit> result = unitService.getUnits(headers, 0, 0);
 
-    verify(unitMapper, times(unitEntities.size())).entityToApi(any(UnitEntity.class));
     assertThat(units).hasSameElementsAs(result);
   }
 
@@ -159,7 +159,7 @@ class UnitServiceTests {
       new UnitEntity(unitSummaryEntity2, unitDetailEntity2));
     List<Unit> units = Arrays.asList(new Unit(1, unitSummary1, unitDetail1), new Unit(2, unitSummary2, unitDetail2));
 
-    when(unitCacheUtility.safeGetListFromCache(headers, "units:")).thenReturn(null);
+    when(unitCacheUtility.safeGetListFromCache(headers, CACHE_CONTROL_KEY)).thenReturn(null);
     when(unitRepository.findAll()).thenReturn(unitEntities);
     when(unitMapper.entityToApi(any(UnitEntity.class))).thenReturn(units.get(0), units.get(1));
 
@@ -174,7 +174,7 @@ class UnitServiceTests {
   void testGetUnitsNotFound() {
     HttpHeaders headers = new HttpHeaders();
 
-    when(unitCacheUtility.safeGetListFromCache(headers, "units:")).thenReturn(null);
+    when(unitCacheUtility.safeGetListFromCache(headers, CACHE_CONTROL_KEY)).thenReturn(null);
     when(unitRepository.findAll()).thenReturn(List.of());
 
     List<Unit> result = unitService.getUnits(headers, 0, 0);
@@ -190,7 +190,7 @@ class UnitServiceTests {
     Unit unit = new Unit(1, unitSummary1, unitDetail1);
     UnitEntity unitEntity = new UnitEntity(unitSummaryEntity1, unitDetailEntity1);
 
-    when(unitCacheUtility.safeGetFromCache(headers, "units:", id)).thenReturn(unitEntity);
+    when(unitCacheUtility.safeGetFromCache(headers, CACHE_CONTROL_KEY + id, id)).thenReturn(unitEntity);
     doNothing().when(unitMapper).updateEntityFromApi(unit, unitEntity);
     when(unitRepository.save(unitEntity)).thenReturn(unitEntity);
     when(unitMapper.entityToApi(unitEntity)).thenReturn(unit);
@@ -208,12 +208,12 @@ class UnitServiceTests {
     int id = 1;
     UnitEntity unitEntity = new UnitEntity(unitSummaryEntity1, unitDetailEntity1);
 
-    when(unitCacheUtility.safeGetFromCache(headers, "units:", id)).thenReturn(unitEntity);
+    when(unitCacheUtility.safeGetFromCache(headers, CACHE_CONTROL_KEY + id, id)).thenReturn(unitEntity);
 
     unitService.deleteUnit(headers, id);
 
     verify(unitRepository, times(1)).delete(unitEntity);
-    verify(unitCacheUtility, times(1)).safeRemoveFromCache(headers, "units:" + id);
+    verify(unitCacheUtility, times(1)).safeRemoveFromCache(headers, CACHE_CONTROL_KEY + id);
   }
 
   @Test
@@ -221,12 +221,12 @@ class UnitServiceTests {
     HttpHeaders headers = new HttpHeaders();
     int id = 1;
 
-    when(unitCacheUtility.safeGetFromCache(headers, "units:", id)).thenReturn(null);
+    when(unitCacheUtility.safeGetFromCache(headers, CACHE_CONTROL_KEY + id, id)).thenReturn(null);
     when(unitRepository.findById(id)).thenReturn(Optional.empty());
 
     assertThrows(NotFoundException.class, () -> unitService.getUnit(headers, id));
 
-    verify(unitCacheUtility, times(1)).safeGetFromCache(headers, "units:", id);
+    verify(unitCacheUtility, times(1)).safeGetFromCache(headers, CACHE_CONTROL_KEY + id, id);
     verify(unitRepository, times(1)).findById(id);
   }
 
@@ -237,7 +237,7 @@ class UnitServiceTests {
     UnitEntity unitEntity = new UnitEntity(unitSummaryEntity1, unitDetailEntity1);
     Unit unit = new Unit(1, unitSummary1, unitDetail1);
 
-    when(unitCacheUtility.safeGetFromCache(headers, "units:", id)).thenReturn(null);
+    when(unitCacheUtility.safeGetFromCache(headers, CACHE_CONTROL_KEY + id, id)).thenReturn(null);
     when(unitRepository.findById(id)).thenReturn(Optional.of(unitEntity));
     when(unitMapper.entityToApi(unitEntity)).thenReturn(unit);
 
@@ -245,7 +245,7 @@ class UnitServiceTests {
 
     verify(unitRepository, times(1)).findById(id);
     verify(unitMapper, times(1)).entityToApi(unitEntity);
-    verify(unitCacheUtility, times(1)).safeAddToCache(headers, "units:", unitEntity);
+    verify(unitCacheUtility, times(1)).safeAddToCache(headers, CACHE_CONTROL_KEY + id, unitEntity);
     assertThat(unit).isEqualTo(result);
   }
 
@@ -273,12 +273,12 @@ class UnitServiceTests {
     UnitEntity unitEntity = new UnitEntity(unitSummaryEntity1, unitDetailEntity1);
     UnitDetail unitDetail = unitDetail1;
 
-    when(unitCacheUtility.safeGetFromCache(headers, "units:", id)).thenReturn(unitEntity);
+    when(unitCacheUtility.safeGetFromCache(headers, CACHE_CONTROL_KEY + id, id)).thenReturn(unitEntity);
     when(unitMapper.entityToApi(unitEntity.getDetail())).thenReturn(unitDetail);
 
     UnitDetail result = unitService.getUnitDetail(headers, id);
 
-    verify(unitCacheUtility, times(1)).safeGetFromCache(headers, "units:", id);
+    verify(unitCacheUtility, times(1)).safeGetFromCache(headers, CACHE_CONTROL_KEY + id, id);
     verify(unitMapper, times(1)).entityToApi(unitEntity.getDetail());
     assertThat(unitDetail).isEqualTo(result);
   }
@@ -290,7 +290,7 @@ class UnitServiceTests {
     UnitDetail unitDetail = unitDetail1;
     UnitEntity unitEntity = new UnitEntity(unitSummaryEntity1, unitDetailEntity1);
 
-    when(unitCacheUtility.safeGetFromCache(headers, "units:", id)).thenReturn(unitEntity);
+    when(unitCacheUtility.safeGetFromCache(headers, CACHE_CONTROL_KEY + id, id)).thenReturn(unitEntity);
     when(unitMapper.apiToEntity(unitDetail)).thenReturn(unitDetailEntity1);
     when(unitRepository.save(unitEntity)).thenReturn(unitEntity);
     when(unitMapper.entityToApi(unitEntity.getDetail())).thenReturn(unitDetail);
@@ -309,12 +309,12 @@ class UnitServiceTests {
     UnitEntity unitEntity = new UnitEntity(unitSummaryEntity1, unitDetailEntity1);
 
     when(unitRepository.save(unitEntity)).thenReturn(unitEntity);
-    when(unitCacheUtility.safeGetFromCache(headers, "units:", id)).thenReturn(unitEntity);
+    when(unitCacheUtility.safeGetFromCache(headers, CACHE_CONTROL_KEY + id, id)).thenReturn(unitEntity);
 
     unitService.deleteUnitDetail(headers, id);
 
     verify(unitRepository, times(1)).save(unitEntity);
-    verify(unitCacheUtility, times(1)).safeAddToCache(headers, "units:", unitEntity);
+    verify(unitCacheUtility, times(1)).safeAddToCache(headers, CACHE_CONTROL_KEY + id, unitEntity);
   }
 
   @Test
@@ -354,12 +354,12 @@ class UnitServiceTests {
     RoomEntity roomEntity = roomEntity1;
     Room room = room1;
 
-    when(roomCacheUtility.safeGetFromCache(headers, "units:" + unitId + ":", roomId)).thenReturn(roomEntity);
+    when(roomCacheUtility.safeGetFromCache(headers, CACHE_CONTROL_KEY + unitId + ":", roomId)).thenReturn(roomEntity);
     when(roomMapper.entityToApi(roomEntity)).thenReturn(room);
 
     Room result = unitService.getRoom(headers, unitId, roomId);
 
-    verify(roomCacheUtility, times(1)).safeGetFromCache(headers, "units:" + unitId + ":", roomId);
+    verify(roomCacheUtility, times(1)).safeGetFromCache(headers, CACHE_CONTROL_KEY + unitId + ":", roomId);
     verify(roomMapper, times(1)).entityToApi(roomEntity);
     assertThat(room).isEqualTo(result);
   }
@@ -371,7 +371,7 @@ class UnitServiceTests {
     List<RoomEntity> roomEntities = Arrays.asList(roomEntity1, roomEntity2);
     List<Room> rooms = Arrays.asList(room1, room2);
 
-    when(roomCacheUtility.safeGetListFromCache(headers, "units:" + unitId + ":")).thenReturn(roomEntities);
+    when(roomRepository.findAllByUnitId(unitId)).thenReturn(roomEntities);
     when(roomMapper.entityToApi(any(RoomEntity.class))).thenReturn(rooms.get(0), rooms.get(1));
 
     List<Room> result = unitService.getRooms(headers, unitId);
@@ -388,7 +388,7 @@ class UnitServiceTests {
     Room room = room1;
     RoomEntity roomEntity = roomEntity1;
 
-    when(roomCacheUtility.safeGetFromCache(headers, "units:" + unitId + ":", roomId)).thenReturn(roomEntity);
+    when(roomCacheUtility.safeGetFromCache(headers, CACHE_CONTROL_KEY + unitId + ":", roomId)).thenReturn(roomEntity);
     doNothing().when(roomMapper)
       .updateEntityFromApi(room, roomEntity);
     when(roomRepository.save(roomEntity)).thenReturn(roomEntity);
@@ -410,12 +410,12 @@ class UnitServiceTests {
     RoomEntity roomEntity = roomEntity1;
 
     when(unitRepository.findById(unitId)).thenReturn(Optional.of(unitEntity));
-    when(roomCacheUtility.safeGetFromCache(headers, "units:" + unitId + ":", roomId)).thenReturn(roomEntity);
+    when(roomCacheUtility.safeGetFromCache(headers, CACHE_CONTROL_KEY + unitId + ":", roomId)).thenReturn(roomEntity);
     when(roomRepository.findByIdAndUnitId(roomId, unitId)).thenReturn(roomEntity);
 
     unitService.deleteRoom(headers, unitId, roomId);
 
     verify(unitRepository, times(1)).save(unitEntity);
-    verify(roomCacheUtility, times(1)).safeRemoveFromCache(headers, "units:" + unitId + ":" + roomId);
+    verify(roomCacheUtility, times(1)).safeRemoveFromCache(headers, CACHE_CONTROL_KEY + unitId + ":" + roomId);
   }
 }

@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import hy.oltp.core.estate.building.persistence.BuildingEntity;
@@ -49,6 +50,7 @@ public class UnitEntity {
 
   @OneToMany(mappedBy = "unit", cascade = CascadeType.ALL, orphanRemoval = true)
   // @JsonManagedReference
+  @JsonIgnore // TODO: resolve this to managed reference
   @Setter(AccessLevel.NONE)
   private Set<LeaseEntity> leases = new LinkedHashSet<>();
 

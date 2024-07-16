@@ -68,6 +68,10 @@ server:
   error:
     include-message: always
 
+app:
+  reactive:
+    enabled: false
+
 logging:
   level:
     root: INFO

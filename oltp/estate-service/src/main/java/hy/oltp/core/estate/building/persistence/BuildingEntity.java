@@ -4,6 +4,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import hy.oltp.core.estate.unit.persistence.UnitEntity;
@@ -40,6 +41,7 @@ public class BuildingEntity {
 
   @OneToMany(mappedBy = "building", cascade = CascadeType.ALL, orphanRemoval = true)
   // @JsonManagedReference
+  @JsonIgnore // TODO: resolve this to managed reference
   @Setter(AccessLevel.NONE)
   private Set<UnitEntity> units = new LinkedHashSet<>();
 

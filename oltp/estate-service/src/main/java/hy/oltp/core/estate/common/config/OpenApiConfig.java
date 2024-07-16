@@ -11,10 +11,15 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 
 @Configuration
 public class OpenApiConfig {
+  private static final String BEARER_AUTHENTICATION = "Bearer Authentication";
+  private static final String BEARER_PREFIX = "bearer";
+  private static final String BEARER_FORMAT = "JWT";
+
   @Value("${api.common.version}")
   String apiVersion;
   @Value("${api.common.title}")
@@ -44,15 +49,16 @@ public class OpenApiConfig {
 
   @Bean
   OpenAPI getOpenApi() {
-    var components = new Components()
-      .addSecuritySchemes("bearerAuth", new SecurityScheme().type(SecurityScheme.Type.HTTP)
-        .scheme("bearer")
-        .bearerFormat("JWT"))
-      /* .addSecuritySchemes("oAuth2", new SecurityScheme().type(SecurityScheme.Type.OAUTH2)
-        .flows(new OAuthFlows().authorizationCode(new OAuthFlow().authorizationUrl(oAuthFlowAuthorizationUrl)
-          .tokenUrl(oAuthFlowTokenUrl)
-          .scopes(new Scopes().addString("estate:read", "read scope")
-            .addString("estate:write", "write scope"))))) */;
+    var components = new Components().addSecuritySchemes(BEARER_AUTHENTICATION,
+      new SecurityScheme().type(SecurityScheme.Type.HTTP)
+        .scheme(BEARER_PREFIX)
+        .bearerFormat(BEARER_FORMAT))
+    /*
+     * .addSecuritySchemes("oAuth2", new SecurityScheme().type(SecurityScheme.Type.OAUTH2) .flows(new
+     * OAuthFlows().authorizationCode(new OAuthFlow().authorizationUrl(oAuthFlowAuthorizationUrl)
+     * .tokenUrl(oAuthFlowTokenUrl) .scopes(new Scopes().addString("estate:read", "read scope")
+     * .addString("estate:write", "write scope")))))
+     */;
     return new OpenAPI().info(new Info().title(apiTitle)
       .description(apiDescription)
       .version(apiVersion)
@@ -64,6 +70,7 @@ public class OpenApiConfig {
         .url(apiLicenseUrl)))
       .externalDocs(new ExternalDocumentation().description(apiExternalDocDesc)
         .url(apiExternalDocUrl))
+      .addSecurityItem(new SecurityRequirement().addList(BEARER_AUTHENTICATION))
       .components(components);
   }
 

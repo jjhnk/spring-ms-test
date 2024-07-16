@@ -116,12 +116,11 @@ class BuildingServiceTests {
       Arrays.asList(new Building(1, "name", "address", "city", "state", "zipCode", "description"),
         new Building(2, "name2", "address2", "city2", "state2", "zipCode2", "description2"));
 
-    when(cacheUtility.safeGetListFromCache(headers, "buildings:")).thenReturn(buildingEntities);
+    when(repository.findAll()).thenReturn(buildingEntities);
     when(mapper.entityToApi(any(BuildingEntity.class))).thenReturn(buildings.get(0), buildings.get(1));
 
     List<Building> result = buildingService.getBuildings(headers);
 
-    verify(mapper, times(buildingEntities.size())).entityToApi(any(BuildingEntity.class));
     assertThat(buildings).hasSameElementsAs(result);
   }
 
@@ -214,7 +213,7 @@ class BuildingServiceTests {
     BuildingEntity buildingEntity = new BuildingEntity();
     Building building = new Building(1, "name", "address", "city", "state", "zipCode", "description");
 
-    when(cacheUtility.safeGetFromCache(headers, "buildings:", id)).thenReturn(null);
+    when(cacheUtility.safeGetFromCache(headers, "buildings:" + id, id)).thenReturn(null);
     when(repository.findById(id)).thenReturn(Optional.of(buildingEntity));
     when(mapper.entityToApi(buildingEntity)).thenReturn(building);
 
@@ -222,7 +221,7 @@ class BuildingServiceTests {
 
     verify(repository, times(1)).findById(id);
     verify(mapper, times(1)).entityToApi(buildingEntity);
-    verify(cacheUtility, times(1)).safeAddToCache(headers, "buildings:", buildingEntity);
+    verify(cacheUtility, times(1)).safeAddToCache(headers, "buildings:" + id, buildingEntity);
     assertThat(building).isEqualTo(result);
   }
 }

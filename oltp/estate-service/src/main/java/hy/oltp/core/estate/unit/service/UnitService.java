@@ -61,7 +61,7 @@ public class UnitService {
 
   public Unit getUnit(HttpHeaders headers, int id) {
     var found = getUnitEntityFromCacheOrRepository(headers, id);
-    unitCacheUtility.safeAddToCache(headers, CACHE_KEY, found);
+    unitCacheUtility.safeAddToCache(headers, CACHE_KEY + id, found);
     return unitMapper.entityToApi(found);
   }
 
@@ -92,7 +92,7 @@ public class UnitService {
     unitMapper.updateEntityFromApi(unit, found);
 
     var saved = unitRepository.save(found);
-    unitCacheUtility.safeAddToCache(headers, CACHE_KEY, saved);
+    unitCacheUtility.safeAddToCache(headers, CACHE_KEY + id, saved);
     return unitMapper.entityToApi(found);
   }
 
@@ -113,9 +113,9 @@ public class UnitService {
     return unitMapper.entityToApi(saved.getDetail());
   }
 
-  public UnitDetail getUnitDetail(HttpHeaders headers, int unitId) {
-    var found = getUnitEntityFromCacheOrRepository(headers, unitId);
-    unitCacheUtility.safeAddToCache(headers, CACHE_KEY, found);
+  public UnitDetail getUnitDetail(HttpHeaders headers, int id) {
+    var found = getUnitEntityFromCacheOrRepository(headers, id);
+    unitCacheUtility.safeAddToCache(headers, CACHE_KEY + id, found);
     return unitMapper.entityToApi(found.getDetail());
   }
 
@@ -124,7 +124,7 @@ public class UnitService {
     unitMapper.updateEntityFromApi(unitDetail, found.getDetail());
 
     var saved = unitRepository.save(found);
-    unitCacheUtility.safeAddToCache(headers, CACHE_KEY, saved);
+    unitCacheUtility.safeAddToCache(headers, CACHE_KEY + id, saved);
     return unitMapper.entityToApi(saved.getDetail());
   }
 
@@ -133,7 +133,7 @@ public class UnitService {
     found.getDetail().clear();
 
     var saved = unitRepository.save(found);
-    unitCacheUtility.safeAddToCache(headers, CACHE_KEY, saved);
+    unitCacheUtility.safeAddToCache(headers, CACHE_KEY + id, saved);
   }
 
   public Room createRoom(int unitId, Room room) {
@@ -156,7 +156,7 @@ public class UnitService {
 
   public Room getRoom(HttpHeaders headers, int unitId, int roomId) {
     var entity = getRoomEntityFromCacheOrRepository(headers, unitId, roomId);
-    roomCacheUtility.safeAddToCache(headers, CACHE_KEY, entity);
+    roomCacheUtility.safeAddToCache(headers, CACHE_KEY + unitId, entity);
     return roomMapper.entityToApi(entity);
   }
 
@@ -168,7 +168,7 @@ public class UnitService {
     var entity = getRoomEntityFromCacheOrRepository(headers, unitId, roomId);
     roomMapper.updateEntityFromApi(room, entity);
     roomRepository.save(entity);
-    roomCacheUtility.safeAddToCache(headers, CACHE_KEY, entity);
+    roomCacheUtility.safeAddToCache(headers, CACHE_KEY + unitId, entity);
     return roomMapper.entityToApi(entity);
   }
 
@@ -182,7 +182,7 @@ public class UnitService {
   }
 
   private UnitEntity getUnitEntityFromCacheOrRepository(HttpHeaders headers, int id) {
-    var cached = unitCacheUtility.safeGetFromCache(headers, CACHE_KEY, id);
+    var cached = unitCacheUtility.safeGetFromCache(headers, CACHE_KEY + id, id);
     if (cached != null) {
       return cached;
     }
@@ -192,12 +192,13 @@ public class UnitService {
   }
 
   private List<Unit> getUnitEntitiesFromCacheOrRepository(HttpHeaders headers) {
-    var cached = unitCacheUtility.safeGetListFromCache(headers, CACHE_KEY);
-    if (cached != null && !cached.isEmpty()) {
-      return cached.stream()
-        .map(unitMapper::entityToApi)
-        .collect(Collectors.toList());
-    }
+    // TODO: consider whether caching or not entity when post
+    // var cached = unitCacheUtility.safeGetListFromCache(headers, CACHE_KEY);
+    // if (cached != null && !cached.isEmpty()) {
+    //   return cached.stream()
+    //     .map(unitMapper::entityToApi)
+    //     .collect(Collectors.toList());
+    // }
 
     var found = unitRepository.findAll();
     return found.stream()
@@ -220,12 +221,13 @@ public class UnitService {
   }
 
   private List<Room> getRoomEntitiesFromCacheOrRepository(HttpHeaders headers, int unitId) {
-    var cached = roomCacheUtility.safeGetListFromCache(headers, CACHE_KEY + unitId + ":");
+    // TODO: consider whether caching or not entity when post
+    /* var cached = roomCacheUtility.safeGetListFromCache(headers, CACHE_KEY + unitId + ":");
     if (cached != null && !cached.isEmpty()) {
       return cached.stream()
         .map(roomMapper::entityToApi)
         .collect(Collectors.toList());
-    }
+    } */
 
     return roomRepository.findAllByUnitId(unitId)
       .stream()

@@ -14,10 +14,15 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @Slf4j
 public final class CacheUtility<T> {
+  private static final String CACHE_CONTROL_NO_CACHE = "no-cache";
+  private static final String CACHE_CONTROL_NO_STORE = "no-store";
+  private static final String CACHE_CONTROL_PRIVATE = "private";
+
+  private static final String COMMON_KEY = "estate:";
+
   private final boolean isRedisEnabled;
   private final RedisTemplate<String, T> redisTemplate;
   private final ValueOperations<String, T> valueOps;
-  private static final String COMMON_KEY = "estate:";
 
   public CacheUtility(RedisCommonConfig commonConfig, RedisTemplate<String, T> redisTemplate) {
     this.isRedisEnabled = commonConfig.isRedisEnabled();
@@ -26,15 +31,19 @@ public final class CacheUtility<T> {
   }
 
   public boolean isCacheAvailable(HttpHeaders headers) {
-    String cacheControl = headers.getCacheControl();
-
     if (!isRedisEnabled) {
       return false;
     }
 
-    var cacheAvailable = cacheControl == null || cacheControl.isEmpty();
-    cacheAvailable &=
-      !(cacheControl.contains("no-cache") || cacheControl.contains("no-store") || cacheControl.contains("private"));
+    String cacheControl = headers.getCacheControl();
+
+    if (cacheControl == null) {
+      return true;
+    }
+
+    boolean cacheAvailable = cacheControl.isEmpty();
+    cacheAvailable &= !cacheControl.contains(CACHE_CONTROL_NO_CACHE) && !cacheControl.contains(CACHE_CONTROL_NO_STORE)
+      && !cacheControl.contains(CACHE_CONTROL_PRIVATE);
 
     return cacheAvailable;
   }
@@ -49,7 +58,7 @@ public final class CacheUtility<T> {
       return null;
     }
 
-    log.info("Found {}:{} in cache", serviceKey, id);
+    log.info("Found {} in cache", COMMON_KEY + serviceKey + id);
     return getFromCache(serviceKey, id);
   }
 
@@ -67,7 +76,7 @@ public final class CacheUtility<T> {
       return List.of();
     }
 
-    log.info("Found {} in cache", serviceKey);
+    log.info("Found {} in cache", COMMON_KEY + serviceKey);
     return getListFromCache(serviceKey);
   }
 
@@ -94,7 +103,7 @@ public final class CacheUtility<T> {
       return;
     }
 
-    log.info("Removing {} from cache", key);
+    log.info("Removing {} from cache", COMMON_KEY + key);
     removeFromCache(key);
   }
 }

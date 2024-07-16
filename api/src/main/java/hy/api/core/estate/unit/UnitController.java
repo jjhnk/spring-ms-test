@@ -27,10 +27,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  * @see Unit
  */
 @RequestMapping("/estate/unit")
-@SecurityRequirement(name = "security_auth")
+@SecurityRequirement(name = "Bearer Authentication")
 @Tag(name = "Unit", description = "Unit API")
 public interface UnitController {
-
   /**
    * Creates a new unit.
    *
@@ -154,9 +153,7 @@ public interface UnitController {
    * @param id the ID of the unit
    * @return the unit
    */
-  @Operation(
-    summary = "${api.estate.unit.detail.get.description}",
-    description = "${api.estate.unit.detail.get.notes}")
+  @Operation(summary = "${api.estate.unit.detail.get.description}", description = "${api.estate.unit.detail.get.notes}")
   @ApiResponses(
     value = {
       @ApiResponse(responseCode = "200", description = "${api.responseCodes.ok.description}"),

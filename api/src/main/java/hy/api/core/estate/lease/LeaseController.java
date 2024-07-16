@@ -1,7 +1,6 @@
 package hy.api.core.estate.lease;
 
 import java.util.List;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import hy.api.core.estate.tenant.Tenant;
 import hy.api.core.estate.unit.UnitSummary;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,17 +25,18 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  * @see Lease
  */
 @RequestMapping("/estate/lease")
-@SecurityRequirement(name = "security_auth")
+@SecurityRequirement(name = "Bearer Authentication")
 @Tag(name = "Lease", description = "The Lease API")
 public interface LeaseController {
-
   /**
    * Creates a new lease.
    *
    * @param lease the lease
    * @return the created lease
    */
-  @Operation(summary = "${api.estate.lease.main.create.description}", description = "${api.estate.lease.main.create.notes}")
+  @Operation(
+    summary = "${api.estate.lease.main.create.description}",
+    description = "${api.estate.lease.main.create.notes}")
   @ApiResponses(
     value = {
       @ApiResponse(responseCode = "200", description = "${api.responseCodes.ok.description}"),
@@ -72,7 +71,9 @@ public interface LeaseController {
    * @see Tenant
    * @see UnitSummary
    */
-  @Operation(summary = "${api.estate.lease.main.get-list.description}", description = "${api.estate.lease.main.get-list.notes}")
+  @Operation(
+    summary = "${api.estate.lease.main.get-list.description}",
+    description = "${api.estate.lease.main.get-list.notes}")
   @ApiResponses(
     value = {
       @ApiResponse(responseCode = "200", description = "${api.responseCodes.ok.description}"),
@@ -93,7 +94,9 @@ public interface LeaseController {
    * @param lease the updated lease
    * @return the updated lease
    */
-  @Operation(summary = "${api.estate.lease.main.update.description}", description = "${api.estate.lease.main.update.notes}")
+  @Operation(
+    summary = "${api.estate.lease.main.update.description}",
+    description = "${api.estate.lease.main.update.notes}")
   @ApiResponses(
     value = {
       @ApiResponse(responseCode = "200", description = "${api.responseCodes.ok.description}"),
@@ -108,7 +111,9 @@ public interface LeaseController {
    * @param headers the HTTP headers
    * @param id the ID of the lease
    */
-  @Operation(summary = "${api.estate.lease.main.delete.description}", description = "${api.estate.lease.main.delete.notes}")
+  @Operation(
+    summary = "${api.estate.lease.main.delete.description}",
+    description = "${api.estate.lease.main.delete.notes}")
   @ApiResponses(
     value = {
       @ApiResponse(responseCode = "200", description = "${api.responseCodes.ok.description}"),

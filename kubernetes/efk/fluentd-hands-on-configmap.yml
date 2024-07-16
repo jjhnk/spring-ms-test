@@ -104,7 +104,7 @@ data:
       languages java
       remove_tag_prefix check
       message log
-      multiline_flush_interval 5
+      multiline_flush_interval 100
     </match>
 
     <filter parse.spring-boot.**>

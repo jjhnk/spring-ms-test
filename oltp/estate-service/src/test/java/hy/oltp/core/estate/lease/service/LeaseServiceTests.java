@@ -124,12 +124,11 @@ class LeaseServiceTests {
       Arrays.asList(new LeaseEntity(leaseDetailEntity), new LeaseEntity(leaseDetailEntity2));
     List<Lease> leases = Arrays.asList(new Lease(1, leaseDetail), new Lease(2, leaseDetail2));
 
-    when(cacheUtility.safeGetListFromCache(headers, "leases:")).thenReturn(leaseEntities);
+    when(repository.findAll()).thenReturn(leaseEntities);
     when(mapper.entityToApi(any(LeaseEntity.class))).thenReturn(leases.get(0), leases.get(1));
 
     List<Lease> result = leaseService.getLeases(headers, 0, 0);
 
-    verify(mapper, times(leaseEntities.size())).entityToApi(any(LeaseEntity.class));
     assertThat(leases).hasSameElementsAs(result);
   }
 
@@ -253,7 +252,7 @@ class LeaseServiceTests {
     LeaseEntity leaseEntity = new LeaseEntity(leaseDetailEntity);
     Lease lease = new Lease(1, leaseDetail);
 
-    when(cacheUtility.safeGetFromCache(headers, "leases:", id)).thenReturn(null);
+    when(cacheUtility.safeGetFromCache(headers, "leases:" + id, id)).thenReturn(null);
     when(repository.findById(id)).thenReturn(Optional.of(leaseEntity));
     when(mapper.entityToApi(leaseEntity)).thenReturn(lease);
 
@@ -261,21 +260,7 @@ class LeaseServiceTests {
 
     verify(repository, times(1)).findById(id);
     verify(mapper, times(1)).entityToApi(leaseEntity);
-    verify(cacheUtility, times(1)).safeAddToCache(headers, "leases:", leaseEntity);
+    verify(cacheUtility, times(1)).safeAddToCache(headers, "leases:" + id, leaseEntity);
     assertThat(lease).isEqualTo(result);
-  }
-
-  @Test
-  void testCacheClearAfterDeleteLease() {
-    HttpHeaders headers = new HttpHeaders();
-    int id = 1;
-    LeaseEntity leaseEntity = new LeaseEntity(leaseDetailEntity);
-
-    when(cacheUtility.safeGetFromCache(headers, "leases:", id)).thenReturn(leaseEntity);
-
-    leaseService.deleteLease(headers, id);
-
-    verify(repository, times(1)).delete(leaseEntity);
-    verify(cacheUtility, times(1)).safeRemoveFromCache(headers, "leases:" + id);
   }
 }

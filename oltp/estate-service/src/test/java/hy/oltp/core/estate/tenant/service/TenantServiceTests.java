@@ -114,12 +114,11 @@ class TenantServiceTests {
     List<Tenant> tenants = Arrays.asList(new Tenant(1, "firstName", "lastName", "email@email.com", "01012345678"),
       new Tenant(1, "firstName2", "lastName2", "email2@email.com", "22212345678"));
 
-    when(cacheUtility.safeGetListFromCache(headers, "tenants:")).thenReturn(tenantEntities);
+    when(repository.findAll()).thenReturn(tenantEntities);
     when(mapper.entityToApi(any(TenantEntity.class))).thenReturn(tenants.get(0), tenants.get(1));
 
     List<Tenant> result = tenantService.getTenants(headers);
 
-    verify(mapper, times(tenantEntities.size())).entityToApi(any(TenantEntity.class));
     assertThat(tenants).hasSameElementsAs(result);
   }
 

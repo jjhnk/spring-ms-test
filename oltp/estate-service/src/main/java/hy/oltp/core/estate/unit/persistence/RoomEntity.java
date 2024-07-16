@@ -3,6 +3,7 @@ package hy.oltp.core.estate.unit.persistence;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import hy.api.core.estate.unit.RoomTypes;
@@ -41,6 +42,7 @@ public class RoomEntity {
   @ManyToOne
   @JoinColumn(name = "unit_id", nullable = false)
   // @JsonBackReference
+  @JsonIgnore // TODO: resolve this to managed reference
   private UnitEntity unit;
 
   @NotNull

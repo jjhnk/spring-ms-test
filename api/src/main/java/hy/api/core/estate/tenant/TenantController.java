@@ -1,7 +1,6 @@
 package hy.api.core.estate.tenant;
 
 import java.util.List;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -24,10 +22,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  * @see Tenant
  */
 @RequestMapping("/estate/tenant")
-@SecurityRequirement(name = "security_auth")
+@SecurityRequirement(name = "Bearer Authentication")
 @Tag(name = "Tenant", description = "Tenant API")
 public interface TenantController {
-
   /**
    * Creates a new tenant
    *
@@ -52,9 +49,7 @@ public interface TenantController {
    * @param id the ID of the tenant
    * @return the tenant
    */
-  @Operation(
-    summary = "${api.estate.tenant.main.get.description}",
-    description = "${api.estate.tenant.main.get.notes}")
+  @Operation(summary = "${api.estate.tenant.main.get.description}", description = "${api.estate.tenant.main.get.notes}")
   @ApiResponses(
     value = {
       @ApiResponse(responseCode = "200", description = "${api.responseCodes.ok.description}"),
@@ -99,7 +94,10 @@ public interface TenantController {
       @ApiResponse(responseCode = "400", description = "${api.responseCodes.badRequest.description}"),
       @ApiResponse(responseCode = "422", description = "${api.responseCodes.unprocessableEntity.description}")})
   @PutMapping(value = "/{id}", consumes = "application/json", produces = "application/json")
-  public Tenant updateTenant(@RequestHeader HttpHeaders headers, @PathVariable("id") int id, @RequestBody Tenant tenant);
+  public Tenant updateTenant(
+    @RequestHeader HttpHeaders headers,
+    @PathVariable("id") int id,
+    @RequestBody Tenant tenant);
 
   /**
    * Deletes a tenant
@@ -117,5 +115,4 @@ public interface TenantController {
       @ApiResponse(responseCode = "422", description = "${api.responseCodes.unprocessableEntity.description}")})
   @DeleteMapping(value = "/{id}")
   public void deleteTenant(@RequestHeader HttpHeaders headers, @PathVariable("id") int id);
-
 }
