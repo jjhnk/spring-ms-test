@@ -8,152 +8,284 @@ Spring Ms Test 프로젝트는 적절한 수준의 개발 환경을 제공하여
 
 차후 RECAP에서는 프로젝트를 어떻게 발전시켜 나갈지에 대해 간단히 논의하겠습니다.
 
-# Features
-
-해당 챕터에서는 해당 프로젝트에서 사용되는 다양한 도구들을 간략하게 보여드리겠습니다.
-
 목차:
 
 - [Abstract](#abstract)
 - [Features](#features)
-  - [1. 모니터링 (Monitoring)](#1-모니터링-monitoring)
-  - [2. 로깅 (Logging, Distributed Tracing)](#2-로깅-logging-distributed-tracing)
-  - [3. 중앙집중적 API Documentation (Centralized Documentation)](#3-중앙집중적-api-documentation-centralized-documentation)
-  - [4. 인증 (Authentication)](#4-인증-authentication)
-  - [5. 중앙집중적 환경설정 (Centralized Configuration)](#5-중앙집중적-환경설정-centralized-configuration)
-  - [6. 서비스 디스커버리 (Service Discovery)](#6-서비스-디스커버리-service-discovery)
-  - [7. 엣지 서버 (Edge Server)](#7-엣지-서버-edge-server)
-  - [8. 서비스 메시 (Service Mesh)](#8-서비스-메시-service-mesh)
-  - [9. 프로젝트에 대하여 (요약)](#9-프로젝트에-대하여-요약)
 - [Prerequisite](#prerequisite)
+  - [Requirements](#requirements)
+    - [PowerShell](#powershell)
+    - [Chocolatey](#chocolatey)
+    - [Terminal (Optional)](#terminal-optional)
+    - [WSL](#wsl)
+    - [Docker](#docker)
+    - [Visual Studio Code](#visual-studio-code)
+      - [vscode 관련 extension](#vscode-관련-extension)
+    - [JAVA](#java)
+    - [GRADLE](#gradle)
+    - [MINIKUBE](#minikube)
+    - [Maven](#maven)
+  - [Optional](#optional)
+    - [Git For Windows](#git-for-windows)
+    - [Nexus OSS](#nexus-oss)
+      - [주요 기능](#주요-기능)
+      - [활용 사례](#활용-사례)
 - [Getting Started](#getting-started)
 - [Related Documentations](#related-documentations)
 
-## 1. 모니터링 (Monitoring)
+# Features
 
-1. Kubernetes 모니터링 (Kubenetes Monitoring)
+링크: [Features](./docs/featuers.md)
 
-![kubernetes-dashboard-1](./images/kubernetes-dashboard-1.png)
+목차:
 
-2. Node / Network 모니터링 (Kaili)
-
-![kaili-1](./images/kiali-1.png)
-
-3. System, Event 모니터링 (Prometheus, Grafana)
-
-![grafana-1](./images/grafana-1.png)
-
-4. Redis Cache 모니터링 (Redis Insight)
-
-![redis-insight](./images/redis-insight-1.png)
-
-5. 알림 기능 (mail-server, Alert Manager)
-
-![mail-server](./images/mail-server-1.png)
-
-## 2. 로깅 (Logging, Distributed Tracing)
-
-1. EFK stack
-
-![elasticsearch-1](./images/elastic-search-1.png)
-
-![elasticsearch-2](./images/elastic-search-2.png)
-
-2. Prometheus
-
-![prometheus-1](./images/prometheus-1.png)
-
-## 3. 중앙집중적 API Documentation (Centralized Documentation)
-
-1. Swagger
-
-![swagger-1](./images/swagger-1.png)
-
-2. (TODO: 나중에 할거임.) REST API DOCS
-
-## 4. 인증 (Authentication)
-
-1. Auth Server (Keycloak)
-
-![keycloak-1](./images/keycloak-1.png)
-
-![keycloak-2](./images/keycloak-2.png)
-
-## 5. 중앙집중적 환경설정 (Centralized Configuration)
-
-"Centralized Configuration"이란 service의 configuration (e.g. application.yml)이 하나의 포인트에서 관리됨을 의미합니다.
-
-이는 configuration file 혹은 config Map이 service에 종속되지 않고 별도로 inject 될 수 있는 환경이 필요합니다.
-
-1. config with kubernetes
-
-2. [config with config server](https://docs.spring.io/spring-cloud-config/docs/current/reference/html/)
-
-## 6. 서비스 디스커버리 (Service Discovery)
-
-"Service Discovery"란 별도로 end point에 대한 정확한 정보 없이 DNS와 같은 시스템을 이용하여 해당 service를 찾아낼 수 있음을 의미합니다. Reverse Proxy를 좀 쉽게 하기 위한 좋은 도구입니다 ((see)[https://www.linkedin.com/pulse/role-reverse-proxy-microservices-architecture-getkitsune-maotc/])
-
-1. [kubernetes istio](https://istio.io/latest/docs/ops/deployment/architecture/)
-
-2. [eureka server](https://cloud.spring.io/spring-cloud-netflix/reference/html/)
-
-![service discovery](./images/service-discovery.webp)
-
-
-## 7. 엣지 서버 (Edge Server)
-
-reverse proxy라고 불리기도 하는 그거. 해당 프로젝트는 istio ingress controller를 쓸 예정입니다.
-
-kubernetes ingress controller는 중요 요소이지만, 별도로 언급하지는 않습니다.
-
-nginx는 그냥 보라고 넣었습니다.
-
-spring gateway는 이전에 사용했기 때문에 reference를 넣었습니다.
-
-
-1. [istio ingress controller](https://istio.io/latest/docs/tasks/traffic-management/ingress/ingress-control/)
-
-2. [kubernetes ingress controller](https://kubernetes.io/docs/concepts/services-networking/ingress/)
-
-3. [nginx ingress controller](https://docs.nginx.com/nginx-ingress-controller/)
-
-4. [spring gateway](https://spring.io/projects/spring-cloud-gateway)
-
-![ingress](./images/Istio%20Ingress%20Gateway.webp)
-
-
-## 8. 서비스 메시 (Service Mesh)
-
-Service Mesh란 service application의 비지니스 로직이 아닌 부분들에 대해서 공통적인 관심사를 추출하여 처리하는 구조를 말합니다. 이는 Spring AOP와 비슷하다고 보시면 됩니다. NGINX가 설명이 잘 되어있어 해당 그림을 가져왔으나, 본 프로젝트에서는 **Istio**를 사용합니다.
-
-
-![service-mesh-1](./images/service-mesh-1.png)
-
-![service-mesh-2](./images/servicemesh-2.jpg)
-
-
-간략한 서비스 흐름은 다음과 같습니다. 물론 Istio 사용합니다. CDN 및 DDoS Protection은 없습니다.
-
-![service-flow](./images/service-flow.jpg)
-
-
-## 9. 프로젝트에 대하여 (요약)
-
-해당 프로젝트는 Micro Service를 위해서 [Spring Cloud](https://spring.io/projects/spring-cloud)를 사용한 이후 kubernetes를 사용하였습니다.
-
-프로젝트는 Rest Controller를 위주로 별도로 Front Application는 없이 rest api만 지원함을 목표로 하였습니다.
-
-본 프로젝트는 크게 두 가지 프로젝트로 구성되어 있습니다.
-
-1. hands-on: web flux([spring reactive](https://spring.io/reactive)) 기반 microservice OLTP
-2. hy-oltp: web mvc 기반 monolithic [OLTP](https://ko.wikipedia.org/wiki/%EC%98%A8%EB%9D%BC%EC%9D%B8_%ED%8A%B8%EB%9E%9C%EC%9E%AD%EC%85%98_%EC%B2%98%EB%A6%AC) (참조: [OALP](https://ko.wikipedia.org/wiki/%EC%98%A8%EB%9D%BC%EC%9D%B8_%EB%B6%84%EC%84%9D_%EC%B2%98%EB%A6%AC)).
-* hands-on은 OLTP이긴 하지만 "eventually consistency" concept를 지니고 있습니다. 즉 transaction이 엄밀하게 지켜지지는 않습니다.
-
-마이크로 서비스가 주요 목표인 프로젝트에서, OLTP 서비스를 구현한 이유는 cloud 환경의 기능들을 잘 활용하면 기존의 어려운 문제점들을 해결하기 위한 하나의 실마리가 될 수 있다고 생각하였기 때문입니다.
-
-프로젝트의 상세에 대해서는 추후 상세하게 말씀드리겠습니다.
+- [1. 모니터링 (Monitoring)](./docs/featuers.md/#1-모니터링-monitoring)
+- [2. 로깅 (Logging, Distributed Tracing)](./docs/featuers.md/#2-로깅-logging-distributed-tracing)
+- [3. 중앙집중적 API Documentation (Centralized Documentation)](./docs/featuers.md/#3-중앙집중적-api-documentation-centralized-documentation)
+- [4. 인증 (Authentication)](./docs/featuers.md/#4-인증-authentication)
+- [5. 중앙집중적 환경설정 (Centralized Configuration)](./docs/featuers.md/#5-중앙집중적-환경설정-centralized-configuration)
+- [6. 서비스 디스커버리 (Service Discovery)](./docs/featuers.md/#6-서비스-디스커버리-service-discovery)
+- [7. 엣지 서버 (Edge Server)](./docs/featuers.md/#7-엣지-서버-edge-server)
+- [8. 서비스 메시 (Service Mesh)](./docs/featuers.md/#8-서비스-메시-service-mesh)
+- [9. 프로젝트에 대하여 (요약)](./docs/featuers.md/#9-프로젝트에-대하여-요약)
 
 # Prerequisite
+
+해당 프로젝트는 Windows 환경에서 WSL DOCKER에 기반합니다. Linux Distribution 및 macOS는 지원하지 않습니다.
+
+관련 어플리케이션은은 Chocolatey를 기반으로 다운로드 합니다. 다른 Installation 방식이 있다면 해당 방식을 사용하시면 됩니다.
+
+PowerShell을 기반으로 운영합니다. PowerShell의 원할한 운영을 위해 7.4.x 버전 이상을 사용합니다.
+
+개발 환경은 vscode를 기준으로 구현됩니다. 다른 도구는 상황에 맞게 적용하면 됩니다.
+
+⚠️ 아래는 Windows 11 / PowerShell을 기준으로 설명되었으나, 별도로 다른 방식으로 패키지 관리를 한다면 다른 방식을 사용하면 됩니다.
+
+## Requirements
+
+### [PowerShell](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.4&viewFallbackFrom=powershell-7&WT.mc_id=THOMASMAURER-blog-thmaure)
+
+Installation
+```pwsh
+# run administrative shell
+winget search Microsoft.PowerShell
+winget install --id Microsoft.Powershell --source winget
+```
+
+설치된 PowerShell은 아래의 Path에 저장된다.
+
+> %ProgramFiles%/PowerShell/7
+
+만약 vscode의 terminal의 profile의 환경에 설치된 PowerShell을 추가하고자 한다면 다음과 같이 설치한다.
+
+```code
+[CTRL+SHIFT+P]
+> Preferences: Open User Settings (JSON)
+
+# for key "terminal.integrated.profiles.windows", add json value "PowerShell": { "path": "${env:programfiles}\\PowerShell\\7\\pwsh.exe", "icon": "terminal-powershell" }
+
+# for example
+"terminal.integrated.profiles.windows": {
+  "PowerShell": {
+    "path": "${env:programfiles}\\PowerShell\\7\\pwsh.exe",
+    "icon": "terminal-powershell"
+  },
+  ...
+}
+
+# for set it as default add line below
+"terminal.integrated.defaultProfile.windows": "PowerShell"
+```
+
+### [Chocolatey](https://chocolatey.org/install)
+
+```pwsh
+# run administrative shell
+Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+```
+
+### [Terminal](https://github.com/microsoft/terminal) (Optional)
+
+```pwsh
+# run administrative shell
+choco install microsoft-windows-terminal
+choco upgrade microsoft-windows-terminal
+```
+
+### [WSL](https://learn.microsoft.com/en-us/windows/wsl/install)
+
+```pwsh
+# run administrative shell
+wsl --install
+wsl -l -o
+wsl --install -d Ubuntu
+```
+
+### [Docker](https://www.docker.com/products/docker-desktop/)
+
+```pwsh
+# run administrative shell
+choco install docker-desktop
+```
+
+⚠️ Chocolatey를 통해 docker-desktop을 다운받으면 업데이트 시에 문제가 있을 수 있다. https://www.docker.com/products/docker-desktop/ 에서 다운을 받아도 상관이 없다.
+
+### [Visual Studio Code](https://code.visualstudio.com/download)
+
+```pwsh
+# run administrative shell
+choco install vscode
+```
+
+#### vscode 관련 extension
+
+아래는 필수이다.
+
+``` txt
+1. Extension Pack for Java, Debugger For Java, Test Runner For Java, Maven For Java, Project Manager For Java, Gradle For JAva, Language Support for Java(TM) by RedHat
+2. KUBERNETES, Bridge To Kubernetes
+3. Docker
+4. Wsl
+5. Spring Boot Dashboard, Spring Boot Tools, Spring Boot Extension Pack
+ ```
+
+만약 일일히 치는게 귀찮다면 아래를 붙여넣기 하자. 다만 일일히 검증은 안해서 이상한 게 들어가거나 빠졌을 수 있다.
+
+``` pwsh
+code --install-extension formulahendry.code-runner
+code --install-extension dotjoshjohnson.xml
+code --install-extension formulahendry.vscode-mysql
+code --install-extension madhavd1.javadoc-tools
+code --install-extension mindaro.mindaro
+code --install-extension ms-azuretools.vscode-docker
+code --install-extension ms-edgedevtools.vscode-edge-devtools
+code --install-extension ms-kubernetes-tools.vscode-aks-tools
+code --install-extension ms-kubernetes-tools.vscode-kubernetes-tools
+code --install-extension ms-vscode-remote.remote-containers
+code --install-extension ms-vscode-remote.remote-ssh
+code --install-extension ms-vscode-remote.remote-ssh-edit
+code --install-extension ms-vscode-remote.remote-wsl
+code --install-extension ms-vscode.powershell
+code --install-extension naco-siren.gradle-language
+code --install-extension redhat.java
+code --install-extension redhat.vscode-xml
+code --install-extension redhat.vscode-yaml
+code --install-extension ritwickdey.liveserver
+code --install-extension vmware.vscode-boot-dev-pack
+code --install-extension vmware.vscode-spring-boot
+code --install-extension vscjava.vscode-gradle
+code --install-extension vscjava.vscode-java-debug
+code --install-extension vscjava.vscode-java-dependency
+code --install-extension vscjava.vscode-java-pack
+code --install-extension vscjava.vscode-java-test
+code --install-extension vscjava.vscode-lombok
+code --install-extension vscjava.vscode-maven
+code --install-extension vscjava.vscode-spring-boot-dashboard
+code --install-extension vscjava.vscode-spring-initializr
+```
+
+### [JAVA](https://adoptium.net/temurin/releases/)
+
+java는 최소 21버전을 사용한다.
+
+```pwsh
+# run administrative shell
+choco install openjdk
+# choco install openjdk --version 21.0.2
+```
+
+만약 일반적인 상황에서 Temurin을 사용해야할 경우나, Microsoft Build of OpenJDK를 사용해야 할 경우가 있다면 아래를 참조한다.
+
+일반적으로 production의 환경에서는 temurin가 선호되며, Azure Cloud를 사용하는 경우 Microsoft Build of OpenJDK를 추천한다.
+
+```pwsh
+# run administrative shell
+# install temurin java
+choco install temurin
+# install Microsoft build of OpenJDK
+choco install microsoft-openjdk
+```
+
+### [GRADLE](https://gradle.org/)
+
+gradle은 8.8버전을 사용한다.
+
+```pwsh
+# run administrative shell
+choco install gradle
+# choco install gradle --version 8.8
+```
+
+### [MINIKUBE](https://minikube.sigs.k8s.io/docs/)
+
+Kubernetes Distribution으로는 Minikube를 사용한다. Minikube는 local host에서 kubernetes를 활용하기 위한 도구이며 해당 프로젝트에서는 개인 컴퓨터에 node 설치를 지양하고자 minikube를 활용한다.
+
+```pwsh
+# run administrative shell
+choco install minikube
+# choco install kubernetes-cli
+```
+
+사용되는 명령어는 아래와 같다. 해당 내용은 나중에 다시 설명하도록 한다.
+
+> minikube start
+> minikube stop
+> minikube tunnel
+> minikube -p minikube docker-env --shell powershell | Invoke-Expression
+> minikube -p minikube docker-env -u --shell powershell | Invoke-Expression
+
+### Maven
+
+maven은 패키지 관리 도구이다. 본 프로젝트에서는 api, util 계층을 분할하기 위해서 maven을 사용한다.
+
+```pwsh
+# run administrative shell
+choco install maven
+```
+
+⚠️ 설치가 된 이후 아래의 Path가 생성되었는지 확인한다.
+> Path: %UserProfile%/.m2
+
+
+## Optional
+
+### [Git For Windows](https://git-scm.com/download/win)
+
+실질적으로 Git이 사용되는 일은 거의 없다. 다만 종종 Git Bash를 를 사용한다.
+
+```pwsh
+# run administrative shell
+choco install git
+```
+
+### [Nexus OSS](https://www.sonatype.com/products/sonatype-nexus-oss)
+
+Nexus OSS는 Sonatype에서 개발한 아티팩트 저장소 관리자이다. 주로 개발자가 소프트웨어 컴포넌트를 효율적으로 저장, 관리, 배포할 수 있도록 설계되었다. Nexus OSS는 다양한 프로그래밍 언어와 패키지 형식을 지원하여 개발 및 배포 과정을 단순화합니다.
+
+#### 주요 기능
+
+1. **아티팩트 저장소**: Maven, npm, NuGet, Docker, PyPI 등 다양한 형식의 아티팩트를 저장하고 관리할 수 있습니다.
+2. **프로세스 자동화**: CI/CD 파이프라인과 통합되어 자동으로 빌드된 아티팩트를 저장하고 배포하는 과정을 자동화할 수 있습니다.
+3. **보안 및 라이선스 관리**: 저장된 아티팩트의 보안 취약점 및 라이선스 문제를 모니터링하고 관리할 수 있습니다.
+4. **확장성**: 플러그인 아키텍처를 통해 기능을 확장할 수 있으며, 대규모 프로젝트에서도 효율적으로 운영할 수 있습니다.
+5. **유연한 배포**: 내부 네트워크 또는 퍼블릭 클라우드 환경에 배포하여 사용할 수 있습니다.
+
+#### 활용 사례
+
+Nexus OSS는 다양한 개발 환경에서 널리 사용됩니다. 예를 들어, 대규모 소프트웨어 개발 프로젝트에서 빌드된 모든 라이브러리와 애플리케이션을 중앙에서 관리하고, 팀 간의 협업을 원활하게 하며, 배포 과정을 단순화하는 데 사용됩니다.
+
+해당 프로젝트에서는 docker 및 application image 관리를 위해서 사용했으나, 별도로 학습 난이도를 위해 disable 하였다.
+
+다른 아티팩트 저장소 관리자로는 Google Artifact Registry, Azure Artifacts, GitHub Packages 등이 있다.
+
+```pwsh
+# run administrative shell
+choco install nexus-repository
+# Start-Service -Name nexus
+# Stop-Service -Name nexus
+```
+
+⚠️ 위와 같이 설치하면 Windows Services에 자동으로 등록되며 localhost:8081을 통해 service된다. 초기 계정은 admin/admin이다. 만약 nexus 서비스를 종료하려면 Stop-Service -Name nexus를 입력한다.
 
 # Getting Started
 
