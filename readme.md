@@ -13,25 +13,10 @@ Spring Ms Test 프로젝트는 적절한 수준의 개발 환경을 제공하여
 - [Abstract](#abstract)
 - [Features](#features)
 - [Prerequisite](#prerequisite)
-  - [Requirements](#requirements)
-    - [PowerShell](#powershell)
-    - [Chocolatey](#chocolatey)
-    - [Terminal (Optional)](#terminal-optional)
-    - [WSL](#wsl)
-    - [Docker](#docker)
-    - [Visual Studio Code](#visual-studio-code)
-      - [vscode 관련 extension](#vscode-관련-extension)
-    - [JAVA](#java)
-    - [GRADLE](#gradle)
-    - [MINIKUBE](#minikube)
-    - [Maven](#maven)
-  - [Optional](#optional)
-    - [Git For Windows](#git-for-windows)
-    - [Nexus OSS](#nexus-oss)
-      - [주요 기능](#주요-기능)
-      - [활용 사례](#활용-사례)
 - [Getting Started](#getting-started)
+  - [시스템 구성도](#시스템-구성도)
 - [Related Documentations](#related-documentations)
+- [RECAP](#recap)
 
 # Features
 
@@ -61,232 +46,279 @@ PowerShell을 기반으로 운영합니다. PowerShell의 원할한 운영을 �
 
 ⚠️ 아래는 Windows 11 / PowerShell을 기준으로 설명되었으나, 별도로 다른 방식으로 패키지 관리를 한다면 다른 방식을 사용하면 됩니다.
 
-## Requirements
+링크: [Prerequisite](./docs/prerequisite.md)
 
-### [PowerShell](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.4&viewFallbackFrom=powershell-7&WT.mc_id=THOMASMAURER-blog-thmaure)
-
-Installation
-```pwsh
-# run administrative shell
-winget search Microsoft.PowerShell
-winget install --id Microsoft.Powershell --source winget
-```
-
-설치된 PowerShell은 아래의 Path에 저장된다.
-
-> %ProgramFiles%/PowerShell/7
-
-만약 vscode의 terminal의 profile의 환경에 설치된 PowerShell을 추가하고자 한다면 다음과 같이 설치한다.
-
-```code
-[CTRL+SHIFT+P]
-> Preferences: Open User Settings (JSON)
-
-# for key "terminal.integrated.profiles.windows", add json value "PowerShell": { "path": "${env:programfiles}\\PowerShell\\7\\pwsh.exe", "icon": "terminal-powershell" }
-
-# for example
-"terminal.integrated.profiles.windows": {
-  "PowerShell": {
-    "path": "${env:programfiles}\\PowerShell\\7\\pwsh.exe",
-    "icon": "terminal-powershell"
-  },
-  ...
-}
-
-# for set it as default add line below
-"terminal.integrated.defaultProfile.windows": "PowerShell"
-```
-
-### [Chocolatey](https://chocolatey.org/install)
-
-```pwsh
-# run administrative shell
-Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-```
-
-### [Terminal](https://github.com/microsoft/terminal) (Optional)
-
-```pwsh
-# run administrative shell
-choco install microsoft-windows-terminal
-choco upgrade microsoft-windows-terminal
-```
-
-### [WSL](https://learn.microsoft.com/en-us/windows/wsl/install)
-
-```pwsh
-# run administrative shell
-wsl --install
-wsl -l -o
-wsl --install -d Ubuntu
-```
-
-### [Docker](https://www.docker.com/products/docker-desktop/)
-
-```pwsh
-# run administrative shell
-choco install docker-desktop
-```
-
-⚠️ Chocolatey를 통해 docker-desktop을 다운받으면 업데이트 시에 문제가 있을 수 있다. https://www.docker.com/products/docker-desktop/ 에서 다운을 받아도 상관이 없다.
-
-### [Visual Studio Code](https://code.visualstudio.com/download)
-
-```pwsh
-# run administrative shell
-choco install vscode
-```
-
-#### vscode 관련 extension
-
-아래는 필수이다.
-
-``` txt
-1. Extension Pack for Java, Debugger For Java, Test Runner For Java, Maven For Java, Project Manager For Java, Gradle For JAva, Language Support for Java(TM) by RedHat
-2. KUBERNETES, Bridge To Kubernetes
-3. Docker
-4. Wsl
-5. Spring Boot Dashboard, Spring Boot Tools, Spring Boot Extension Pack
- ```
-
-만약 일일히 치는게 귀찮다면 아래를 붙여넣기 하자. 다만 일일히 검증은 안해서 이상한 게 들어가거나 빠졌을 수 있다.
-
-``` pwsh
-code --install-extension formulahendry.code-runner
-code --install-extension dotjoshjohnson.xml
-code --install-extension formulahendry.vscode-mysql
-code --install-extension madhavd1.javadoc-tools
-code --install-extension mindaro.mindaro
-code --install-extension ms-azuretools.vscode-docker
-code --install-extension ms-edgedevtools.vscode-edge-devtools
-code --install-extension ms-kubernetes-tools.vscode-aks-tools
-code --install-extension ms-kubernetes-tools.vscode-kubernetes-tools
-code --install-extension ms-vscode-remote.remote-containers
-code --install-extension ms-vscode-remote.remote-ssh
-code --install-extension ms-vscode-remote.remote-ssh-edit
-code --install-extension ms-vscode-remote.remote-wsl
-code --install-extension ms-vscode.powershell
-code --install-extension naco-siren.gradle-language
-code --install-extension redhat.java
-code --install-extension redhat.vscode-xml
-code --install-extension redhat.vscode-yaml
-code --install-extension ritwickdey.liveserver
-code --install-extension vmware.vscode-boot-dev-pack
-code --install-extension vmware.vscode-spring-boot
-code --install-extension vscjava.vscode-gradle
-code --install-extension vscjava.vscode-java-debug
-code --install-extension vscjava.vscode-java-dependency
-code --install-extension vscjava.vscode-java-pack
-code --install-extension vscjava.vscode-java-test
-code --install-extension vscjava.vscode-lombok
-code --install-extension vscjava.vscode-maven
-code --install-extension vscjava.vscode-spring-boot-dashboard
-code --install-extension vscjava.vscode-spring-initializr
-```
-
-### [JAVA](https://adoptium.net/temurin/releases/)
-
-java는 최소 21버전을 사용한다.
-
-```pwsh
-# run administrative shell
-choco install openjdk
-# choco install openjdk --version 21.0.2
-```
-
-만약 일반적인 상황에서 Temurin을 사용해야할 경우나, Microsoft Build of OpenJDK를 사용해야 할 경우가 있다면 아래를 참조한다.
-
-일반적으로 production의 환경에서는 temurin가 선호되며, Azure Cloud를 사용하는 경우 Microsoft Build of OpenJDK를 추천한다.
-
-```pwsh
-# run administrative shell
-# install temurin java
-choco install temurin
-# install Microsoft build of OpenJDK
-choco install microsoft-openjdk
-```
-
-### [GRADLE](https://gradle.org/)
-
-gradle은 8.8버전을 사용한다.
-
-```pwsh
-# run administrative shell
-choco install gradle
-# choco install gradle --version 8.8
-```
-
-### [MINIKUBE](https://minikube.sigs.k8s.io/docs/)
-
-Kubernetes Distribution으로는 Minikube를 사용한다. Minikube는 local host에서 kubernetes를 활용하기 위한 도구이며 해당 프로젝트에서는 개인 컴퓨터에 node 설치를 지양하고자 minikube를 활용한다.
-
-```pwsh
-# run administrative shell
-choco install minikube
-# choco install kubernetes-cli
-```
-
-사용되는 명령어는 아래와 같다. 해당 내용은 나중에 다시 설명하도록 한다.
-
-> minikube start
-> minikube stop
-> minikube tunnel
-> minikube -p minikube docker-env --shell powershell | Invoke-Expression
-> minikube -p minikube docker-env -u --shell powershell | Invoke-Expression
-
-### Maven
-
-maven은 패키지 관리 도구이다. 본 프로젝트에서는 api, util 계층을 분할하기 위해서 maven을 사용한다.
-
-```pwsh
-# run administrative shell
-choco install maven
-```
-
-⚠️ 설치가 된 이후 아래의 Path가 생성되었는지 확인한다.
-> Path: %UserProfile%/.m2
-
-
-## Optional
-
-### [Git For Windows](https://git-scm.com/download/win)
-
-실질적으로 Git이 사용되는 일은 거의 없다. 다만 종종 Git Bash를 를 사용한다.
-
-```pwsh
-# run administrative shell
-choco install git
-```
-
-### [Nexus OSS](https://www.sonatype.com/products/sonatype-nexus-oss)
-
-Nexus OSS는 Sonatype에서 개발한 아티팩트 저장소 관리자이다. 주로 개발자가 소프트웨어 컴포넌트를 효율적으로 저장, 관리, 배포할 수 있도록 설계되었다. Nexus OSS는 다양한 프로그래밍 언어와 패키지 형식을 지원하여 개발 및 배포 과정을 단순화합니다.
-
-#### 주요 기능
-
-1. **아티팩트 저장소**: Maven, npm, NuGet, Docker, PyPI 등 다양한 형식의 아티팩트를 저장하고 관리할 수 있습니다.
-2. **프로세스 자동화**: CI/CD 파이프라인과 통합되어 자동으로 빌드된 아티팩트를 저장하고 배포하는 과정을 자동화할 수 있습니다.
-3. **보안 및 라이선스 관리**: 저장된 아티팩트의 보안 취약점 및 라이선스 문제를 모니터링하고 관리할 수 있습니다.
-4. **확장성**: 플러그인 아키텍처를 통해 기능을 확장할 수 있으며, 대규모 프로젝트에서도 효율적으로 운영할 수 있습니다.
-5. **유연한 배포**: 내부 네트워크 또는 퍼블릭 클라우드 환경에 배포하여 사용할 수 있습니다.
-
-#### 활용 사례
-
-Nexus OSS는 다양한 개발 환경에서 널리 사용됩니다. 예를 들어, 대규모 소프트웨어 개발 프로젝트에서 빌드된 모든 라이브러리와 애플리케이션을 중앙에서 관리하고, 팀 간의 협업을 원활하게 하며, 배포 과정을 단순화하는 데 사용됩니다.
-
-해당 프로젝트에서는 docker 및 application image 관리를 위해서 사용했으나, 별도로 학습 난이도를 위해 disable 하였다.
-
-다른 아티팩트 저장소 관리자로는 Google Artifact Registry, Azure Artifacts, GitHub Packages 등이 있다.
-
-```pwsh
-# run administrative shell
-choco install nexus-repository
-# Start-Service -Name nexus
-# Stop-Service -Name nexus
-```
-
-⚠️ 위와 같이 설치하면 Windows Services에 자동으로 등록되며 localhost:8081을 통해 service된다. 초기 계정은 admin/admin이다. 만약 nexus 서비스를 종료하려면 Stop-Service -Name nexus를 입력한다.
+- [Requirements](./docs/prerequisite.md#requirements)
+  - [PowerShell](./docs/prerequisite.md#powershell)
+  - [Chocolatey](./docs/prerequisite.md#chocolatey)
+  - [WSL](./docs/prerequisite.md#wsl)
+  - [Docker](./docs/prerequisite.md#docker)
+  - [Visual Studio Code](./docs/prerequisite.md#visual-studio-code)
+    - [VSCode 관련 extension](./docs/prerequisite.md#vscode-관련-extension)
+  - [Java](./docs/prerequisite.md#java)
+  - [Gradle](./docs/prerequisite.md#gradle)
+  - [Minikube, Kubenetes-cli, Istioctl, Helm](./docs/prerequisite.md#minikube-kubenetes-cli-istioctl-helm)
+  - [Maven](./docs/prerequisite.md#maven)
+  - [DBeaver](./docs/prerequisite.md#dbeaver)
+- [Optional](./docs/prerequisite.md#optional)
+  - [Git For Windows](./docs/prerequisite.md#git-for-windows)
+  - [Nexus OSS](./docs/prerequisite.md#nexus-oss)
+  - [JMeter](./docs/prerequisite.md#jmeter)
+  - [Terminal](./docs/prerequisite.md#terminal)
 
 # Getting Started
 
+## 시스템 구성도
+
+![system-diagram](./images/system-diagram.png)
+
+링크: [Getting Started](./docs/getting-started.md)
+
+ [Git Repository 설치 및 초기 설정](./docs/getting-started.md#git-repository-설치-및-초기-설정)
+- [Git repository pull](./docs/getting-started.md#git-repository-pull)
+- [api 및 util artifact publishing](./docs/getting-started.md#api-및-util-artifact-publishing)
+- [Ingress Gateway의 IP address에 대한 hostname 등록](./docs/getting-started.md#ingress-gateway의-ip-address에-대한-hostname-등록)
+- [artifact build](./docs/getting-started.md#artifact-build)
+- [minikube start \& import dependencies](./docs/getting-started.md#minikube-start--import-dependencies)
+- [create configuration link file](./docs/getting-started.md#create-configuration-link-file)
+- [Helm repository를 추가한다](./docs/getting-started.md#helm-repository를-추가한다)
+- [install istio](./docs/getting-started.md#install-istio)
+- [coredns update](./docs/getting-started.md#coredns-update)
+- [Install persistence](./docs/getting-started.md#install-persistence)
+- [Install redis](./docs/getting-started.md#install-redis)
+- [Install Message Queue](./docs/getting-started.md#install-message-queue)
+- [Install Logging](./docs/getting-started.md#install-logging)
+- [Install Kubernetes Dashboard](./docs/getting-started.md#install-kubernetes-dashboard)
+
+⚠️ 위의 과정은 별도로 검증없이 작성되어 오류가 있을 수 있습니다. 오류를 발견할 경우 issue에 제보를 요청드립니다.
+
+1. 초기 설정이 끝난 다음 app artifact를 배포한다.
+
+```pwsh
+# hands-on 배포
+# jar artifact 업데이트
+minikube -p minikube docker-env -u --shell powershell | Invoke-Expression
+./gradlew build
+
+# docker iamge 업데이트
+minikube -p minikube docker-env --shell powershell | Invoke-Expression
+docker-compose build
+
+$target = "hands-on"
+$env = "dev-env"
+kubectl delete namespace $target
+Get-ChildItem -Path "kubernetes/helm/$target/components" -Directory | ForEach-Object { helm dep up $_.FullName } | Out-Null
+Get-ChildItem -Path "kubernetes/helm/$target/environments" -Directory | ForEach-Object { helm dep up $_.FullName } | Out-Null
+kubectl apply -f "./kubernetes/namespaces/${target}-namespace.yml"
+helm install "${target}-dev-env" "kubernetes/helm/$target/environments/$env" -n "$target"
+helm upgrade "${target}-dev-env" "kubernetes/helm/$target/environments/dev-env" -n "$target"
+
+# 위에서 이미 jar artifact 및 docker image가 배포 되었으므로 생략
+$target = "hy-oltp"
+$env = "dev-env"
+kubectl delete namespace $target
+Get-ChildItem -Path "kubernetes/helm/$target/components" -Directory | ForEach-Object { helm dep up $_.FullName } | Out-Null
+Get-ChildItem -Path "kubernetes/helm/$target/environments" -Directory | ForEach-Object { helm dep up $_.FullName } | Out-Null
+kubectl apply -f "./kubernetes/namespaces/${target}-namespace.yml"
+helm install "${target}-dev-env" "kubernetes/helm/$target/environments/$env" -n "$target"
+helm upgrade "${target}-dev-env" "kubernetes/helm/$target/environments/dev-env" -n "$target"
+```
+
+2. kubernetes tab을 클릭하고 all-green이 될때까지 기다린다.
+
+![vscode-kubernetes](./images/vscode-kubernetes.png)
+
+3. minikube tunnel을 실행한다.
+
+```pwsh
+minikube tunnel
+```
+
+4. tab group을 켜고 아래의 service들을 등록한다.
+
+```txt
+https://kiali.minikube.me/
+https://kubernetes-dashboard.minikube.me/
+https://grafana.minikube.me/
+https://kibana.minikube.me/
+https://tracing.minikube.me/
+https://mail.minikube.me/
+https://prometheus.minikube.me/
+https://alertmanager.minikube.me/
+https://redis-insight.minikube.me/
+https://minikube.me/product-composite/openapi/swagger-ui.html
+https://keycloak.minikube.me/
+```
+
+4.1. kubernetes-dashboardh
+
+https://kubernetes-dashboard.minikube.me/ 에 접속하기 위해서는 아래의 명령어를 통해 token을 획득해야 한다.
+
+```
+kubectl -n kubernetes-dashboard create token admin-user
+```
+
+https://grafana.minikube.me/ 를 활용하기 위해서는 다음을 참조한다.
+
+JVM (Micrometer)를 활성화하기 위해 다음을 import한다.
+
+* [Dashboards]
+* [Import]
+* [Import via grafana.com]에 17175를 입력한다.
+
+![grafana-setting](./images/grafana-setting-1.png)
+
+* 아래 request를 요청한다.
+
+```
+curl --location 'https://grafana.minikube.me/api/dashboards/db' \
+--header 'Content-Type: application/json' \
+--data '{"meta":{"type":"db","canSave":true,"canEdit":true,"canAdmin":true,"canStar":false,"canDelete":true,"slug":"hands-on-dashboard","url":"/d/ZF5_6XwVk/hands-on-dashboard","expires":"0001-01-01T00:00:00Z","created":"2023-05-31T16:17:58Z","updated":"2023-05-31T16:54:43Z","updatedBy":"Anonymous","createdBy":"Anonymous","version":5,"hasAcl":false,"isFolder":false,"folderId":0,"folderUid":"","folderTitle":"General","folderUrl":"","provisioned":false,"provisionedExternalId":"","annotationsPermissions":{"dashboard":{"canAdd":true,"canEdit":true,"canDelete":true},"organization":{"canAdd":true,"canEdit":true,"canDelete":true}},"isPublic":false},"dashboard":{"annotations":{"list":[{"builtIn":1,"datasource":{"type":"grafana","uid":"-- Grafana --"},"enable":true,"hide":true,"iconColor":"rgba(0, 211, 255, 1)","name":"Annotations & Alerts","target":{"limit":100,"matchAny":false,"tags":[],"type":"dashboard"},"type":"dashboard"}]},"editable":true,"fiscalYearStartMonth":0,"graphTooltip":0,"id":null,"links":[],"liveNow":false,"panels":[{"datasource":{"type":"prometheus","uid":"PBFA97CFB590B2093"},"fieldConfig":{"defaults":{"color":{"mode":"palette-classic"},"custom":{"axisLabel":"","axisPlacement":"auto","barAlignment":0,"drawStyle":"line","fillOpacity":0,"gradientMode":"none","hideFrom":{"legend":false,"tooltip":false,"viz":false},"lineInterpolation":"linear","lineWidth":1,"pointSize":5,"scaleDistribution":{"type":"linear"},"showPoints":"auto","spanNulls":false,"stacking":{"group":"A","mode":"none"},"thresholdsStyle":{"mode":"off"}},"mappings":[],"thresholds":{"mode":"absolute","steps":[{"color":"green","value":null},{"color":"red","value":80}]}},"overrides":[]},"gridPos":{"h":6,"w":24,"x":0,"y":0},"id":4,"options":{"legend":{"calcs":[],"displayMode":"list","placement":"bottom"},"tooltip":{"mode":"multi","sort":"none"}},"targets":[{"datasource":{"type":"prometheus","uid":"PBFA97CFB590B2093"},"editorMode":"builder","expr":"rate(resilience4j_retry_calls_total[30s])","interval":"","legendFormat":"{{kind}}","range":true,"refId":"A"}],"title":"Retry","type":"timeseries"},{"alert":{"alertRuleTags":{},"conditions":[{"evaluator":{"params":[0.5],"type":"lt"},"operator":{"type":"and"},"query":{"params":["A","10s","now"]},"reducer":{"params":[],"type":"max"},"type":"query"}],"executionErrorState":"alerting","for":"0m","frequency":"10s","handler":1,"name":"Circuit Breaker alert","noDataState":"no_data","notifications":[]},"datasource":{"type":"prometheus","uid":"PBFA97CFB590B2093"},"fieldConfig":{"defaults":{"color":{"mode":"palette-classic"},"custom":{"axisLabel":"","axisPlacement":"auto","barAlignment":0,"drawStyle":"line","fillOpacity":0,"gradientMode":"none","hideFrom":{"legend":false,"tooltip":false,"viz":false},"lineInterpolation":"linear","lineWidth":1,"pointSize":5,"scaleDistribution":{"type":"linear"},"showPoints":"auto","spanNulls":false,"stacking":{"group":"A","mode":"none"},"thresholdsStyle":{"mode":"off"}},"mappings":[],"thresholds":{"mode":"absolute","steps":[{"color":"green","value":null},{"color":"red","value":80}]}},"overrides":[]},"gridPos":{"h":5,"w":24,"x":0,"y":6},"id":2,"options":{"legend":{"calcs":[],"displayMode":"list","placement":"bottom"},"tooltip":{"mode":"multi","sort":"none"}},"targets":[{"datasource":{"type":"prometheus","uid":"PBFA97CFB590B2093"},"editorMode":"builder","expr":"resilience4j_circuitbreaker_state{state=\"closed\"}","legendFormat":"{{state}}","range":true,"refId":"A"},{"datasource":{"type":"prometheus","uid":"PBFA97CFB590B2093"},"editorMode":"builder","expr":"resilience4j_circuitbreaker_state{state=\"open\"}","hide":false,"legendFormat":"{{state}}","range":true,"refId":"B"},{"datasource":{"type":"prometheus","uid":"PBFA97CFB590B2093"},"editorMode":"builder","expr":"resilience4j_circuitbreaker_state{state=\"half_open\"}","hide":false,"legendFormat":"{{state}}","range":true,"refId":"C"}],"thresholds":[{"colorMode":"critical","op":"lt","value":0.5,"visible":true}],"title":"Circuit Breaker","type":"timeseries"},{"datasource":{"type":"prometheus","uid":"PBFA97CFB590B2093"},"gridPos":{"h":6,"w":24,"x":0,"y":11},"id":6,"options":{"alertName":"","dashboardAlerts":true,"dashboardTitle":"","maxItems":10,"showOptions":"changes","sortOrder":1,"stateFilter":{"alerting":false,"execution_error":false,"no_data":false,"ok":false,"paused":false,"pending":false},"tags":[]},"pluginVersion":"9.0.1","title":"Circuit Breaker Alerts ","type":"alertlist"}],"refresh":"","schemaVersion":36,"style":"dark","tags":[],"templating":{"list":[]},"time":{"from":"now-5m","to":"now"},"timepicker":{},"timezone":"","title":"Hands-on Dashboard","uid":"ZF5_6XwVk","version":3,"weekStart":""}}'
+```
+
+4.2. elasticserach
+
+Stack Management로 갑니다.
+
+![elastic-search-setting-1](./images/elastic-search-setting-1.png)
+
+Index Pattern에 logstash-*를 입력하고, tag를 time으로 설정합니다.
+
+![elastic-search-setting-2](./images/elastic-search-setting-2.png)
+
+log Dashboard를 설정하기 위해 Dashboard로 이동합니다.
+
+![elastic-search-setting-3](./images/elastic-search-setting-3.png)
+
+6에 kubernetes.namespace.name.keyword를 입력하고 오른쪽으로 드래그합니다. 모양은 도넛으로 지정합니다.
+
+![elastic-search-setting-4](./images/elastic-search-setting-4.png)
+
+8에 kubernetes.continaer.name.keyword를 입력하고 오른쪽으로 드래그합니다.
+
+![elastic-search-setting-5](./images/elastic-search-setting-5.png)
+
+오른쪽 위에서 Save To library를 누르고 이름을 대충 적당한걸로 짓습니다.
+
+다음 화면에서 오른쪽 위에서 Save를 누르고 이름을 대충 적당한걸로 짓습니다.
+
+![elastic-search-setting-6](./images/elastic-search-setting-6.png)
+
+오른쪽 Discover를 눌러 실시간 로그 목록을 확인합니다.
+
+![elastic-search-setting-7](./images/elastic-search-setting-7.png)
+
+Search field names에서 차례로 아래와 같이 입력합니다.
+
+* kubernetes.namespace.name
+* spring.level
+* kubernetes.container.name
+* spring.trace (⚠️ 중요)
+* log
+
+![elastic-search-setting-8](./images/elastic-search-setting-8.png)
+
+오른쪽 위의 Save 버튼을 누르고 적당한 이름을 짓고 저장합니다.
+
+![elastic-search-setting-9](./images/elastic-search-setting-9.png)
+
+4.2.1 Jaeger와 연계
+
+⚠️ 현재는 이러한 기능이 있다는 것만 알아두세요. 실습은 나중에.
+
+관심이 있는 trace 중 하나를 ctrl + c합니다.
+
+![elastic-search-setting-10](./images/elastic-search-setting-10.png)
+
+'https://tracing.minikube.me/'로 접속하여 2에 ctrl + v합니다.
+
+![elastic-search-setting-11](./images/elastic-search-setting-11.png)
+
+로그를 분석합니다.
+
+![elastic-search-setting-12](./images/elastic-search-setting-12.png)
+
+이와 별개로 전후 관계 분석이 필요한 경우가 있는데, 이는 추후에 다루겠습니다.
+
+
+4.3 Keycloak
+
+'https://keycloak.minikube.me/'에 접속합니다. 계정은 'admin/admin'입니다.
+
+create realm을 누릅니다.
+
+![keycloak-setting-1](./images/keycloak-setting-1.png)
+
+realm dev를 생성합니다.
+
+![keycloak-setting-1](./images/keycloak-setting-2.png)
+
+
+Clients Scope에서 create client scope를 클릭합니다.
+
+![keycloak-setting-1](./images/keycloak-setting-7.png)
+
+Settings에서 Name을 estate, type을 None으로 설정하고, Include in token scope를 On으로 설정합니다. (Default는 보안 관리 상 안 좋습니다.)
+
+![keycloak-setting-1](./images/keycloak-setting-8.png)
+
+Clients에서 account-console을 클릭합니다.
+
+![keycloak-setting-1](./images/keycloak-setting-9.png)
+
+Client Scopes tab에서 add client scopes를 클릭합니다.
+
+![keycloak-setting-1](./images/keycloak-setting-10.png)
+
+estate를 체크하고 Default로 설정합니다.
+
+![keycloak-setting-1](./images/keycloak-setting-11.png)
+
+microprofile-jwt를 Default로 설정합니다.
+
+![keycloak-setting-1](./images/keycloak-setting-12.png)
+
+Users tab에서 Create New User를 선택합니다.
+
+![keycloak-setting-1](./images/keycloak-setting-13.png)
+
+Username을 user로 하고 create를 누릅니다.
+
+![keycloak-setting-1](./images/keycloak-setting-14.png)
+
+Password를 pass로 설정합니다.
+
+![keycloak-setting-1](./images/keycloak-setting-15.png)
+
+Realm settings에서 User registration, Forgot password 및 Remember Me를 선택합니다.
+
+![keycloak-setting-1](./images/keycloak-setting-17.png)
+
+Clients tab에서 account-console에 있는 link를 클릭합니다.
+
+![keycloak-setting-1](./images/keycloak-setting-16.png)
+
+Devtools를 활성화 한 뒤, Account Console에서 'user/pass'를 입력하고 sign in을 합니다.
+
+![keycloak-setting-1](./images/keycloak-setting-19.png)
+
+⚠️ token의 scope에서 estate가 설정되어 있는 것을 확인합니다.
+
+![keycloak-setting-1](./images/keycloak-setting-20.png)
+
+https://minikube.me/estate/openapi/swagger-ui.index.html에 접속한 후
+
+Authorize에서 해당 토큰을 입력하고 login합니다.
+
+POST /estate/building에서 Try it out을 선택한 뒤 아래 body를 입력하고, try it out을 선택합니다. (units는 개인적인 개발 한계를 확인하기 위해 넣은 것이며 현재는 별도로 영향이 없습니다.)
+
+```json
+{"id":0,"name":"string","address":"string","city":"string","state":"string","zipCode":"string","description":"string"}
+```
+
+200 Ok를 확인합니다.
+
+
 # Related Documentations
+
+# RECAP
