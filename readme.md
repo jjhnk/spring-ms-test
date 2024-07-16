@@ -1,4 +1,4 @@
-# Summary
+# Abstract
 
 Spring Ms Test 프로젝트는 적절한 수준의 개발 환경을 제공하여 마이크로 서비스의 개발을 지원하는 것을 목표로 합니다. 이 프로젝트는 JAVA와 Spring을 중심으로 개발되었으며, 마이크로 서비스는 클라우드 컴퓨팅 환경에서의 운영을 목표로 Docker와 Kubernetes를 사용합니다.
 
@@ -12,7 +12,24 @@ Spring Ms Test 프로젝트는 적절한 수준의 개발 환경을 제공하여
 
 해당 챕터에서는 해당 프로젝트에서 사용되는 다양한 도구들을 간략하게 보여드리겠습니다.
 
-## 모니터링 (Monitoring)
+목차:
+
+- [Abstract](#abstract)
+- [Features](#features)
+  - [1. 모니터링 (Monitoring)](#1-모니터링-monitoring)
+  - [2. 로깅 (Logging, Distributed Tracing)](#2-로깅-logging-distributed-tracing)
+  - [3. 중앙집중적 API Documentation (Centralized Documentation)](#3-중앙집중적-api-documentation-centralized-documentation)
+  - [4. 인증 (Authentication)](#4-인증-authentication)
+  - [5. 중앙집중적 환경설정 (Centralized Configuration)](#5-중앙집중적-환경설정-centralized-configuration)
+  - [6. 서비스 디스커버리 (Service Discovery)](#6-서비스-디스커버리-service-discovery)
+  - [7. 엣지 서버 (Edge Server)](#7-엣지-서버-edge-server)
+  - [8. 서비스 메시 (Service Mesh)](#8-서비스-메시-service-mesh)
+  - [9. 프로젝트에 대하여 (요약)](#9-프로젝트에-대하여-요약)
+- [Prerequisite](#prerequisite)
+- [Getting Started](#getting-started)
+- [Related Documentations](#related-documentations)
+
+## 1. 모니터링 (Monitoring)
 
 1. Kubernetes 모니터링 (Kubenetes Monitoring)
 
@@ -34,7 +51,7 @@ Spring Ms Test 프로젝트는 적절한 수준의 개발 환경을 제공하여
 
 ![mail-server](./images/mail-server-1.png)
 
-## 로깅 (Logging, Distributed Tracing)
+## 2. 로깅 (Logging, Distributed Tracing)
 
 1. EFK stack
 
@@ -46,7 +63,7 @@ Spring Ms Test 프로젝트는 적절한 수준의 개발 환경을 제공하여
 
 ![prometheus-1](./images/prometheus-1.png)
 
-## 중앙집중적 API Documentation (Centralized Documentation)
+## 3. 중앙집중적 API Documentation (Centralized Documentation)
 
 1. Swagger
 
@@ -54,7 +71,7 @@ Spring Ms Test 프로젝트는 적절한 수준의 개발 환경을 제공하여
 
 2. (TODO: 나중에 할거임.) REST API DOCS
 
-## 인증 (Authentication)
+## 4. 인증 (Authentication)
 
 1. Auth Server (Keycloak)
 
@@ -62,7 +79,7 @@ Spring Ms Test 프로젝트는 적절한 수준의 개발 환경을 제공하여
 
 ![keycloak-2](./images/keycloak-2.png)
 
-## 중앙집중적 환경설정 (Centralized Configuration)
+## 5. 중앙집중적 환경설정 (Centralized Configuration)
 
 "Centralized Configuration"이란 service의 configuration (e.g. application.yml)이 하나의 포인트에서 관리됨을 의미합니다.
 
@@ -72,7 +89,7 @@ Spring Ms Test 프로젝트는 적절한 수준의 개발 환경을 제공하여
 
 2. [config with config server](https://docs.spring.io/spring-cloud-config/docs/current/reference/html/)
 
-## 서비스 디스커버리 (Service Discovery)
+## 6. 서비스 디스커버리 (Service Discovery)
 
 "Service Discovery"란 별도로 end point에 대한 정확한 정보 없이 DNS와 같은 시스템을 이용하여 해당 service를 찾아낼 수 있음을 의미합니다. Reverse Proxy를 좀 쉽게 하기 위한 좋은 도구입니다 ((see)[https://www.linkedin.com/pulse/role-reverse-proxy-microservices-architecture-getkitsune-maotc/])
 
@@ -83,7 +100,7 @@ Spring Ms Test 프로젝트는 적절한 수준의 개발 환경을 제공하여
 ![service discovery](./images/service-discovery.webp)
 
 
-## 엣지 서버 (Edge Server)
+## 7. 엣지 서버 (Edge Server)
 
 reverse proxy라고 불리기도 하는 그거. 해당 프로젝트는 istio ingress controller를 쓸 예정입니다.
 
@@ -105,7 +122,7 @@ spring gateway는 이전에 사용했기 때문에 reference를 넣었습니다.
 ![ingress](./images/Istio%20Ingress%20Gateway.webp)
 
 
-## 서비스 메시 (Service Mesh)
+## 8. 서비스 메시 (Service Mesh)
 
 Service Mesh란 service application의 비지니스 로직이 아닌 부분들에 대해서 공통적인 관심사를 추출하여 처리하는 구조를 말합니다. 이는 Spring AOP와 비슷하다고 보시면 됩니다. NGINX가 설명이 잘 되어있어 해당 그림을 가져왔으나, 본 프로젝트에서는 **Istio**를 사용합니다.
 
@@ -120,7 +137,7 @@ Service Mesh란 service application의 비지니스 로직이 아닌 부분들�
 ![service-flow](./images/service-flow.jpg)
 
 
-## 프로젝트에 대하여 (요약)
+## 9. 프로젝트에 대하여 (요약)
 
 해당 프로젝트는 Micro Service를 위해서 [Spring Cloud](https://spring.io/projects/spring-cloud)를 사용한 이후 kubernetes를 사용하였습니다.
 
