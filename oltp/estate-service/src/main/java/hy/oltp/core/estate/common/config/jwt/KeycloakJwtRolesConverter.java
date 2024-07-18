@@ -45,7 +45,7 @@ public class KeycloakJwtRolesConverter implements Converter<Jwt, Collection<Gran
     }
 
     Collection<String> clientRoles = clientAccess.get(CLAIM_ROLES);
-    if (clientRoles != null && !clientRoles.isEmpty()) {
+    if (clientRoles == null || clientRoles.isEmpty()) {
       return grantedAuthorities;
     }
 
