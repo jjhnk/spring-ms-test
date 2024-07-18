@@ -330,7 +330,7 @@ POST /estate/building에서 Try it out을 선택한 뒤 아래 body를 입력하
 
 # Documentations
 
-- [Kubernetes에 대하여](s/documentationdoc  #kubernetes에-대하여)
+- [Kubernetes에 대하여](./docs/documentation#kubernetes에-대하여)
   - [클러스터란](./docs/documentation#클러스터란)
     - [클러스터 구성 예](./docs/documentation#클러스터-구성-예)
     - [조직 / 지역별 클러스터 운영 예시](./docs/documentation#조직--지역별-클러스터-운영-예시)
